@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 public class BuildingScreen extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4L;
 
 	/**
 	 * Create the panel.
