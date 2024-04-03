@@ -5,12 +5,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 public class LoginScreen extends JPanel  {
-	private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton exitButton;
+
 
 	private static final long serialVersionUID = 2L;
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -21,6 +19,14 @@ public class LoginScreen extends JPanel  {
 	 * Create the panel.
 	 */
 	public LoginScreen() {
+		if (!Files.exists(Paths.get("users.txt"))) {
+		try {
+			Files.createFile(Paths.get("users.txt"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 		this.setBounds(0, 0, W, H);
 		this.setLayout(new GridBagLayout());
 
@@ -71,13 +77,16 @@ public class LoginScreen extends JPanel  {
 
 
 		private void login(JTextField usernameField, JPasswordField passwordField) {
+			
 			if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
 				JOptionPane.showMessageDialog(null, "Please fill in all fields.");
 				return;
 			}
+
 			if (usernameExists(usernameField.getText())) {
-				validateCredentials(usernameField.getText(), passwordField.getPassword().toString());
-			} else {
+				validateCredentials(usernameField.getText(), (new String (passwordField.getPassword())));
+			}
+			else {
 				
 				JOptionPane.showMessageDialog(null, "Username does not exist.");
 			}
