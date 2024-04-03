@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -18,6 +19,9 @@ public class GameApp extends JFrame {
 	private JPanel contentPane;
 	private JPanel runningScreen;
 	private JPanel registerScreen;
+	private JPanel loginScreen;
+	private JPanel mainMenuScreen;
+	private JPanel buildingScreen;
 	
 	/**
 	 * Launch the application.
@@ -47,7 +51,7 @@ public class GameApp extends JFrame {
 	public GameApp() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 450, 300);
-		contentPane = new LoginScreen(this);
+		contentPane = new MainMenuScreen(this);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -69,11 +73,28 @@ public class GameApp extends JFrame {
 	}
 
 	public void openLoginScreen() {
-		LoginScreen loginScreen = new LoginScreen(this);
+		loginScreen = new LoginScreen(this);
 		setContentPane(loginScreen);
 		this.revalidate();
 		this.repaint();
 	}
+	
+	public void openMainMenuScreen() {
+		mainMenuScreen = new MainMenuScreen(this);
+		setContentPane(mainMenuScreen);
+		
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void openBuildingScreen() {
+		buildingScreen = new BuildingScreen(this);
+		setContentPane(buildingScreen);
+		
+		this.revalidate();
+		this.repaint();
+	}
+	
 
 	public void exitGame() {
 		int result = JOptionPane.showConfirmDialog(this, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);

@@ -112,8 +112,7 @@ public class LoginScreen extends JPanel  {
 			if (usernameExists(usernameField.getText())) {
 				boolean validated = validateCredentials(usernameField.getText(), (new String (passwordField.getPassword())));
 				if (validated) {
-					System.out.println(":)");
-					//g.setContentPane(new MainMenuScreen());
+					g.openMainMenuScreen();
 				} else {
 					JOptionPane.showMessageDialog(this, "No user found.");
 				}

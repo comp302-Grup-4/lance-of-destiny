@@ -5,8 +5,12 @@ import java.util.HashMap;
 public class SpellDepot {
 	private HashMap<Spell, Integer> spellMap;
 	
-	public SpellDepot(HashMap<Spell, Integer> spellMap) {
+	public SpellDepot() {
 		this.spellMap = new HashMap<Spell,Integer>();
+	}
+	
+	public SpellDepot(HashMap<Spell, Integer> spellMap) {
+		this.spellMap = spellMap;
 	}
 
 	public HashMap<Spell, Integer> getSpellMap() {

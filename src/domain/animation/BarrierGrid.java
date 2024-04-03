@@ -1,13 +1,18 @@
 package domain.animation;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import exceptions.InvalidBarrierNumberException;
 
-public class BarrierGrid {
+public class BarrierGrid implements Serializable{
 	private int COL_NUMBER = 15;
 	
 	private Barrier[][] barrierPositions;
+	
+	public BarrierGrid() {
+		
+	}
 	
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
@@ -31,6 +36,10 @@ public class BarrierGrid {
 		}
 		
 		if (invalidBarrierType != null)
-			throw new InvalidBarrierNumberException(Barrier.SIMPLE_BARRIER);
+			throw new InvalidBarrierNumberException(invalidBarrierType);
+		
+		
 	}
+	
+	
 }

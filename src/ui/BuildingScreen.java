@@ -11,20 +11,25 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import domain.Game;
 import domain.animation.SimpleBarrier;
 
 public class BuildingScreen extends JPanel {
 
 	private static final long serialVersionUID = 4L;
-
+	private Game game;
 	/**
 	 * Create the panel.
 	 */
@@ -33,6 +38,8 @@ public class BuildingScreen extends JPanel {
 	JTextField field1, field2, field3, field4;
 	
 	public BuildingScreen(GameApp g) {
+		game = new Game();
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = screenSize.height;
 		int width = screenSize.width;
@@ -105,9 +112,10 @@ public class BuildingScreen extends JPanel {
 		
 		JButton saveButton = new JButton("Save");
 		
-		saveButton.addActionListener(new ActionListener() {
+		saveButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
 				saveGrid();
 			}
 		});
@@ -123,10 +131,10 @@ public class BuildingScreen extends JPanel {
 		
 		JButton playButton = new JButton("Play Game");
 		
-		loadButton.addActionListener(new ActionListener() {
+		playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				g.setContentPane(new RunningScreen());;
+				g.openRunningScreen();
 			}
 		});
 		
@@ -144,11 +152,18 @@ public class BuildingScreen extends JPanel {
 		buttonPanel.add(loadButton);
 		buttonPanel.add(playButton);
 		buttonPanel.add(exitButton);
+		
+		
 		this.add(buttonPanel, cons);
 	}
 	
 	private void saveGrid() {
 		System.out.println("save");
+		try {
+			game.saveBarrierGrid();
+		} catch (IOException e) {
+			JOptionPane.showInputDialog(this, "Barrier grid could not be saved.");
+		}
 	}
 	
 	private void loadSavedGrids() {
