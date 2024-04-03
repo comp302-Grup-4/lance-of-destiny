@@ -27,6 +27,12 @@ public class RegisterScreen extends JPanel {
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(50, 150, 100, 30);
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		this.add(cancelButton);
 
 		JButton registerButton = new JButton("Register");
