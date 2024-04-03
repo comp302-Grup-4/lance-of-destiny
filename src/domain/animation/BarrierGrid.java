@@ -13,7 +13,7 @@ public class BarrierGrid {
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		
 		int total = simple + firm + explosive + gift;
-		int row_number = Math.ceilDiv(total, COL_NUMBER);
+		int row_number = total / COL_NUMBER + 1;
 		
 		barrierPositions = new Barrier[row_number][COL_NUMBER];
 	}
