@@ -15,9 +15,6 @@ public class LoginScreen extends JPanel  {
 	final int H = screenSize.height / 2;
 	final int W = screenSize.width / 4;
 
-	/**
-	 * Create the panel.
-	 */
 	public LoginScreen(GameApp g) {
 		this.g = g;
 		if (!Files.exists(Paths.get("users.txt"))) {
@@ -33,17 +30,30 @@ public class LoginScreen extends JPanel  {
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-		JTextField usernameField = new JTextField(20);
+		
+		JLabel usernameLabel = new JLabel("Username:");
 		constraints.gridx = 0;
 		constraints.gridy = 0;
+		this.add(usernameLabel, constraints);
+		
+		JTextField usernameField = new JTextField(20);
+		constraints.gridx = 1;
+		constraints.gridy = 0;
 		this.add(usernameField, constraints);
+		
+		JLabel passwordLabel = new JLabel("Password:");
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		this.add(passwordLabel, constraints);
+		
 
 		JPasswordField passwordField = new JPasswordField(20);
-		constraints.gridx = 0;
+		constraints.gridx = 1;
 		constraints.gridy = 1;
 		this.add(passwordField, constraints);
 
 		JButton cancelButton = new JButton("Cancel");
+		constraints.gridwidth = 2;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -56,6 +66,7 @@ public class LoginScreen extends JPanel  {
 		this.add(cancelButton, constraints);
 
 		JButton loginButton = new JButton("Login");
+		constraints.gridwidth = 2;
 		loginButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -97,6 +108,7 @@ public class LoginScreen extends JPanel  {
 			else {
 				 
 				JOptionPane.showMessageDialog(this, "Username does not exist.");
+				
 			}
 		}
 
