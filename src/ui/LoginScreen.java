@@ -59,7 +59,7 @@ public class LoginScreen extends JPanel  {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
-		});
+		}); 
         
 		constraints.gridx = 0;
 		constraints.gridy = 2;
