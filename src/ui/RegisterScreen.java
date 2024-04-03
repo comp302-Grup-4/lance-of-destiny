@@ -46,19 +46,6 @@ public class RegisterScreen extends JPanel {
 		constraints.gridy = 1;
 		this.add(passwordLabel, constraints);
 
-		JButton cancelButton = new JButton("Login");
-		constraints.gridwidth = 2;
-		cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				g.openLoginScreen();
-//				System.exit(0);
-			}
-		});
-		constraints.gridx = 0;
-		constraints.gridy = 2;
-		this.add(cancelButton, constraints);
-
 		JButton registerButton = new JButton("Register");
 		constraints.gridwidth = 2;
 		registerButton.addActionListener(new ActionListener() {
@@ -68,15 +55,27 @@ public class RegisterScreen extends JPanel {
 			}
 		});
 		constraints.gridx = 0;
-		constraints.gridy = 3;
+		constraints.gridy = 2;
 		this.add(registerButton, constraints);
+		
+		JButton cancelButton = new JButton("Return to Login");
+		constraints.gridwidth = 2;
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				g.openLoginScreen();
+			}
+		});
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		this.add(cancelButton, constraints);
 
 		JButton exitButton = new JButton("Exit");
 		constraints.gridwidth = 2;
 		exitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				g.exitGame();
 			}
 		});
 		constraints.gridx = 0;
@@ -91,28 +90,22 @@ public class RegisterScreen extends JPanel {
 				}
 			}
 		});
-
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(this);
-		frame.setSize(W, H);
-		frame.setVisible(true);
 	}
 
 	private void register(JTextField usernameField, JPasswordField passwordField) {
 		if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
-			JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+			JOptionPane.showMessageDialog(this, "Please fill in all fields.");
 			return;
 		}
 		if (usernameExists(usernameField.getText())) {
-			JOptionPane.showMessageDialog(null, "Username already exists.");
+			JOptionPane.showMessageDialog(this, "Username already exists.");
 		} else {
 			if (!checkPassword(new String(passwordField.getPassword()))) {
-				JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and not contain \",.:\"");
+				JOptionPane.showMessageDialog(this, "Password must be at least 8 characters long and not contain \",.:\"");
 				return;
 			} else {
 				addToTextFile(usernameField.getText(), new String(passwordField.getPassword()));
-				JOptionPane.showMessageDialog(null, "Successfully registered.");
+				JOptionPane.showMessageDialog(this, "Successfully registered.");
 			}
 		}
 	}
