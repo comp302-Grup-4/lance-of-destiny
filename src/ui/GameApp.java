@@ -62,12 +62,19 @@ public class GameApp extends JFrame {
 	}
 	
 	public void openRegisterScreen() {
-		registerScreen = new RegisterScreen();
+		registerScreen = new RegisterScreen(this);
 		setContentPane(registerScreen);
 		this.revalidate();
 		this.repaint();
 	}
-	
+
+	public void openLoginScreen() {
+		LoginScreen loginScreen = new LoginScreen(this);
+		setContentPane(loginScreen);
+		this.revalidate();
+		this.repaint();
+	}
+
 	public void exitGame() {
 		int result = JOptionPane.showConfirmDialog(this, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
 		if (result == JOptionPane.YES_OPTION) {

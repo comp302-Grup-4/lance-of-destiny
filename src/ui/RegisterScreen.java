@@ -12,12 +12,14 @@ import java.nio.file.*;
 public class RegisterScreen extends JPanel {
 
 	private static final long serialVersionUID = 3L;
+	private final ui.GameApp g;
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int H = screenSize.height / 2;
 	final int W = screenSize.width / 4;
 
-	public RegisterScreen() {
+	public RegisterScreen(GameApp g1) {
+        this.g = g1;
 		this.setBounds(0, 0, W, H);
 		this.setLayout(new GridBagLayout());
 
@@ -44,12 +46,13 @@ public class RegisterScreen extends JPanel {
 		constraints.gridy = 1;
 		this.add(passwordLabel, constraints);
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton("Login");
 		constraints.gridwidth = 2;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				g.openLoginScreen();
+//				System.exit(0);
 			}
 		});
 		constraints.gridx = 0;
@@ -67,6 +70,18 @@ public class RegisterScreen extends JPanel {
 		constraints.gridx = 0;
 		constraints.gridy = 3;
 		this.add(registerButton, constraints);
+
+		JButton exitButton = new JButton("Exit");
+		constraints.gridwidth = 2;
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+		this.add(exitButton, constraints);
 
 		passwordField.addKeyListener(new KeyAdapter() {
 			@Override

@@ -52,12 +52,13 @@ public class LoginScreen extends JPanel  {
 		constraints.gridy = 1;
 		this.add(passwordField, constraints);
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton("Register");
 		constraints.gridwidth = 2;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				g.openRegisterScreen();
+//				System.exit(0);
 			}
 		}); 
         
@@ -85,6 +86,18 @@ public class LoginScreen extends JPanel  {
 				}
 			}
 		});
+
+		JButton exitButton = new JButton("Exit");
+		constraints.gridwidth = 2;
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+		this.add(exitButton, constraints);
 	}
 
 
