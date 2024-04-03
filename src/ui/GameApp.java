@@ -8,11 +8,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import domain.Game;
+import domain.animation.BarrierGrid;
+
 public class GameApp extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private JPanel runningScreen;
+	private JPanel registerScreen;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -41,10 +46,24 @@ public class GameApp extends JFrame {
 	public GameApp() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 450, 300);
-		contentPane = new TestScreen();
+		contentPane = new LoginScreen(this);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 	}
-
+	
+	public void openRunningScreen() {
+		runningScreen = new RunningScreen();
+		
+		setContentPane(runningScreen);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void openRegisterScreen() {
+		registerScreen = new RegisterScreen();
+		setContentPane(registerScreen);
+		this.revalidate();
+		this.repaint();
+	}
 }
