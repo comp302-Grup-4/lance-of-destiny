@@ -168,6 +168,11 @@ public class BuildingScreen extends JPanel {
 	
 	private void loadSavedGrids() {
 		System.out.println("load");
+		try {
+			game.loadBarrierGrid();
+		} catch (Exception e) {
+			JOptionPane.showInputDialog(this, "Barrier grid could not be loaded.");
+		}
 	}
 
 }

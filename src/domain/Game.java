@@ -1,10 +1,13 @@
 package domain;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import domain.animation.Animator;
+import domain.animation.Barrier;
 import domain.animation.BarrierGrid;
 import domain.animation.SpellDepot;
 
@@ -43,5 +46,26 @@ public class Game {
 	    objectOutputStream.writeObject(barrierGrid);
 	    objectOutputStream.flush();
 	    objectOutputStream.close();
+	}
+	
+	public Game loadGame() throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream("gameInstance.txt");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    Game g = (Game) objectInputStream.readObject();
+	    objectInputStream.close();
+	    return g;
+		
+	}
+
+	public BarrierGrid loadBarrierGrid() throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream("gameInstance.txt");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
+	    objectInputStream.close();
+	    return bg;
 	}
 }
