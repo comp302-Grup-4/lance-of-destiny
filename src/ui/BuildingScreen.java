@@ -1,6 +1,20 @@
 package ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class BuildingScreen extends JPanel {
 
@@ -9,8 +23,86 @@ public class BuildingScreen extends JPanel {
 	/**
 	 * Create the panel.
 	 */
+	JPanel gridPanel, barrierPanel, buttonPanel;
+	JLabel icon1, icon2, icon3, icon4, label1, label2, label3, label4;
+	JTextField field1, field2, field3, field4;
+	
 	public BuildingScreen() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int height = screenSize.height;
+		int width = screenSize.width;
+		this.setBounds(0, 0, width, height);
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints cons = new GridBagConstraints();
+		cons.fill = GridBagConstraints.BOTH;
+		
+		gridPanel = new JPanel();
+		gridPanel.setBackground(Color.gray);
+		cons.ipady = height*6/10;
+		cons.weightx = 3;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		this.add(gridPanel, cons);
+		
+		
+		barrierPanel = new JPanel();
+		cons.weightx = 1;
+		cons.gridx = 1;
+		cons.gridy = 0;
+		
+		
+		JPanel inputPanel = new JPanel(new GridLayout(4,3,10,10));
+		icon1 = new JLabel(new ImageIcon("res/drawable/largeBlueGem.png"));
+		icon2 = new JLabel(new ImageIcon("res/drawable/largeFirm.png"));
+		icon3 = new JLabel(new ImageIcon("res/drawable/largeRedGem.png"));
+		icon4 = new JLabel(new ImageIcon("res/drawable/largeGreenGem.png"));
+		label1 = new JLabel("Number of simple obstacles");
+		label2 = new JLabel("Number of firm obstacles");
+		label3 = new JLabel("Number of explosive obstacles");
+		label4 = new JLabel("Number of gift obstacles");
+		field1 = new JTextField();
+		field2 = new JTextField();
+		field3 = new JTextField();
+		field4 = new JTextField();
 
+		inputPanel.add(icon1);
+		inputPanel.add(label1);
+		inputPanel.add(field1);
+		inputPanel.add(icon2);
+		inputPanel.add(label2);
+		inputPanel.add(field2);
+		inputPanel.add(icon3);
+		inputPanel.add(label3);
+		inputPanel.add(field3);
+		inputPanel.add(icon4);
+		inputPanel.add(label4);
+		inputPanel.add(field4);
+		
+		
+		barrierPanel.add(inputPanel);
+		
+		this.add(barrierPanel, cons);
+		
+		buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		cons.ipady = 0;
+		cons.weightx = 0;
+		cons.weighty = 1;
+		cons.gridwidth = 2;
+		cons.gridx = 0;
+		cons.gridy = 1;
+		
+		
+		JButton saveButton = new JButton("Save");
+		buttonPanel.add(saveButton);
+		
+		JButton loadButton = new JButton("Load");
+		buttonPanel.add(loadButton);
+		
+		JButton exitButton = new JButton("Exit");
+		buttonPanel.add(exitButton);
+
+		
+		this.add(buttonPanel, cons);
 	}
 
 }
