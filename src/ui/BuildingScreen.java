@@ -9,12 +9,17 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import domain.animation.SimpleBarrier;
 
 public class BuildingScreen extends JPanel {
 
@@ -27,7 +32,7 @@ public class BuildingScreen extends JPanel {
 	JLabel icon1, icon2, icon3, icon4, label1, label2, label3, label4;
 	JTextField field1, field2, field3, field4;
 	
-	public BuildingScreen() {
+	public BuildingScreen(GameApp g) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = screenSize.height;
 		int width = screenSize.width;
@@ -38,18 +43,16 @@ public class BuildingScreen extends JPanel {
 		
 		gridPanel = new JPanel();
 		gridPanel.setBackground(Color.gray);
-		cons.ipady = height*6/10;
-		cons.weightx = 3;
+		
+		cons.weightx = 50;
 		cons.gridx = 0;
 		cons.gridy = 0;
+		
 		this.add(gridPanel, cons);
 		
 		
 		barrierPanel = new JPanel();
-		cons.weightx = 1;
-		cons.gridx = 1;
-		cons.gridy = 0;
-		
+		barrierPanel.setLayout(new GridBagLayout());
 		
 		JPanel inputPanel = new JPanel(new GridLayout(4,3,10,10));
 		icon1 = new JLabel(new ImageIcon("res/drawable/largeBlueGem.png"));
@@ -77,9 +80,17 @@ public class BuildingScreen extends JPanel {
 		inputPanel.add(icon4);
 		inputPanel.add(label4);
 		inputPanel.add(field4);
+		inputPanel.setBackground(Color.blue);
+
+		cons.ipady = 0;
 		
-		
-		barrierPanel.add(inputPanel);
+		barrierPanel.add(inputPanel, cons);
+
+		cons.weightx = 1;
+		cons.weighty = 8;
+		cons.gridx = 1;
+		cons.gridy = 0;
+		barrierPanel.setBackground(Color.CYAN);
 		
 		this.add(barrierPanel, cons);
 		
@@ -90,19 +101,58 @@ public class BuildingScreen extends JPanel {
 		cons.gridwidth = 2;
 		cons.gridx = 0;
 		cons.gridy = 1;
-		
+		buttonPanel.setBackground(Color.green);
 		
 		JButton saveButton = new JButton("Save");
-		buttonPanel.add(saveButton);
+		
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveGrid();
+			}
+		});
 		
 		JButton loadButton = new JButton("Load");
-		buttonPanel.add(loadButton);
+		
+		loadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				loadSavedGrids();
+			}
+		});
+		
+		JButton playButton = new JButton("Play Game");
+		
+		loadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				g.setContentPane(new RunningScreen());;
+			}
+		});
 		
 		JButton exitButton = new JButton("Exit");
-		buttonPanel.add(exitButton);
-
+	
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				g.exitGame();
+			}
+		});
 		
+
+		buttonPanel.add(saveButton);
+		buttonPanel.add(loadButton);
+		buttonPanel.add(playButton);
+		buttonPanel.add(exitButton);
 		this.add(buttonPanel, cons);
+	}
+	
+	private void saveGrid() {
+		System.out.println("save");
+	}
+	
+	private void loadSavedGrids() {
+		System.out.println("load");
 	}
 
 }
