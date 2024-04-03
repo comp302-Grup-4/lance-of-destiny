@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 public class LoginScreen extends JPanel  {
 
-
+	private GameApp g;
 	private static final long serialVersionUID = 2L;
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int H = screenSize.height / 2;
@@ -18,7 +18,8 @@ public class LoginScreen extends JPanel  {
 	/**
 	 * Create the panel.
 	 */
-	public LoginScreen() {
+	public LoginScreen(GameApp g) {
+		this.g = g;
 		if (!Files.exists(Paths.get("users.txt"))) {
 		try {
 			Files.createFile(Paths.get("users.txt"));
@@ -79,16 +80,23 @@ public class LoginScreen extends JPanel  {
 		private void login(JTextField usernameField, JPasswordField passwordField) {
 			
 			if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
-				JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+				JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+				
 				return;
 			}
 
 			if (usernameExists(usernameField.getText())) {
-				validateCredentials(usernameField.getText(), (new String (passwordField.getPassword())));
+				boolean validated = validateCredentials(usernameField.getText(), (new String (passwordField.getPassword())));
+				if (validated) {
+					System.out.println(":)");
+					//g.setContentPane(new MainMenuScreen());
+				} else {
+					JOptionPane.showMessageDialog(this, "No user found.");
+				}
 			}
 			else {
-				
-				JOptionPane.showMessageDialog(null, "Username does not exist.");
+				 
+				JOptionPane.showMessageDialog(this, "Username does not exist.");
 			}
 		}
 
@@ -103,7 +111,8 @@ public class LoginScreen extends JPanel  {
 				return false;
 			}
 		}
-		private boolean checkCredentials(String username, String password) {
+		
+		private boolean validateCredentials(String username, String password) {
 			try {
 				return Files.lines(Paths.get("users.txt"))
 						.map(line -> line.split(":"))
@@ -113,15 +122,6 @@ public class LoginScreen extends JPanel  {
 				return false;
 			}
 		}
-
-
-	 private void validateCredentials(String username, String password) {
-		 if(checkCredentials(username, password)){
-			 System.out.println("hey!");
-			 
-		 }
-		 
-	 }
 
 
 }
