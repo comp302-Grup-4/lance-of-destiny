@@ -25,16 +25,27 @@ public class RegisterScreen extends JPanel {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 
 		JTextField usernameField = new JTextField(20);
-		constraints.gridx = 0;
+		constraints.gridx = 1;
 		constraints.gridy = 0;
 		this.add(usernameField, constraints);
 
-		JPasswordField passwordField = new JPasswordField(20);
+		JLabel usernameLabel = new JLabel("Username:");
 		constraints.gridx = 0;
+		constraints.gridy = 0;
+		this.add(usernameLabel, constraints);
+
+		JPasswordField passwordField = new JPasswordField(20);
+		constraints.gridx = 1;
 		constraints.gridy = 1;
 		this.add(passwordField, constraints);
 
+		JLabel passwordLabel = new JLabel("Password:");
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		this.add(passwordLabel, constraints);
+
 		JButton cancelButton = new JButton("Cancel");
+		constraints.gridwidth = 2;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -46,6 +57,7 @@ public class RegisterScreen extends JPanel {
 		this.add(cancelButton, constraints);
 
 		JButton registerButton = new JButton("Register");
+		constraints.gridwidth = 2;
 		registerButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -80,8 +92,13 @@ public class RegisterScreen extends JPanel {
 		if (usernameExists(usernameField.getText())) {
 			JOptionPane.showMessageDialog(null, "Username already exists.");
 		} else {
-			addToTextFile(usernameField.getText(), new String(passwordField.getPassword()));
-			JOptionPane.showMessageDialog(null, "Successfully registered.");
+			if (!checkPassword(new String(passwordField.getPassword()))) {
+				JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and not contain \",.:\"");
+				return;
+			} else {
+				addToTextFile(usernameField.getText(), new String(passwordField.getPassword()));
+				JOptionPane.showMessageDialog(null, "Successfully registered.");
+			}
 		}
 	}
 
@@ -90,6 +107,18 @@ public class RegisterScreen extends JPanel {
 			return Files.lines(Paths.get("users.txt"))
 					.map(line -> line.split(":")[0])
 					.anyMatch(existingUsername -> existingUsername.equals(username));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	private boolean checkCredentials(String username, String password) {
+		try {
+			return Files.lines(Paths.get("users.txt"))
+					.map(line -> line.split(":"))
+					.anyMatch(credentials -> credentials[0].equals(username) && credentials[1].equals(password));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -107,5 +136,10 @@ public class RegisterScreen extends JPanel {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+
+	private boolean checkPassword(String password) {
+		// password doesnt contain ",.:" or any spaces and is at least 8 characters long
+		return password.length() >= 8 && !password.contains(",") && !password.contains(".") && !password.contains(":") && !password.contains(" ");
 	}
 }
