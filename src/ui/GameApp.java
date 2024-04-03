@@ -5,6 +5,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -65,5 +66,12 @@ public class GameApp extends JFrame {
 		setContentPane(registerScreen);
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public void exitGame() {
+		int result = JOptionPane.showConfirmDialog(this, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+		if (result == JOptionPane.YES_OPTION) {
+			System.exit(1);
+		}
 	}
 }
