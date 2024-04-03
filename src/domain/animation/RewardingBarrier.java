@@ -11,3 +11,4 @@ public class RewardingBarrier extends Barrier{
 		
 	}
 }
+
