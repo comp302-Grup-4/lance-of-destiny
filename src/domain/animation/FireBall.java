@@ -4,6 +4,10 @@ public class FireBall implements Movable {
 	private Vector position;
 	private Vector velocity;
 	
+	public FireBall() {
+		this(500, 950);
+	}
+	
 	public FireBall(int posX, int posY) {
 		position = new Vector(posX, posY);
 		velocity = Vector.fromDegrees(90).scale(10);
