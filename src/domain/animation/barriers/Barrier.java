@@ -41,7 +41,7 @@ public abstract class Barrier implements Movable {
 	}
 	
 	@Override
-	public boolean isColliable() {
+	public boolean isCollidable() {
 		return isCollidable;
 	}
 	

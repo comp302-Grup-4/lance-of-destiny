@@ -39,5 +39,10 @@ public class FireBall implements Movable {
 	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
 	}
+	
+	@Override
+	public boolean isCollidable() {
+		return true;
+	}
 
 }

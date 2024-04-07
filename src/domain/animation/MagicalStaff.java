@@ -26,5 +26,10 @@ public class MagicalStaff implements Movable {
 	public void setVelocity(Vector newVelocity) {
 		this.velocity = newVelocity;
 	}
+	
+	@Override
+	public boolean isCollidable() {
+		return true;
+	}
 
 }
