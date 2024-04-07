@@ -1,45 +1,87 @@
 package domain.animation;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
+import domain.animation.barriers.Barrier;
+import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.ReinforcedBarrier;
+import domain.animation.barriers.RewardingBarrier;
+import domain.animation.barriers.SimpleBarrier;
 import exceptions.InvalidBarrierNumberException;
+import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
-	private int COL_NUMBER = 15;
+	private final int COL_NUMBER = 15;
+	private final int ROW_NUMBER;
 	
-	private Barrier[][] barrierPositions;
+	public static int MIN_SIMPLE_BARRIERS = 75;
+	public static int MIN_FIRM_BARRIERS = 10;
+	public static int MIN_EXPLOSIVE_BARRIERS = 5;
+	public static int MIN_GIFT_BARRIERS = 10;
 	
-	public BarrierGrid() {
-		
-	}
+	int totalBarrierNumber;
+	
+	private Barrier[][] barrierArray;
+	private LinkedList<Barrier> barrierList;
 	
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		
-		int total = simple + firm + explosive + gift;
-		int row_number = total / COL_NUMBER + 1;
+		totalBarrierNumber = simple + firm + explosive + gift;
+		ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
 		
-		barrierPositions = new Barrier[row_number][COL_NUMBER];
+		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
+		barrierArray = createBarrierArray(barrierList);
+	}
+	
+	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
+		LinkedList<Barrier> barrierCollection = new LinkedList<>();
+		for (int i = 0; i < simple; i++)
+			barrierCollection.add(new SimpleBarrier(this));
+		for (int i = 0; i < firm; i++)
+			barrierCollection.add(new ReinforcedBarrier(this));
+		for (int i = 0; i < explosive; i++)
+			barrierCollection.add(new ExplosiveBarrier(this));
+		for (int i = 0; i < gift; i++)
+			barrierCollection.add(new RewardingBarrier(this));
+		
+		Collections.shuffle(barrierCollection);
+		return barrierCollection;
+	}
+	
+	private Barrier[][] createBarrierArray(Collection<Barrier> barrierCollection) {
+		Barrier[][] barrierArray = new Barrier[ROW_NUMBER][COL_NUMBER];
+		int i = 0;
+		for (Barrier barrier : barrierCollection) {
+			barrier.setGridPosition(i / COL_NUMBER, i % COL_NUMBER);
+			barrierArray[i / COL_NUMBER][i % COL_NUMBER] = barrier;
+			i++;
+		}
+		return barrierArray;
 	}
 	
 	private void checkBarrierNumberValidity(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
-		String invalidBarrierType = null;
-		if (simple < 75) {
-			invalidBarrierType = Barrier.SIMPLE_BARRIER;
-		} else if (firm < 10) {
-			invalidBarrierType = Barrier.FIRM_BARRIER;
-		} else if (explosive < 5) {
-			invalidBarrierType = Barrier.EXPLOSIVE_BARRIER;
-		} else if (gift < 10) {
-			invalidBarrierType = Barrier.GIFT_BARRIER;
+		if (simple < MIN_SIMPLE_BARRIERS) {
+			throw new InvalidBarrierNumberException(Barrier.SIMPLE_BARRIER);
+		} else if (firm < MIN_FIRM_BARRIERS) {
+			throw new InvalidBarrierNumberException(Barrier.FIRM_BARRIER);
+		} else if (explosive < MIN_EXPLOSIVE_BARRIERS) {
+			throw new InvalidBarrierNumberException(Barrier.EXPLOSIVE_BARRIER);
+		} else if (gift < MIN_GIFT_BARRIERS) {
+			throw new InvalidBarrierNumberException(Barrier.GIFT_BARRIER);
 		}
-		
-		if (invalidBarrierType != null)
-			throw new InvalidBarrierNumberException(invalidBarrierType);
-		
-		
 	}
 	
+	public Barrier getBarrierAt(int x, int y) throws InvalidBarrierPositionException {
+		if (x >= COL_NUMBER || y >= ROW_NUMBER || x < 0 || y < 0)
+			throw new InvalidBarrierPositionException(x, y, COL_NUMBER, ROW_NUMBER);
+		return barrierArray[x][y];
+	}
 	
+	public LinkedList<Barrier> getBarrierList() {
+		return barrierList;
+	}
 }
