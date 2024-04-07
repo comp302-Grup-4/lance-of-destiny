@@ -1,14 +1,22 @@
-package domain.animation;
+package domain.animation.barriers;
 
-public class ExplosiveBarrier extends Barrier{
-	public void destroy() {
+import domain.animation.BarrierGrid;
+
+public class ExplosiveBarrier extends Barrier {
+	boolean isExploded;
 		
+	public ExplosiveBarrier(BarrierGrid grid, int gridPositionX, int gridPositionY) {
+		super(grid, gridPositionX, gridPositionY);
+		isExploded = false;
 	}
-	public void move() {
-		
+
+	public ExplosiveBarrier(BarrierGrid grid) {
+		super(grid);
+		isExploded = false;
 	}
+
 	public void explode() {
-		
+		isExploded = true;
 	}
 }
 
