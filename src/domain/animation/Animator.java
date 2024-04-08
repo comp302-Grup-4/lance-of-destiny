@@ -1,59 +1,98 @@
 package domain.animation;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+import java.util.HashSet;
+import exceptions.InvalidBarrierNumberException;
 
 public class Animator {
+	private final float FPS = 30;
+	private final long dTime = (long) (1000 / FPS);
+	
 	private FireBall ball;
 	private MagicalStaff staff;
-	private BarrierGrid barrierGrid;
-	
-	private LinkedList<Movable> movableObjects;
+	protected BarrierGrid barrierGrid;
+	private HashSet<Movable> movableObjects;
+	private Thread animationThread;
 	
 	public Animator() {
 		ball = new FireBall();
 		staff = new MagicalStaff();
-		barrierGrid = new BarrierGrid();
+		try {
+			barrierGrid = new BarrierGrid(BarrierGrid.MIN_SIMPLE_BARRIERS,
+										  BarrierGrid.MIN_FIRM_BARRIERS,
+										  BarrierGrid.MIN_EXPLOSIVE_BARRIERS,
+										  BarrierGrid.MIN_GIFT_BARRIERS);
+		} catch (InvalidBarrierNumberException e) {
+			e.printStackTrace();
+		}
 		
 		movableObjects = initializeMovableObjects();
 		
 	}
 	
 	public void run() {
-		Thread animationThread = new Thread(new Runnable() {
+		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				for (Movable movable : movableObjects) {
-					
+				while (true) { // TODO
+					Vector nextPosition, nextVelocity;
+					for (Movable object : movableObjects) {
+						nextPosition = object.getNextPosition(1 / FPS);
+						nextVelocity = checkCollision(object, nextPosition);
+						object.setVelocity(nextVelocity);
+						object.move(dTime);
+						try {
+							Thread.sleep(dTime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		});
 		animationThread.start();
 	}
 	
-	public void update() {
-		
+	public void pause() throws InterruptedException {
+		animationThread.wait();
 	}
 	
 	public void resume() {
-		
+		animationThread.notify();
 	}
 	
-	private LinkedList<Movable> initializeMovableObjects() {
-		LinkedList<Movable> movableObjects = new LinkedList<Movable>();
-		movableObjects.add(ball);
-		movableObjects.add(staff);
-		/*
-		for (Movable barrier : barrierGrid.getBarriers()) {
-			movableObjects.add(barrier);
-		}*/
+	private Vector checkCollision(Movable object, Vector nextPosition) {
+		Vector nextVelocity = new Vector(0, 0);
+		for (Movable otherObject : movableObjects) {
+			if (object.equals(otherObject) &&  object.isCollidable()) {
+				
+			}
+		}
+		return nextVelocity;
+	}
+	
+	private HashSet<Movable> initializeMovableObjects() {
+		HashSet<Movable> movableObjects = new HashSet<Movable>();
+		addMovableObject(ball);
+		addMovableObject(staff);
+		for (Movable barrier : barrierGrid.getBarrierList()) {
+			addMovableObject(barrier);
+		}
 		return movableObjects;
 	}
 	
-	public LinkedList<Movable> getMovableObjects() {
+	public BarrierGrid getBarrierGrid() {
+		return barrierGrid;
+	}
+	
+	public void addMovableObject(Movable movable) {
+		this.movableObjects.add(movable);
+	}
+	
+	public void removeMovableObject(Movable movable) {
+		this.movableObjects.remove(movable);
+	}
+	
+	public HashSet<Movable> getMovableObjects() {
 		return movableObjects;
 	}
 }
