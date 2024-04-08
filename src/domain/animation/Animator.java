@@ -10,7 +10,7 @@ public class Animator {
 	private FireBall ball;
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
-	private HashSet<Movable> movableObjects;
+	private HashSet<AnimationObject> animationObjects;
 	private Thread animationThread;
 	
 	public Animator() {
@@ -25,7 +25,7 @@ public class Animator {
 			e.printStackTrace();
 		}
 		
-		movableObjects = initializeMovableObjects();
+		animationObjects = initializeMovableObjects();
 		
 	}
 	
@@ -35,7 +35,7 @@ public class Animator {
 			public void run() {
 				while (true) { // TODO
 					Vector nextPosition, nextVelocity;
-					for (Movable object : movableObjects) {
+					for (Movable object : animationObjects) {
 						nextPosition = object.getNextPosition(1 / FPS);
 						nextVelocity = checkCollision(object, nextPosition);
 						object.setVelocity(nextVelocity);
@@ -62,7 +62,7 @@ public class Animator {
 	
 	private Vector checkCollision(Movable object, Vector nextPosition) {
 		Vector nextVelocity = new Vector(0, 0);
-		for (Movable otherObject : movableObjects) {
+		for (Movable otherObject : animationObjects) {
 			if (object.equals(otherObject) &&  object.isCollidable()) {
 				
 			}
@@ -70,11 +70,11 @@ public class Animator {
 		return nextVelocity;
 	}
 	
-	private HashSet<Movable> initializeMovableObjects() {
-		HashSet<Movable> movableObjects = new HashSet<Movable>();
+	private HashSet<AnimationObject> initializeMovableObjects() {
+		HashSet<AnimationObject> movableObjects = new HashSet<Movable>();
 		addMovableObject(ball);
 		addMovableObject(staff);
-		for (Movable barrier : barrierGrid.getBarrierList()) {
+		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
 			addMovableObject(barrier);
 		}
 		return movableObjects;
@@ -84,15 +84,15 @@ public class Animator {
 		return barrierGrid;
 	}
 	
-	public void addMovableObject(Movable movable) {
-		this.movableObjects.add(movable);
+	public void addMovableObject(AnimationObject movable) {
+		this.animationObjects.add(movable);
 	}
 	
 	public void removeMovableObject(Movable movable) {
-		this.movableObjects.remove(movable);
+		this.animationObjects.remove(movable);
 	}
 	
-	public HashSet<Movable> getMovableObjects() {
-		return movableObjects;
+	public HashSet<AnimationObject> getMovableObjects() {
+		return animationObjects;
 	}
 }
