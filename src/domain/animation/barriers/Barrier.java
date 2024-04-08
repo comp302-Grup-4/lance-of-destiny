@@ -66,4 +66,14 @@ public abstract class Barrier implements Movable {
 	public Vector getNextPosition(float dtime) {
 		return position.add(velocity.scale(dtime));
 	}
+	
+	@Override
+	public Vector getPosition() {
+		return position;
+	}
+	
+	@Override
+	public float getRotation() {
+		return 0;
+	}
 }

@@ -3,6 +3,8 @@ package domain.animation;
 public class MagicalStaff implements Movable {
 	private Vector position;
 	private Vector velocity;
+	private float rotation;
+	
 	public static int MS_HORIZON = 950; // MS will not move up and down 
 	
 	public MagicalStaff() {
@@ -30,6 +32,20 @@ public class MagicalStaff implements Movable {
 	@Override
 	public boolean isCollidable() {
 		return true;
+	}
+	
+	@Override
+	public Vector getPosition() {
+		return position;
+	}
+	
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+	
+	@Override
+	public float getRotation() {
+		return rotation;
 	}
 
 }

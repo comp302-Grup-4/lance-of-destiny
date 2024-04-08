@@ -44,5 +44,10 @@ public class FireBall implements Movable {
 	public boolean isCollidable() {
 		return true;
 	}
+	
+	@Override
+	public float getRotation() {
+		return 0;
+	}
 
 }
