@@ -25,7 +25,7 @@ public class Animator {
 			e.printStackTrace();
 		}
 		
-		animationObjects = initializeMovableObjects();
+		initializeAnimationObjects();
 		
 	}
 	
@@ -70,14 +70,13 @@ public class Animator {
 		return nextVelocity;
 	}
 	
-	private HashSet<AnimationObject> initializeMovableObjects() {
-		HashSet<AnimationObject> movableObjects = new HashSet<Movable>();
+	private void initializeAnimationObjects() {
+		animationObjects = new HashSet<AnimationObject>();
 		addMovableObject(ball);
 		addMovableObject(staff);
 		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
 			addMovableObject(barrier);
 		}
-		return movableObjects;
 	}
 	
 	public BarrierGrid getBarrierGrid() {
