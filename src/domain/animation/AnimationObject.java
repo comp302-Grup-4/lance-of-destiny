@@ -28,6 +28,10 @@ public abstract class AnimationObject implements Movable {
 	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
 	}
+	
+	public int getObjectID() {
+		return objectID;
+	}
 
 	@Override
 	public Vector getNextPosition(float dtime) {
