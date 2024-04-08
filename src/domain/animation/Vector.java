@@ -10,7 +10,7 @@ public class Vector {
 	}
 	
 	public static Vector fromDegrees(float x) {
-		return new Vector((float) Math.cos(x), (float) Math.sin(x));
+		return new Vector((float) Math.cos(-Math.toRadians(x)), (float) Math.sin(-Math.toRadians(x)));
 	}
 	
 	public Vector add(Vector v) {
