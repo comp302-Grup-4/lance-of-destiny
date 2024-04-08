@@ -1,19 +1,17 @@
 package domain.animation.barriers;
 
+import domain.animation.AnimationObject;
 import domain.animation.BarrierGrid;
 import domain.animation.Movable;
 import domain.animation.Vector;
 
-public abstract class Barrier implements Movable {
+public abstract class Barrier extends AnimationObject {
 	public static final String SIMPLE_BARRIER = "simple";
 	public static final String FIRM_BARRIER = "firm";
 	public static final String EXPLOSIVE_BARRIER = "explosive";
 	public static final String GIFT_BARRIER = "gift";
 	
 	protected BarrierGrid parentGrid;
-	protected Vector position;
-	protected Vector velocity;
-	protected boolean isCollidable;
 	
 	private int gridPositionX;
 	private int gridPositionY;
@@ -30,19 +28,13 @@ public abstract class Barrier implements Movable {
 	}
 	
 	@Override
-	public Vector move(float dtime) {
-		position = getNextPosition(dtime);
-		return position;
-	}
-	
-	@Override
-	public void setVelocity(Vector newVelocity) {
-		this.velocity = newVelocity;
-	}
-	
-	@Override
 	public boolean isCollidable() {
 		return isCollidable;
+	}
+	
+	@Override
+	public float getRotation() {
+		return 0;
 	}
 	
 	public void destroy() {
@@ -60,20 +52,5 @@ public abstract class Barrier implements Movable {
 	
 	public int getGridPositionY() {
 		return gridPositionY;
-	}	
-	
-	@Override
-	public Vector getNextPosition(float dtime) {
-		return position.add(velocity.scale(dtime));
-	}
-	
-	@Override
-	public Vector getPosition() {
-		return position;
-	}
-	
-	@Override
-	public float getRotation() {
-		return 0;
 	}
 }
