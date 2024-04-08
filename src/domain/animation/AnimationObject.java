@@ -4,7 +4,7 @@ public abstract class AnimationObject implements Movable {
 	private static int objectIDCounter = 0;
 	protected int objectID;
 	protected Vector position;
-	protected Vector velocity;
+	protected Vector velocity; // pixel per milisecond
 	protected float rotation;
 	protected boolean isCollidable;
 	
@@ -34,13 +34,13 @@ public abstract class AnimationObject implements Movable {
 	}
 
 	@Override
-	public Vector getNextPosition(float dtime) {
-		return position.add(velocity.scale(dtime));
+	public Vector getNextPosition(float dTimeMilisecond) {
+		return position.add(velocity.scale(dTimeMilisecond / 1000));
 	}
 
 	@Override
-	public Vector move(float dtime) {
-		this.position = getNextPosition(dtime);
+	public Vector move(float dTimeMilisecond) {
+		this.position = position.add(velocity.scale(dTimeMilisecond / 1000));
 		return this.position;
 	}
 	
