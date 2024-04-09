@@ -9,8 +9,21 @@ public class Vector {
 		this.y = y;
 	}
 	
+	public static Vector zero() {
+		return new Vector(0, 0);
+	}
+	
+	public static Vector of(float x, float y) {
+		return new Vector(x, y);
+	}
+	
+	
 	public static Vector fromDegrees(float x) {
-		return new Vector((float) Math.cos(-Math.toRadians(x)), (float) Math.sin(-Math.toRadians(x)));
+		return fromDegrees(x, 1);
+	}
+	
+	public static Vector fromDegrees(float x, float radius) {
+		return new Vector(radius * (float) Math.cos(-Math.toRadians(x)), radius * (float) Math.sin(-Math.toRadians(x)));
 	}
 	
 	public Vector add(Vector v) {
@@ -38,11 +51,23 @@ public class Vector {
 	}
 	
 	public Vector unit() {
-		return this.scale(1 / this.length());
+		if (this.isZero()) {
+			return this;
+		} else {
+			return this.scale(1 / this.length());
+		}
 	}
 	
 	public float length() {
 		return (float) Math.sqrt(x * x + y * y);
+	}
+	
+	public void setX(float x) {
+		this.x = x;
+	}
+	
+	public void setY(float y) {
+		this.y = y;
 	}
 	
 	public float getX() {
@@ -51,5 +76,19 @@ public class Vector {
 	
 	public float getY() {
 		return y;
+	}
+	
+	public boolean isZero() {
+		return (Math.abs(x) < 1e-6) && (Math.abs(y) < 1e-6);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Vector) {
+			return ((Vector) obj).getX() == getX() 
+					&& ((Vector) obj).getY() == getY();
+		} else {
+			return false;
+		}
 	}
 }
