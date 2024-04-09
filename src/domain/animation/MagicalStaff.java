@@ -1,12 +1,14 @@
 package domain.animation;
 
 public class MagicalStaff extends AnimationObject {	
-	public static int MS_HORIZON = 950; // MS will not move up and down 
+	public static int MS_HORIZON = 650; // MS will not move up and down 
 	
 	public MagicalStaff() {
 		super();
-		position = new Vector(500, MS_HORIZON);
+		position = new Vector(450, MS_HORIZON);
 		velocity = new Vector(0, 0);
+		sizeX = 100;
+		sizeY = 20;
 	}
 	
 	@Override

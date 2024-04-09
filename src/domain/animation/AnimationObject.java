@@ -7,11 +7,12 @@ public abstract class AnimationObject implements Movable {
 	protected Vector velocity; // pixel per milisecond
 	protected float rotation;
 	protected boolean isCollidable;
+	protected float sizeX;
+	protected float sizeY;
 	
 	public AnimationObject() {
 		objectID = objectIDCounter++;
 	}
-	
 	
 	public Vector getPosition() {
 		return position;
@@ -44,4 +45,16 @@ public abstract class AnimationObject implements Movable {
 		return this.position;
 	}
 	
+	public void setSize(float sizeX, float sizeY) {
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
+	}
+	
+	public float getSizeX() {
+		return sizeX;
+	}
+	
+	public float getSizeY() {
+		return sizeY;
+	}
 }
