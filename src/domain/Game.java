@@ -7,15 +7,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import domain.animation.Animator;
-import domain.animation.Barrier;
 import domain.animation.BarrierGrid;
 import domain.animation.SpellDepot;
+import domain.animation.barriers.Barrier;
 
 public class Game {
 	private Player player;
-	private SpellDepot spellDepot;
-	private BarrierGrid barrierGrid;
-	
+	private SpellDepot spellDepot;	
 	private Animator animator;
 	
 	private int gameMode; // 0 for building, 1 for running
@@ -24,7 +22,6 @@ public class Game {
 		gameMode = 0;
 		player = new Player();
 		spellDepot = new SpellDepot();
-		barrierGrid = new BarrierGrid();
 		animator = new Animator();
 	}
 	
@@ -43,7 +40,7 @@ public class Game {
 	      = new FileOutputStream("barrierGridInstance.txt");
 	    ObjectOutputStream objectOutputStream 
 	      = new ObjectOutputStream(fileOutputStream);
-	    objectOutputStream.writeObject(barrierGrid);
+	    objectOutputStream.writeObject(animator.getBarrierGrid());
 	    objectOutputStream.flush();
 	    objectOutputStream.close();
 	}
@@ -67,5 +64,9 @@ public class Game {
 	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
 	    objectInputStream.close();
 	    return bg;
+	}
+	
+	public Animator getAnimator() {
+		return animator;
 	}
 }
