@@ -14,7 +14,7 @@ import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
-	private final int COL_NUMBER = 40;
+	private final int COL_NUMBER = 37;
 	private final int ROW_NUMBER;
 	
 	public static int MIN_SIMPLE_BARRIERS = 75;
@@ -37,7 +37,7 @@ public class BarrierGrid implements Serializable{
 		totalBarrierNumber = simple + firm + explosive + gift;
 		ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
 		
-		position = new Vector(10, 10);
+		position = new Vector(20, 40);
 		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
@@ -74,7 +74,6 @@ public class BarrierGrid implements Serializable{
 			
 			barrier.setPosition(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
 															 rowHeight * (float) barrierGridRow + 20 * MARGIN)));
-			barrier.setSize(20, 20);
 			i++;
 		}
 		return barrierArray;
