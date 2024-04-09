@@ -2,7 +2,6 @@ package domain.animation.barriers;
 
 import domain.animation.AnimationObject;
 import domain.animation.BarrierGrid;
-import domain.animation.Movable;
 import domain.animation.Vector;
 
 public abstract class Barrier extends AnimationObject {
@@ -21,8 +20,12 @@ public abstract class Barrier extends AnimationObject {
 	}
 	
 	public Barrier(BarrierGrid grid, int gridPositionX, int gridPositionY) {
+		super();
 		this.gridPositionX = gridPositionX;
 		this.gridPositionY = gridPositionY;
+		
+		velocity = new Vector(0, 0);
+		
 		isCollidable = true;
 		parentGrid = grid;
 	}
