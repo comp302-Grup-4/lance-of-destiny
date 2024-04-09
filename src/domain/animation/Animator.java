@@ -4,7 +4,11 @@ import java.util.HashSet;
 import exceptions.InvalidBarrierNumberException;
 
 public class Animator {
-	private final float FPS = 30;
+	public static int RIGHT = 1;
+	public static int LEFT = -1;
+	public static int STOP = 0;
+	
+	private final float FPS = 150;
 	private final long dTime = (long) (1000 / FPS);
 	
 	private FireBall ball;
@@ -36,15 +40,15 @@ public class Animator {
 				while (true) { // TODO
 					Vector nextPosition, nextVelocity;
 					for (Movable object : animationObjects) {
-						nextPosition = object.getNextPosition(1 / FPS);
+						nextPosition = object.getNextPosition(dTime);
 						nextVelocity = checkCollision(object, nextPosition);
 						object.setVelocity(nextVelocity);
 						object.move(dTime);
-						try {
-							Thread.sleep(dTime);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+					}
+					try {
+						Thread.sleep(dTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -61,7 +65,7 @@ public class Animator {
 	}
 	
 	private Vector checkCollision(Movable object, Vector nextPosition) {
-		Vector nextVelocity = new Vector(0, 0);
+		Vector nextVelocity = object.getVelocity();
 		for (Movable otherObject : animationObjects) {
 			if (object.equals(otherObject) &&  object.isCollidable()) {
 				
@@ -93,5 +97,9 @@ public class Animator {
 	
 	public HashSet<AnimationObject> getMovableObjects() {
 		return animationObjects;
+	}
+	
+	public void moveMagicalStaff(int direction) {
+		staff.setVelocity(new Vector(200 * direction, 0));
 	}
 }
