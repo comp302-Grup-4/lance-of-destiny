@@ -14,7 +14,7 @@ import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
-	private final int COL_NUMBER = 15;
+	private final int COL_NUMBER = 40;
 	private final int ROW_NUMBER;
 	
 	public static int MIN_SIMPLE_BARRIERS = 75;
@@ -22,19 +22,26 @@ public class BarrierGrid implements Serializable{
 	public static int MIN_EXPLOSIVE_BARRIERS = 5;
 	public static int MIN_GIFT_BARRIERS = 10;
 	
+	private float MARGIN = (float) 0.15;
+	
 	int totalBarrierNumber;
 	
 	private Barrier[][] barrierArray;
 	private LinkedList<Barrier> barrierList;
 	
-	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
+	private Vector position;
+	
+	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {	
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		
 		totalBarrierNumber = simple + firm + explosive + gift;
 		ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
 		
+		position = new Vector(10, 10);
+		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
+		
 	}
 	
 	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
@@ -56,8 +63,18 @@ public class BarrierGrid implements Serializable{
 		Barrier[][] barrierArray = new Barrier[ROW_NUMBER][COL_NUMBER];
 		int i = 0;
 		for (Barrier barrier : barrierCollection) {
-			barrier.setGridPosition(i / COL_NUMBER, i % COL_NUMBER);
-			barrierArray[i / COL_NUMBER][i % COL_NUMBER] = barrier;
+			int barrierGridColumn = i % COL_NUMBER;
+			int barrierGridRow = i / COL_NUMBER;
+			float colWidth = 20 * (1 + 2 * MARGIN);
+			float rowHeight = 20 * (1 + 2 * MARGIN);
+			
+			barrier.setGridPosition(barrierGridColumn, barrierGridRow);
+			barrierArray[barrierGridRow]
+					    [barrierGridColumn] = barrier;
+			
+			barrier.setPosition(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
+															 rowHeight * (float) barrierGridRow + 20 * MARGIN)));
+			barrier.setSize(20, 20);
 			i++;
 		}
 		return barrierArray;
