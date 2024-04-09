@@ -2,6 +2,8 @@ package domain.animation;
 
 import java.util.HashMap;
 
+import domain.animation.spells.Spell;
+
 public class SpellDepot {
 	private HashMap<Spell, Integer> spellMap;
 	
