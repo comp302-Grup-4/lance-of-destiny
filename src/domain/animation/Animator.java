@@ -1,6 +1,10 @@
 package domain.animation;
 
+import java.util.Collection;
 import java.util.HashSet;
+
+import domain.animation.collision.CollisionStrategy;
+import domain.animation.collision.PointBasedCollision;
 import exceptions.InvalidBarrierNumberException;
 
 public class Animator {
@@ -14,8 +18,10 @@ public class Animator {
 	private FireBall ball;
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
+	private Wall rightWall, leftWall, upperWall, lowerWall;
 	private HashSet<AnimationObject> animationObjects;
 	private Thread animationThread;
+	private CollisionStrategy collisionCalculator;
 	
 	public Animator() {
 		ball = new FireBall();
@@ -28,9 +34,13 @@ public class Animator {
 		} catch (InvalidBarrierNumberException e) {
 			e.printStackTrace();
 		}
+		rightWall = new Wall(Wall.VERTICAL, new Vector(985, 0));
+		leftWall = new Wall(Wall.VERTICAL, new Vector(-15, 0));
+		upperWall = new Wall(Wall.HORIZONTAL, new Vector(0, -15));
+		lowerWall = new Wall(Wall.HORIZONTAL, new Vector(0, 800));
 		
 		initializeAnimationObjects();
-		
+		collisionCalculator = new PointBasedCollision();
 	}
 	
 	public void run() {
@@ -38,12 +48,18 @@ public class Animator {
 			@Override
 			public void run() {
 				while (true) { // TODO
-					Vector nextPosition, nextVelocity;
-					for (Movable object : animationObjects) {
-						nextPosition = object.getNextPosition(dTime);
-						nextVelocity = checkCollision(object, nextPosition);
-						object.setVelocity(nextVelocity);
-						object.move(dTime);
+					Vector forceDirection, velocityChange;
+					for (AnimationObject object : animationObjects) {
+						if (!object.getVelocity().isZero()) { // if the object doesn't move, no need to do other stuff
+							forceDirection = collisionCalculator.checkCollision(object, animationObjects.stream()
+																									.filter(x -> !x.equals(object))
+																									.map(x -> (Collidable) x)
+																									.toList());
+							
+							velocityChange = forceDirection.scale(-2 * object.getVelocity().dot(forceDirection));
+							object.setVelocity(object.getVelocity().add(velocityChange));
+							object.move(dTime);
+						}
 					}
 					try {
 						Thread.sleep(dTime);
@@ -64,16 +80,6 @@ public class Animator {
 		animationThread.notify();
 	}
 	
-	private Vector checkCollision(Movable object, Vector nextPosition) {
-		Vector nextVelocity = object.getVelocity();
-		for (Movable otherObject : animationObjects) {
-			if (object.equals(otherObject) &&  object.isCollidable()) {
-				
-			}
-		}
-		return nextVelocity;
-	}
-	
 	private void initializeAnimationObjects() {
 		animationObjects = new HashSet<AnimationObject>();
 		addMovableObject(ball);
@@ -81,6 +87,10 @@ public class Animator {
 		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
 			addMovableObject(barrier);
 		}
+		addMovableObject(leftWall);
+		addMovableObject(rightWall);
+		addMovableObject(upperWall);
+		addMovableObject(lowerWall);
 	}
 	
 	public BarrierGrid getBarrierGrid() {
