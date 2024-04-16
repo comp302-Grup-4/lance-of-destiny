@@ -93,6 +93,12 @@ public class Animator {
 		addMovableObject(lowerWall);
 	}
 	
+	//deneme
+	public void setBarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
+			this.barrierGrid = new BarrierGrid(simple, firm, explosive, gift);	
+			initializeAnimationObjects();
+	}
+	
 	public BarrierGrid getBarrierGrid() {
 		return barrierGrid;
 	}
