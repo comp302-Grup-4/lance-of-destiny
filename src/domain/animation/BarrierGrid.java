@@ -30,10 +30,11 @@ public class BarrierGrid implements Serializable{
 	private LinkedList<Barrier> barrierList;
 	
 	private Vector position;
-	
+
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {	
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		
+
 		totalBarrierNumber = simple + firm + explosive + gift;
 		ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
 		
@@ -100,4 +101,5 @@ public class BarrierGrid implements Serializable{
 	public LinkedList<Barrier> getBarrierList() {
 		return barrierList;
 	}
+	
 }
