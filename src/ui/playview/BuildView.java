@@ -38,26 +38,10 @@ public class BuildView extends JPanel {
         this.setLayout(null);
         this.setVisible(true);
         this.setFocusable(true);
-        
-//        // Add mouse listener for user interactions, e.g., adding/removing objects
-//        this.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                // Handle object creation or modification based on mouse clicks
-//                // You can implement adding new objects or modifying existing ones
-//                handleMouseClick(e);
-//            }
-//        });
 
-        // Initial draw of objects
         rebuildDrawableObjects(converter.getObjectSpatialInfoList());
     }
 
-//    private void handleMouseClick(MouseEvent e) {
-//        // Implement object creation or modification here based on the mouse click
-//        // For example, you can create a new object at the clicked position
-//        // This will depend on your specific requirements for BuildView
-//    }
     
     private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
