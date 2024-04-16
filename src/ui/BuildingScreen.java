@@ -108,7 +108,7 @@ public class BuildingScreen extends JPanel {
                 // Call method to handle building barriers based on user input
             	 SwingUtilities.invokeLater(() -> {try {
             		game.getAnimator().setBarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));BuildView buildView = new BuildView(gridPanel, game);
-            		game.getAnimator();
+            	//	game.getAnimator();
             		
             		gridPanel.setLayout(new GridBagLayout());
             		
@@ -185,7 +185,17 @@ public class BuildingScreen extends JPanel {
 		playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				g.openRunningScreen();
+				try {
+					game.getAnimator().setBarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));	
+					g.openRunningScreen(game);
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InvalidBarrierNumberException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		

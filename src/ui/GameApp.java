@@ -57,8 +57,8 @@ public class GameApp extends JFrame {
 		setContentPane(contentPane);
 	}
 	
-	public void openRunningScreen() {
-		runningScreen = new RunningScreen(new Game());
+	public void openRunningScreen(Game g) {
+		runningScreen = new RunningScreen(g);
 		
 		setContentPane(runningScreen);
 		this.revalidate();
