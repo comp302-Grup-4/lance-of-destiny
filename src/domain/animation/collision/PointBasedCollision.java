@@ -7,16 +7,18 @@ import domain.animation.Vector;
 
 public class PointBasedCollision implements CollisionStrategy {
 	@Override
-	public Vector checkCollision(Collidable object, Collection<Collidable> otherObjects) {
-		Vector newDirection = Vector.zero();
+	public CollisionInfo checkCollision(Collidable object, Collection<Collidable> otherObjects) {
+		CollisionInfo info = new CollisionInfo();
 		for (Vector collisionPoint : object.getBoundaryPoints()) {
 			for (Collidable collidable : otherObjects) {
 				if (collidable.contains(collisionPoint)) {
-					newDirection = newDirection.add(object.getCenterPoint().subtract(collisionPoint));
+					info.addCollidedObject(collidable);
+					info.addToPreviousVelocity(object.getCenterPoint().subtract(collisionPoint));
 				}
 			}
 		}
-		return newDirection.unit();
+		
+		return info;
 	}
 	
 }

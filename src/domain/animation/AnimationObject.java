@@ -137,4 +137,13 @@ public abstract class AnimationObject implements Movable, Collidable {
 		}
 		return true;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof AnimationObject) {
+			return ((AnimationObject) obj).getObjectID() == this.objectID;
+		} else {
+			return false;
+		}
+	}
 }

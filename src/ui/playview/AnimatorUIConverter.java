@@ -2,8 +2,10 @@ package ui.playview;
 
 import java.awt.Dimension;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
+import domain.animation.AnimationObject;
 import domain.animation.Animator;
 
 public class AnimatorUIConverter {
@@ -17,8 +19,9 @@ public class AnimatorUIConverter {
 	
 	public HashMap<Integer, ObjectSpatialInfo> getObjectSpatialInfoList() {
 		
-		return animator.getMovableObjects().stream()
-										   .collect(Collectors.toMap(x -> x.getObjectID(),
+		@SuppressWarnings("unchecked")
+		HashSet<AnimationObject> movables = (HashSet<AnimationObject>) animator.getMovableObjects().clone();
+		return movables.stream().collect(Collectors.toMap(x -> x.getObjectID(),
 												                     x -> {
 																		try {
 																			return new ObjectSpatialInfo(x, windowSize);

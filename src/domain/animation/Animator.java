@@ -1,8 +1,9 @@
 package domain.animation;
 
-import java.util.Collection;
 import java.util.HashSet;
 
+import domain.animation.barriers.Barrier;
+import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
 import exceptions.InvalidBarrierNumberException;
@@ -10,7 +11,6 @@ import exceptions.InvalidBarrierNumberException;
 public class Animator {
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
-	public static int STOP = 0;
 	
 	private final float FPS = 150;
 	private final long dTime = (long) (1000 / FPS);
@@ -48,14 +48,23 @@ public class Animator {
 		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				CollisionInfo ballCollisionInfo;
 				Vector forceDirection, velocityChange;
 				while (true) {
-					forceDirection = collisionCalculator.checkCollision(ball, animationObjects.stream()
+					ballCollisionInfo = collisionCalculator.checkCollision(ball, animationObjects.stream()
 																							.filter(x -> !x.equals(ball))
 																							.map(x -> (Collidable) x)
 																							.toList());
 					
+					forceDirection = ballCollisionInfo.getNextDirection();
 					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
+					
+					for (Collidable collidedObject: ballCollisionInfo.getCollidedObjects()) {
+						if (collidedObject instanceof Barrier) {
+							animationObjects.remove(collidedObject);
+						}
+					}
+					
 					ball.setVelocity(ball.getVelocity().add(velocityChange));
 					ball.move(dTime);
 					
