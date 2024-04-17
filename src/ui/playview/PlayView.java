@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -80,9 +79,9 @@ public class PlayView extends JPanel {
 			public void keyReleased(KeyEvent e) {
 				super.keyReleased(e);
 				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					animator.moveMagicalStaff(Animator.STOP);
+					animator.stopMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					animator.moveMagicalStaff(Animator.STOP);
+					animator.stopMagicalStaff(Animator.RIGHT);
 				}
 			}
 		});
