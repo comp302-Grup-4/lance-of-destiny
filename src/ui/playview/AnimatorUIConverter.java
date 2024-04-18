@@ -3,6 +3,7 @@ package ui.playview;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 import domain.animation.AnimationObject;
@@ -19,8 +20,7 @@ public class AnimatorUIConverter {
 	
 	public HashMap<Integer, ObjectSpatialInfo> getObjectSpatialInfoList() {
 		
-		@SuppressWarnings("unchecked")
-		HashSet<AnimationObject> movables = (HashSet<AnimationObject>) animator.getMovableObjects().clone();
+		CopyOnWriteArraySet<AnimationObject> movables = (CopyOnWriteArraySet<AnimationObject>) animator.getAnimationObjects();
 		return movables.stream().collect(Collectors.toMap(x -> x.getObjectID(),
 												                     x -> {
 																		try {

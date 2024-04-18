@@ -1,6 +1,7 @@
 package domain.animation;
 
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.animation.barriers.Barrier;
 import domain.animation.collision.CollisionInfo;
@@ -19,7 +20,7 @@ public class Animator {
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
 	private Wall rightWall, leftWall, upperWall, lowerWall;
-	private HashSet<AnimationObject> animationObjects;
+	private CopyOnWriteArraySet<AnimationObject> animationObjects;
 	private Thread animationThread;
 	private CollisionStrategy collisionCalculator;
 	private boolean staffMovesRight = false, staffMovesLeft = false;
@@ -51,7 +52,7 @@ public class Animator {
 				CollisionInfo ballCollisionInfo;
 				Vector forceDirection, velocityChange;
 				while (true) {
-					ballCollisionInfo = collisionCalculator.checkCollision(ball, animationObjects.stream()
+					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
 																							.filter(x -> !x.equals(ball))
 																							.map(x -> (Collidable) x)
 																							.toList());
@@ -61,7 +62,7 @@ public class Animator {
 					
 					for (Collidable collidedObject: ballCollisionInfo.getCollidedObjects()) {
 						if (collidedObject instanceof Barrier) {
-							animationObjects.remove(collidedObject);
+							removeAnimationObject((AnimationObject) collidedObject);
 						}
 					}
 					
@@ -102,16 +103,16 @@ public class Animator {
 	}
 	
 	private void initializeAnimationObjects() {
-		animationObjects = new HashSet<AnimationObject>();
-		addMovableObject(ball);
-		addMovableObject(staff);
+		animationObjects = new CopyOnWriteArraySet<AnimationObject>();
+		addAnimationObject(ball);
+		addAnimationObject(staff);
 		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
-			addMovableObject(barrier);
+			addAnimationObject(barrier);
 		}
-		addMovableObject(leftWall);
-		addMovableObject(rightWall);
-		addMovableObject(upperWall);
-		addMovableObject(lowerWall);
+		addAnimationObject(leftWall);
+		addAnimationObject(rightWall);
+		addAnimationObject(upperWall);
+		addAnimationObject(lowerWall);
 	}
 	
 	//deneme
@@ -124,15 +125,15 @@ public class Animator {
 		return barrierGrid;
 	}
 	
-	public void addMovableObject(AnimationObject movable) {
-		this.animationObjects.add(movable);
+	private void addAnimationObject(AnimationObject movable) {
+		animationObjects.add(movable);
 	}
 	
-	public void removeMovableObject(Movable movable) {
-		this.animationObjects.remove(movable);
+	private void removeAnimationObject(AnimationObject movable) {
+		animationObjects.remove(movable);
 	}
 	
-	public HashSet<AnimationObject> getMovableObjects() {
+	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
 	}
 	
