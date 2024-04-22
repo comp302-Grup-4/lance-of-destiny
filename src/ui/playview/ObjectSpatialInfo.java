@@ -65,9 +65,12 @@ public class ObjectSpatialInfo {
 	float sizeX;
 	float sizeY;
 	
+	private AnimationObject object;
+	
 	private final float windowSizeXCoeff, windowSizeYCoeff;
 	
 	public ObjectSpatialInfo(AnimationObject object, Dimension windowSize) throws Exception {
+		this.object=object;
 		this.ID = object.getObjectID();
 		this.rotation = object.getRotation();
 		this.windowSizeXCoeff = (float) windowSize.width / 1000;
@@ -163,4 +166,9 @@ public class ObjectSpatialInfo {
 	public float getSizeY() {
 		return sizeY;
 	}
+	
+	public AnimationObject getAnimationObject() {
+        return object;
+       
+    }
 }
