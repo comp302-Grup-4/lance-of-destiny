@@ -57,8 +57,10 @@ public class BuildView extends JPanel {
 
     
     private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
+ 
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
         for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
+        	ObjectSpatialInfo newObjInfo = newObjectsInfo.get(id);
             if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
                 updateDrawableObject(newObjectsInfo.get(id));
             } else {
