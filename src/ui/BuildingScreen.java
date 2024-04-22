@@ -53,6 +53,7 @@ public class BuildingScreen extends JPanel {
 		cons.fill = GridBagConstraints.BOTH;
 		
 		gridPanel = new JPanel();
+		gridPanel.setLayout(new GridBagLayout());
 		gridPanel.setBackground(Color.gray);
 		
 		cons.weightx = 50;
@@ -108,9 +109,6 @@ public class BuildingScreen extends JPanel {
                 // Call method to handle building barriers based on user input
             	 SwingUtilities.invokeLater(() -> {try {
             		game.getAnimator().setBarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));BuildView buildView = new BuildView(gridPanel, game);
-            	//	game.getAnimator();
-            		
-            		gridPanel.setLayout(new GridBagLayout());
             		
             		GridBagConstraints gbc = new GridBagConstraints();
             		
