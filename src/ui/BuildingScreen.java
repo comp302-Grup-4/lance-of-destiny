@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -40,6 +41,7 @@ public class BuildingScreen extends JPanel {
 	JPanel gridPanel, barrierPanel, buttonPanel;
 	JLabel icon1, icon2, icon3, icon4, label1, label2, label3, label4;
 	JTextField field1, field2, field3, field4;
+	
 	
 	public BuildingScreen(GameApp g) {
 		game = new Game();
@@ -78,6 +80,11 @@ public class BuildingScreen extends JPanel {
 		field2 = new JTextField();
 		field3 = new JTextField();
 		field4 = new JTextField();
+		
+		field1.setText("75");
+		field2.setText("10");
+		field3.setText("5");
+		field4.setText("10");
 
 		inputPanel.add(icon1);
 		inputPanel.add(label1);
@@ -237,6 +244,7 @@ public class BuildingScreen extends JPanel {
 			JOptionPane.showInputDialog(this, "Barrier grid could not be loaded.");
 		}
 	}
+	
 	
 	
 
