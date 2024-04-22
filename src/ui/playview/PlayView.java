@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,7 +45,7 @@ public class PlayView extends JPanel {
 			public void run() {
 				while (true) { // TODO
 					rebuildDrawableObjects(converter.getObjectSpatialInfoList());
-					PlayView.this.repaint();
+					PlayView.this.repaint();					
 					try {
 						Thread.sleep((long) (1 / FPS));
 					} catch (InterruptedException e) {
@@ -80,9 +80,9 @@ public class PlayView extends JPanel {
 			public void keyReleased(KeyEvent e) {
 				super.keyReleased(e);
 				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					animator.moveMagicalStaff(Animator.STOP);
+					animator.stopMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					animator.moveMagicalStaff(Animator.STOP);
+					animator.stopMagicalStaff(Animator.RIGHT);
 				}
 			}
 		});
@@ -113,6 +113,12 @@ public class PlayView extends JPanel {
 	}
 	
 	private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
+		Stream<Integer> toBeDeleted = drawnObjects.keySet()
+				.stream()
+				.filter(x -> !newObjectsInfo.containsKey(x));
+		
+		toBeDeleted.forEach(x -> removeDrawableObject(x));
+		
 		drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
 		for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
 			if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
@@ -140,6 +146,12 @@ public class PlayView extends JPanel {
 		this.revalidate();
 		this.repaint();
 		drawnObjects.put(newObjInfo.ID, newObj);
+	}
+	
+	private void removeDrawableObject(Integer objID) {
+		this.remove(drawnObjects.get(objID));
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public void resumePlay() {

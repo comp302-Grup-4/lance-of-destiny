@@ -51,5 +51,12 @@ public class MagicalStaff extends AnimationObject {
 	public void initializeCenterPoint() {
 		center = new Vector(position.x + 50, position.y + 10);
 	}
-
+	
+	public float getLength() {
+		return sizeX;
+	}
+	
+	public void setLength(float newLength) {
+		sizeX = newLength;
+	}
 }

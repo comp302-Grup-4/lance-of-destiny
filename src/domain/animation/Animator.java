@@ -1,8 +1,10 @@
 package domain.animation;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
+import domain.animation.barriers.Barrier;
+import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
 import exceptions.InvalidBarrierNumberException;
@@ -10,7 +12,6 @@ import exceptions.InvalidBarrierNumberException;
 public class Animator {
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
-	public static int STOP = 0;
 	
 	private final float FPS = 150;
 	private final long dTime = (long) (1000 / FPS);
@@ -19,9 +20,10 @@ public class Animator {
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
 	private Wall rightWall, leftWall, upperWall, lowerWall;
-	private HashSet<AnimationObject> animationObjects;
+	private CopyOnWriteArraySet<AnimationObject> animationObjects;
 	private Thread animationThread;
 	private CollisionStrategy collisionCalculator;
+	private boolean staffMovesRight = false, staffMovesLeft = false;
 	
 	public Animator() {
 		ball = new FireBall();
@@ -47,20 +49,40 @@ public class Animator {
 		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (true) { // TODO
-					Vector forceDirection, velocityChange;
-					for (AnimationObject object : animationObjects) {
-						if (!object.getVelocity().isZero()) { // if the object doesn't move, no need to do other stuff
-							forceDirection = collisionCalculator.checkCollision(object, animationObjects.stream()
-																									.filter(x -> !x.equals(object))
-																									.map(x -> (Collidable) x)
-																									.toList());
-							
-							velocityChange = forceDirection.scale(-2 * object.getVelocity().dot(forceDirection));
-							object.setVelocity(object.getVelocity().add(velocityChange));
-							object.move(dTime);
+				CollisionInfo ballCollisionInfo;
+				Vector forceDirection, velocityChange;
+				while (true) {
+					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
+																							.filter(x -> !x.equals(ball))
+																							.map(x -> (Collidable) x)
+																							.toList());
+					
+					forceDirection = ballCollisionInfo.getNextDirection();
+					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
+					
+					for (Collidable collidedObject: ballCollisionInfo.getCollidedObjects()) {
+						if (collidedObject instanceof Barrier) {
+							removeAnimationObject((AnimationObject) collidedObject);
 						}
 					}
+					
+					ball.setVelocity(ball.getVelocity().add(velocityChange));
+					ball.move(dTime);
+					
+					if (staffMovesLeft && !staffMovesRight) {
+						staff.setVelocity(Vector.of(-200, 0));
+					} else if (!staffMovesLeft && staffMovesRight) {
+						staff.setVelocity(Vector.of(200, 0));
+					} else {
+						staff.setVelocity(Vector.zero());
+					}
+					
+					if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
+						staff.getNextPosition(dTime).x > 15) {
+						
+						staff.move(dTime);
+					}
+					
 					try {
 						Thread.sleep(dTime);
 					} catch (InterruptedException e) {
@@ -81,16 +103,16 @@ public class Animator {
 	}
 	
 	private void initializeAnimationObjects() {
-		animationObjects = new HashSet<AnimationObject>();
-		addMovableObject(ball);
-		addMovableObject(staff);
+		animationObjects = new CopyOnWriteArraySet<AnimationObject>();
+		addAnimationObject(ball);
+		addAnimationObject(staff);
 		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
-			addMovableObject(barrier);
+			addAnimationObject(barrier);
 		}
-		addMovableObject(leftWall);
-		addMovableObject(rightWall);
-		addMovableObject(upperWall);
-		addMovableObject(lowerWall);
+		addAnimationObject(leftWall);
+		addAnimationObject(rightWall);
+		addAnimationObject(upperWall);
+		addAnimationObject(lowerWall);
 	}
 	
 	//deneme
@@ -103,19 +125,31 @@ public class Animator {
 		return barrierGrid;
 	}
 	
-	public void addMovableObject(AnimationObject movable) {
-		this.animationObjects.add(movable);
+	private void addAnimationObject(AnimationObject movable) {
+		animationObjects.add(movable);
 	}
 	
-	public void removeMovableObject(Movable movable) {
-		this.animationObjects.remove(movable);
+	private void removeAnimationObject(AnimationObject movable) {
+		animationObjects.remove(movable);
 	}
 	
-	public HashSet<AnimationObject> getMovableObjects() {
+	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
 	}
 	
 	public void moveMagicalStaff(int direction) {
-		staff.setVelocity(new Vector(200 * direction, 0));
+		if (direction == RIGHT) {
+			staffMovesRight = true;
+		} else if (direction == LEFT) {
+			staffMovesLeft = true;
+		}
+	}
+	
+	public void stopMagicalStaff(int direction) {
+		if (direction == RIGHT) {
+			staffMovesRight = false;
+		} else if (direction == LEFT) {
+			staffMovesLeft = false;
+		}
 	}
 }

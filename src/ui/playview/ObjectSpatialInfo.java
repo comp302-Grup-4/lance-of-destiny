@@ -2,6 +2,8 @@ package ui.playview;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.HashMap;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 
@@ -17,16 +19,45 @@ import domain.animation.barriers.RewardingBarrier;
 import domain.animation.barriers.SimpleBarrier;
 
 public class ObjectSpatialInfo {
-	public final ImageIcon magicalStaffImage = new ImageIcon("./res/drawable/largeStaff.png");
-	public final ImageIcon firmBarrierImage = new ImageIcon("./res/drawable/smallFirm.png");
-	public final ImageIcon explosiveBarrierImage = new ImageIcon("./res/drawable/smallRedGem.png");
-	public final ImageIcon rewardingBarrierImage = new ImageIcon("./res/drawable/smallGreenGem.png");
-	public final ImageIcon simpleBarrierImage = new ImageIcon("./res/drawable/smallBlueGem.png");
-	public final ImageIcon fireBallImage = new ImageIcon("./res/drawable/largeFireball.png");
-	public final ImageIcon bgImage = new ImageIcon("./res/drawable/largeBackground.png");
-	public final ImageIcon horizontalWall = new ImageIcon("./res/drawable/horizontalWall.png");
-	public final ImageIcon verticalWall = new ImageIcon("./res/drawable/verticalWall.png");
+	
+	private class ScaleInfo {
+		protected float sizeX, sizeY;
+		protected ImageIcon image;
+		
+		public ScaleInfo(float sizeX, float sizeY, ImageIcon image) {
+			super();
+			this.sizeX = sizeX;
+			this.sizeY = sizeY;
+			this.image = image;
+		}
 
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof ScaleInfo)
+				return sizeX == ((ScaleInfo) obj).sizeX && 
+					sizeY == ((ScaleInfo) obj).sizeY &&
+					image == ((ScaleInfo) obj).image;
+			else
+				return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return Objects.hash(image, sizeX, sizeY);
+		}
+	}
+	
+	public static ImageIcon magicalStaffImage = new ImageIcon("./res/drawable/largeStaff.png");
+	public static ImageIcon firmBarrierImage = new ImageIcon("./res/drawable/smallFirm.png");
+	public static ImageIcon explosiveBarrierImage = new ImageIcon("./res/drawable/smallRedGem.png");
+	public static ImageIcon rewardingBarrierImage = new ImageIcon("./res/drawable/smallGreenGem.png");
+	public static ImageIcon simpleBarrierImage = new ImageIcon("./res/drawable/smallBlueGem.png");
+	public static ImageIcon fireBallImage = new ImageIcon("./res/drawable/largeFireball.png");
+	public static ImageIcon bgImage = new ImageIcon("./res/drawable/largeBackground.png");
+	public static ImageIcon horizontalWall = new ImageIcon("./res/drawable/horizontalWall.png");
+	public static ImageIcon verticalWall = new ImageIcon("./res/drawable/verticalWall.png");
+	private static HashMap<ScaleInfo, ImageIcon> cacheScaledImages = new HashMap<>();
+	
 	int ID;
 	Vector position;
 	float rotation;
@@ -34,9 +65,12 @@ public class ObjectSpatialInfo {
 	float sizeX;
 	float sizeY;
 	
+	private AnimationObject object;
+	
 	private final float windowSizeXCoeff, windowSizeYCoeff;
 	
 	public ObjectSpatialInfo(AnimationObject object, Dimension windowSize) throws Exception {
+		this.object=object;
 		this.ID = object.getObjectID();
 		this.rotation = object.getRotation();
 		this.windowSizeXCoeff = (float) windowSize.width / 1000;
@@ -62,6 +96,7 @@ public class ObjectSpatialInfo {
 		}
 		
 		
+		
 		if (object instanceof SimpleBarrier) {
 			image = simpleBarrierImage;
 		} else if (object instanceof ReinforcedBarrier) {
@@ -83,8 +118,21 @@ public class ObjectSpatialInfo {
 		} else {
 			throw new Exception("Resource not found.");
 		}
-		image = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
-
+		
+//		image = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
+		image = getScaledImage();
+	}
+	
+	
+	private ImageIcon getScaledImage() {
+		ScaleInfo scaleInfo = new ScaleInfo((int) sizeX, (int) sizeY, image);
+		if (cacheScaledImages.containsKey(scaleInfo)) {
+			return cacheScaledImages.get(scaleInfo);
+		} else {
+			ImageIcon icon = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
+			cacheScaledImages.put(scaleInfo, icon);
+			return icon;
+		}
 	}
 	
 	public Vector getPosition() {
@@ -118,4 +166,9 @@ public class ObjectSpatialInfo {
 	public float getSizeY() {
 		return sizeY;
 	}
+	
+	public AnimationObject getAnimationObject() {
+        return object;
+       
+    }
 }
