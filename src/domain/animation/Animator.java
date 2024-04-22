@@ -116,8 +116,8 @@ public class Animator {
 	}
 	
 	//deneme
-	public void setBarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
-			this.barrierGrid = new BarrierGrid(simple, firm, explosive, gift);	
+	public void setBarrierGrid(BarrierGrid newbg) throws InvalidBarrierNumberException {
+			this.barrierGrid = newbg;	
 			initializeAnimationObjects();
 	}
 	
