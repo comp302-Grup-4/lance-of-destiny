@@ -125,14 +125,16 @@ public class BuildView extends JPanel {
                     int y = e.getYOnScreen() - offset.y;
                     obj.setLocation(x, y);
                     Barrier b = (Barrier) newObjInfo.getAnimationObject();
-                    float colWidth = obj.getHeight() * (1 + 2 * MARGIN);
-        			float rowHeight = obj.getHeight() * (1 + 2 * MARGIN);
-                    int col = (int) ((obj.getX() - obj.getHeight() * MARGIN) / colWidth);
-                    int row = (int) ((obj.getY() - obj.getHeight() * MARGIN) / colWidth);
+                    float colWidth = b.getSizeX() * (1 + 2 * MARGIN);
+        			float rowHeight = b.getSizeX() * (1 + 2 * MARGIN);
+                    int col = (int) ((x - b.getSizeX() * MARGIN) / colWidth);
+                    col--;
+                    int row = (int) ((y- b.getSizeX() * MARGIN) / rowHeight);
+                    row--;
                  //   Barrier b = (Barrier) newObjInfo.getAnimationObject();
                     b.setGridPosition(col, row);
 //                    System.out.println(newObjInfo.getSizeX());
-                    b.setPosition(new Vector((int)(rowHeight * col + obj.getHeight() * MARGIN + obj.getHeight()), (int)(rowHeight * row + obj.getHeight() * MARGIN + 2*obj.getHeight())));
+                    b.setPosition(new Vector((int)(colWidth * col + b.getSizeX() * MARGIN + b.getSizeX()), (int)(rowHeight * row + b.getSizeY() * MARGIN + 2*b.getSizeY())));
                 }
             }
         });
