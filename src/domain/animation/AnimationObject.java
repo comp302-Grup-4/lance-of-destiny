@@ -66,7 +66,7 @@ public abstract class AnimationObject implements Movable, Collidable {
 	public void rotate(float dTimeMillisecond) {
 		rotationAngle += rotationVelocity * dTimeMillisecond / 1000;
 		rotationAngle = (rotationAngle + 360) % 360;// to dont go over 360
-		// System.out.println("hey");
+		// System.out.println("h");
 		Vector center = this.getCenterPoint(); 
 		for (int i = 0; i < boundaryPoints.length; i++) {
 			boundaryPoints[i] = rotateCalculation(boundaryPoints[i], center, rotationAngle);
