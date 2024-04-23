@@ -72,8 +72,14 @@ public class PlayView extends JPanel {
 					animator.moveMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					animator.moveMagicalStaff(Animator.RIGHT);
-				} else if (e.getKeyCode() == KeyEvent.VK_W) {
-					startPlay();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_A) {
+					animator.rotateMagicalStaff(Animator.LROTATE);
+				} else if (e.getKeyCode() == KeyEvent.VK_D) {
+					animator.rotateMagicalStaff(Animator.RROTATE);
+				}
+				 else if (e.getKeyCode() == KeyEvent.VK_W) {
+						startPlay();
 				}
 			}
 			@Override
@@ -83,6 +89,12 @@ public class PlayView extends JPanel {
 					animator.stopMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					animator.stopMagicalStaff(Animator.RIGHT);
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_A) {
+					animator.stopRotationOfMagicalStaff(Animator.LROTATE);
+					
+				}else if (e.getKeyCode() == KeyEvent.VK_D) {
+					animator.stopRotationOfMagicalStaff(Animator.RROTATE);
 				}
 			}
 		});

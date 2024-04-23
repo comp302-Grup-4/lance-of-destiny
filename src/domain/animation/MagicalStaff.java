@@ -20,12 +20,12 @@ public class MagicalStaff extends AnimationObject {
 	}
 	
 	public void setRotation(float rotation) {
-		this.rotation = rotation;
+		this.rotationAngle = rotation;
 	}
 	
 	@Override
 	public float getRotation() {
-		return rotation;
+		return rotationAngle;
 	}
 
 	@Override
