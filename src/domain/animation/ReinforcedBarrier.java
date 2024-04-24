@@ -4,4 +4,3 @@ public class ReinforcedBarrier extends Barrier{
 	private int hitCount;
 	
 }
-
