@@ -79,10 +79,10 @@ public class Animator {
 					    
 					    if (!staffRotatesLeft && staffRotatesRight) {
 					        staff.setRotation(staff.getRotation() + 20 );//D throws right
-					        System.out.println((staff.getRotation()));
+					        //System.out.println((staff.getRotation()));
 					    } else if (!staffRotatesRight && staffRotatesLeft) {
 					    	staff.setRotation(staff.getRotation() - 20 );//A//throws left
-					    	 System.out.println((staff.getRotation()));
+					    	 //System.out.println((staff.getRotation()));
 					    } else {
 					    	staff.setRotation((staff.getRotation() + 360) % 360);
 					    }

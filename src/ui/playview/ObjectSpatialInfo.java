@@ -1,7 +1,10 @@
 package ui.playview;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -23,12 +26,14 @@ public class ObjectSpatialInfo {
 	private class ScaleInfo {
 		protected float sizeX, sizeY;
 		protected ImageIcon image;
+		protected float rotation;
 		
-		public ScaleInfo(float sizeX, float sizeY, ImageIcon image) {
+		public ScaleInfo(float sizeX, float sizeY, ImageIcon image, float rotation) {
 			super();
 			this.sizeX = sizeX;
 			this.sizeY = sizeY;
 			this.image = image;
+			this.rotation = rotation;
 		}
 
 		@Override
@@ -36,14 +41,15 @@ public class ObjectSpatialInfo {
 			if (obj instanceof ScaleInfo)
 				return sizeX == ((ScaleInfo) obj).sizeX && 
 					sizeY == ((ScaleInfo) obj).sizeY &&
-					image == ((ScaleInfo) obj).image;
+					image == ((ScaleInfo) obj).image &&
+					rotation == ((ScaleInfo) obj).rotation;
 			else
 				return false;
 		}
 		
 		@Override
 		public int hashCode() {
-			return Objects.hash(image, sizeX, sizeY);
+			return Objects.hash(image, sizeX, sizeY, rotation);
 		}
 	}
 	
@@ -124,8 +130,8 @@ public class ObjectSpatialInfo {
 	}
 	
 	
-	private ImageIcon getScaledImage() {
-		ScaleInfo scaleInfo = new ScaleInfo((int) sizeX, (int) sizeY, image);
+	public ImageIcon getScaledImage() {
+		ScaleInfo scaleInfo = new ScaleInfo((int) sizeX, (int) sizeY, image, rotation);
 		if (cacheScaledImages.containsKey(scaleInfo)) {
 			return cacheScaledImages.get(scaleInfo);
 		} else {

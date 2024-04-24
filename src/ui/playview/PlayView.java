@@ -1,5 +1,4 @@
 package ui.playview;
-
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
@@ -142,10 +141,13 @@ public class PlayView extends JPanel {
 	}
 	
 	private void updateDrawableObject(ObjectSpatialInfo newObjInfo) {
-		drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
-				(int) newObjInfo.position.getY(), 
-				(int) newObjInfo.getSizeX(),
-				(int) newObjInfo.getSizeY());
+		    
+		  ((JLabel) drawnObjects.get(newObjInfo.ID)).setIcon(newObjInfo.getScaledImage());//call scaleimage in objectSpatialInfo to add rotation    
+		  drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
+		                        (int) newObjInfo.position.getY(),
+		                        (int) newObjInfo.getSizeX(),  
+		                        (int) newObjInfo.getSizeY());
+
 	}
 	
 	private void addDrawableObject(ObjectSpatialInfo newObjInfo) {

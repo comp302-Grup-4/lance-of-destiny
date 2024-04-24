@@ -16,6 +16,14 @@ public abstract class AnimationObject implements Movable, Collidable {
 	public AnimationObject() {
 		objectID = objectIDCounter++;
 	}
+	public void setRotation(float rotationAngle) {
+		this.rotationAngle = rotationAngle;
+	}
+	
+	@Override
+	public float getRotation() {
+		return rotationAngle;
+	}
 
 	public Vector getPosition() {
 		return position;

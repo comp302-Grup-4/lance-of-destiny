@@ -19,14 +19,7 @@ public class MagicalStaff extends AnimationObject {
 		return true;
 	}
 	
-	public void setRotation(float rotationAngle) {
-		this.rotationAngle = rotationAngle;
-	}
-	
-	@Override
-	public float getRotation() {
-		return rotationAngle;
-	}
+
 
 	@Override
 	public Vector[] getBoundaryPoints() {
