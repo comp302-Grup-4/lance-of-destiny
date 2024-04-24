@@ -20,7 +20,7 @@ public class PlayView extends JPanel {
 	private static float FPS = 80;
 	private static final long serialVersionUID = 6L;
 	private Animator animator;
-	private AnimatorUIConverter converter;
+	private AnimatorAdapter converter;
 	private Thread drawingThread, focusThread;
 	private HashMap<Integer, JComponent> drawnObjects;
 	/**
@@ -33,7 +33,7 @@ public class PlayView extends JPanel {
 		
 		drawnObjects = new HashMap<>();
 		this.animator = game.getAnimator();
-		this.converter = new AnimatorUIConverter(animator, new Dimension(windowWidth, windowHeight));
+		this.converter = new AnimatorAdapter(animator, new Dimension(windowWidth, windowHeight));
 
 		this.setLayout(null);
 		this.setVisible(true);

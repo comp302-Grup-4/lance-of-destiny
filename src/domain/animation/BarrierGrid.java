@@ -103,4 +103,9 @@ public class BarrierGrid implements Serializable{
 		return barrierList;
 	}
 	
+	public boolean setBarrierPosition(Vector position) {
+		
+		return false;
+	}
+	
 }

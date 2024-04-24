@@ -8,16 +8,20 @@ import java.util.stream.Collectors;
 
 import domain.animation.AnimationObject;
 import domain.animation.Animator;
+import domain.animation.Vector;
 
-public class AnimatorUIConverter {
+public class AnimatorAdapter implements AnimationInterface{
 	private Animator animator;
 	private Dimension windowSize;
+	private Vector parentPosition;
 	
-	public AnimatorUIConverter(Animator animator, Dimension windowSize) {
+	public AnimatorAdapter(Animator animator, Dimension windowSize, Vector parentPosition) {
 		this.animator = animator;
 		this.windowSize = windowSize;
+		this.parentPosition = parentPosition;
 	}
 	
+	@Override
 	public HashMap<Integer, ObjectSpatialInfo> getObjectSpatialInfoList() {
 		
 		CopyOnWriteArraySet<AnimationObject> movables = (CopyOnWriteArraySet<AnimationObject>) animator.getAnimationObjects();
@@ -32,5 +36,13 @@ public class AnimatorUIConverter {
 																	},  
 												   					(prev, next) -> next, 
 												   					HashMap::new));
+	}
+
+	@Override
+	public boolean setBarrierPosition(Vector position) {
+		Vector cvtPosition = new Vector((position.getX() - parentPosition.getX()) * windowSize.getWidth() / 1000,
+										(position.getY() - parentPosition.getY()) * windowSize.getHeight() / 800);
+		animator.getBarrierGrid().
+		return false;
 	}
 }

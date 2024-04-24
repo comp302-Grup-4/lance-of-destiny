@@ -18,12 +18,12 @@ import domain.animation.BarrierGrid;
 import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
-import ui.playview.AnimatorUIConverter;
+import ui.playview.AnimatorAdapter;
 import ui.playview.ObjectSpatialInfo;
 
 public class BuildView extends JPanel {
     private static final long serialVersionUID = 7L; 
-    private AnimatorUIConverter converter;
+    private AnimatorAdapter converter;
     private HashMap<Integer, JComponent> drawnObjects;
     private Game game;
     private Point offset; 
@@ -44,7 +44,7 @@ public class BuildView extends JPanel {
        
         this.game = game;
         drawnObjects = new HashMap<>();
-        this.converter = new AnimatorUIConverter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
+        this.converter = new AnimatorAdapter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
         
         
 
@@ -127,7 +127,10 @@ public class BuildView extends JPanel {
                     Barrier b = (Barrier) newObjInfo.getAnimationObject();
                     float colWidth = b.getSizeX() * (1 + 2 * MARGIN);
         			float rowHeight = b.getSizeX() * (1 + 2 * MARGIN);
+        		//	System.out.println((x - b.getSizeX() * MARGIN) / colWidth);
+        			
                     int col = (int) ((x - b.getSizeX() * MARGIN) / colWidth);
+                 //   System.out.println(col);
                     col--;
                     int row = (int) ((y- b.getSizeX() * MARGIN) / rowHeight);
                     row--;
