@@ -27,7 +27,8 @@ public class Animator {
 	private CollisionStrategy collisionCalculator;
 	private boolean staffMovesRight = false, staffMovesLeft = false;
 	private boolean staffRotatesRight = false, staffRotatesLeft = false;
-
+	boolean paused = false;
+	
 	public Animator() {
 		ball = new FireBall();
 		staff = new MagicalStaff();
@@ -44,74 +45,98 @@ public class Animator {
 
 		initializeAnimationObjects();
 		collisionCalculator = new PointBasedCollision();
+		
+		initAnimationThread();
 	}
 
-	public void run() {
+	public void run() throws Exception {
+		paused = false;
+		switch (animationThread.getState()) {
+		case NEW:
+			animationThread.start();
+			break;
+			
+		case TERMINATED:
+			initAnimationThread();
+			animationThread.start();
+		
+		default:
+			break;
+		}
+		
+	}
+	
+	private void initAnimationThread() {
 		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				CollisionInfo ballCollisionInfo;
 				Vector forceDirection, velocityChange;
-				while (true) {
-					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
-							.filter(x -> !x.equals(ball)).map(x -> (Collidable) x).toList());
-
-					forceDirection = ballCollisionInfo.getNextDirection();
-					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
-
-					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
-						if (collidedObject instanceof Barrier) {
-							removeAnimationObject((AnimationObject) collidedObject);
-						}
-					}
-
-					ball.setVelocity(ball.getVelocity().add(velocityChange));
-					ball.move(dTime);
-					
-					    if (staffMovesLeft && !staffMovesRight) {
-					        staff.setVelocity(Vector.of(-200, 0));
-					    } else if (!staffMovesLeft && staffMovesRight) {
-					        staff.setVelocity(Vector.of(200, 0));
-					    } else {
-					        staff.setVelocity(Vector.zero());
-					    }
-
-					    
-					    if (!staffRotatesLeft && staffRotatesRight) {
-					        staff.setRotation(staff.getRotation() + 20 );//D throws right
-					        //System.out.println((staff.getRotation()));
-					    } else if (!staffRotatesRight && staffRotatesLeft) {
-					    	staff.setRotation(staff.getRotation() - 20 );//A//throws left
-					    	 //System.out.println((staff.getRotation()));
-					    } else {
-					    	staff.setRotation((staff.getRotation() + 360) % 360);
-					    }
-
-					    if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
-					        staff.getNextPosition(dTime).x > 15) {
-					        staff.move(dTime);
-					        staff.rotate(dTime);
-					    }
-					
-
+				while (!paused) {
 					try {
 						Thread.sleep(dTime);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+					}				
+
+					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
+							.filter(x -> !x.equals(ball)).map(x -> (Collidable) x).toList());
+	
+					forceDirection = ballCollisionInfo.getNextDirection();
+					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
+
+					ball.setVelocity(ball.getVelocity().add(velocityChange));
+					ball.move(dTime);
+					
+					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
+						if (collidedObject instanceof Barrier) {
+							removeAnimationObject((AnimationObject) collidedObject);
+						} else if (collidedObject == lowerWall) {
+							ball.reset();
+							staff.resetPosition();
+							pause();
+						}
 					}
-				
-			
-		}}});
-		animationThread.start();
+					
+				    if (staffMovesLeft && !staffMovesRight) {
+				        staff.setVelocity(Vector.of(-200, 0));
+				    } else if (!staffMovesLeft && staffMovesRight) {
+				        staff.setVelocity(Vector.of(200, 0));
+				    } else {
+				        staff.setVelocity(Vector.zero());
+				    }
+
+				    
+				    if (!staffRotatesLeft && staffRotatesRight) {
+				        staff.setRotation(staff.getRotation() + 20 );//D throws right
+				        //System.out.println((staff.getRotation()));
+				    } else if (!staffRotatesRight && staffRotatesLeft) {
+				    	staff.setRotation(staff.getRotation() - 20 );//A//throws left
+				    	 //System.out.println((staff.getRotation()));
+				    } else {
+				    	staff.setRotation((staff.getRotation() + 360) % 360);
+				    }
+
+				    if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
+				        staff.getNextPosition(dTime).x > 15) {
+				        staff.move(dTime);
+				        staff.rotate(dTime);
+				    }
+				}}});
 	}
 	
 
-	public void pause() throws InterruptedException {
-		animationThread.wait();
+	public void pause() {
+		paused = true;
+	}
+	
+	public boolean isPaused() {
+		return paused;
 	}
 
-	public void resume() {
-		animationThread.notify();
+	public void resume() throws Exception {
+		paused = false;
+		run();
 	}
 
 	private void initializeAnimationObjects() {

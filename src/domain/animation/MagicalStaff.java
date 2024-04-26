@@ -52,4 +52,8 @@ public class MagicalStaff extends AnimationObject {
 	public void setLength(float newLength) {
 		sizeX = newLength;
 	}
+	
+	public void resetPosition() {
+		this.setPosition(Vector.of(450, MS_HORIZON));
+	}
 }

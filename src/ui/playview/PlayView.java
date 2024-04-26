@@ -1,5 +1,7 @@
 package ui.playview;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -42,9 +44,9 @@ public class PlayView extends JPanel {
 			
 			@Override
 			public void run() {
-				while (true) { // TODO
+				while (true) {
 					rebuildDrawableObjects(converter.getObjectSpatialInfoList());
-					PlayView.this.repaint();					
+					PlayView.this.repaint();
 					try {
 						Thread.sleep((long) (1 / FPS));
 					} catch (InterruptedException e) {
@@ -78,7 +80,17 @@ public class PlayView extends JPanel {
 					animator.rotateMagicalStaff(Animator.RROTATE);
 				}
 				 else if (e.getKeyCode() == KeyEvent.VK_W) {
-						startPlay();
+					startPlay();
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					if (animator.isPaused()) {
+						try {
+							animator.resume();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					} else {
+						animator.pause();
+					}
 				}
 			}
 			@Override
@@ -107,6 +119,8 @@ public class PlayView extends JPanel {
 		});
 		
 		focusOnPlayView();
+
+		drawingThread.start();
 	}
 	
 	public void focusOnPlayView() {
@@ -116,10 +130,11 @@ public class PlayView extends JPanel {
 		focusThread.start();
 	}
 	
-	public void startPlay() {	
-		if (!drawingThread.isAlive()) {
+	public void startPlay() {
+		try {
 			animator.run();
-			drawingThread.start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -166,18 +181,6 @@ public class PlayView extends JPanel {
 		this.remove(drawnObjects.get(objID));
 		this.revalidate();
 		this.repaint();
-	}
-	
-	public void resumePlay() {
-		drawingThread.notify();
-	}
-	
-	public void pausePlay() {
-		try {
-			drawingThread.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

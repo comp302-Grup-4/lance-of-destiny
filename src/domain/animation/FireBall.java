@@ -56,5 +56,10 @@ public class FireBall extends AnimationObject {
 	public void initializeCenterPoint() {
 		this.center = new Vector(this.position.x + RADIUS, this.position.y + RADIUS);
 	}
+	
+	public void reset() {
+		this.setPosition(Vector.of(492, 600));
+		this.setVelocity(Vector.fromDegrees(90).scale(400));
+	}
 
 }
