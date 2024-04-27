@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import domain.animation.barriers.Barrier;
+import domain.animation.barriers.BarrierFactory;
 import domain.animation.barriers.ExplosiveBarrier;
 import domain.animation.barriers.ReinforcedBarrier;
 import domain.animation.barriers.RewardingBarrier;
@@ -31,10 +32,12 @@ public class BarrierGrid implements Serializable{
 	private LinkedList<Barrier> barrierList;
 	
 	private Vector position;
+	
+	private BarrierFactory factory;
 
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {	
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
-		
+		this.factory = new BarrierFactory();
 
 		totalBarrierNumber = simple + firm + explosive + gift;
 	//	ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
@@ -49,13 +52,13 @@ public class BarrierGrid implements Serializable{
 	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
 		LinkedList<Barrier> barrierCollection = new LinkedList<>();
 		for (int i = 0; i < simple; i++)
-			barrierCollection.add(new SimpleBarrier(this));
+			barrierCollection.add(factory.createBarrier("simple", this));
 		for (int i = 0; i < firm; i++)
-			barrierCollection.add(new ReinforcedBarrier(this));
+			barrierCollection.add(factory.createBarrier("firm", this));
 		for (int i = 0; i < explosive; i++)
-			barrierCollection.add(new ExplosiveBarrier(this));
+			barrierCollection.add(factory.createBarrier("explosive", this));
 		for (int i = 0; i < gift; i++)
-			barrierCollection.add(new RewardingBarrier(this));
+			barrierCollection.add(factory.createBarrier("gift", this));
 		
 		Collections.shuffle(barrierCollection);
 		return barrierCollection;
