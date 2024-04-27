@@ -1,10 +1,8 @@
 package ui.playview;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
@@ -15,13 +13,9 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
 import domain.Game;
 import domain.animation.Animator;
 
@@ -90,9 +84,19 @@ public class PlayView extends JPanel {
 		
 		pauseText.addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				super.mouseEntered(e);
+				pauseText.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				animator.pause();
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				pauseText.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
 		});
 		
