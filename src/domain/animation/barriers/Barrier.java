@@ -77,4 +77,6 @@ public abstract class Barrier extends AnimationObject {
 	public void initializeCenterPoint() {
 		center = new Vector(position.getX() + sizeX / 2, position.getY() + sizeY / 2);
 	}
+	
+	public abstract String getName();
 }

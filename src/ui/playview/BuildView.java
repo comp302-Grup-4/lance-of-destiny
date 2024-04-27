@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import domain.Game;
@@ -18,6 +19,8 @@ import domain.animation.BarrierGrid;
 import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
+import exceptions.InvalidBarrierPositionException;
+import ui.BuildingScreen;
 import ui.playview.AnimatorAdapter;
 import ui.playview.ObjectSpatialInfo;
 
@@ -26,27 +29,38 @@ public class BuildView extends JPanel {
     private AnimatorAdapter converter;
     private HashMap<Integer, JComponent> drawnObjects;
     private Game game;
-    private Point offset; 
+    private Vector offset; 
     
+    private Vector init;
+    
+    private int windowHeight;
+    private int windowWidth;
+
     private float MARGIN = (float) 0.15;
+	private int width;
+	private int height;
+	private JPanel parent;
     
+	private Vector position;
     /**
      * Create the panel.
      */
     public BuildView(JPanel parent, Game game) {
+    	this.parent=parent;
     	Dimension parentSize = parent.getSize();
-        int windowHeight = parentSize.height;
-        int windowWidth = parentSize.width;
-        
+        this.windowHeight = parentSize.height;
+        this.windowWidth = parentSize.width;
 //        System.out.println(parentSize.height);
 //        System.out.println(parentSize.width);
 //        System.out.println(Toolkit.getDefaultToolkit().getScreenSize().height);
+        width= this.WIDTH;
+        height= this.HEIGHT;
        
         this.game = game;
         drawnObjects = new HashMap<>();
-        this.converter = new AnimatorAdapter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
+        this.converter = new AnimatorAdapter(game.getAnimator(), new Dimension(windowWidth, windowHeight), this);
         
-        
+        this.position = new Vector(24.0,49.0);
 
         this.setLayout(null);
         this.setVisible(true);
@@ -54,7 +68,7 @@ public class BuildView extends JPanel {
 
         rebuildDrawableObjects(converter.getObjectSpatialInfoList());
     }
-
+    
     
     private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
  
@@ -96,22 +110,39 @@ public class BuildView extends JPanel {
     
     
     private void addDragDropFunctionality(JLabel obj, ObjectSpatialInfo newObjInfo) {
- 
+    	Barrier b = (Barrier) newObjInfo.getAnimationObject();
     	obj.addMouseListener(new MouseAdapter() {
            
 
             @Override
             public void mousePressed(MouseEvent e) {
-                offset = new Point(e.getX(), e.getY());
+            	
+                offset = new Vector(e.getX(), e.getY());
+                float a = e.getXOnScreen(); //??
+                float b = e.getYOnScreen();//??
+                init = new Vector(a,b);
+//                offset= converter.convertPosition(offset);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+            	float i = e.getXOnScreen() - offset.getX();
+                float j = e.getYOnScreen() - offset.getY();
+                         
+                Vector p = converter.convertPosition(new Vector(i,j));
+                init = converter.convertPosition(init);
+                
+                try {
+					game.getAnimator().getBarrierGrid().changeBarrierPosition(b, p, init);
+				} catch (InvalidBarrierPositionException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(parent, "Invalid barrier position", "Error", JOptionPane.ERROR_MESSAGE);
+				}
                 offset = null;
-             //   newObjInfo.setPosition(new Vector(obj.getX(), obj.getY()));
-               
+            
                 rebuildDrawableObjects(converter.getObjectSpatialInfoList());
-     
+              //  game.getAnimator().getBarrierGrid().printBarrierArray();
+               
               
             }
         });
@@ -121,23 +152,12 @@ public class BuildView extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (offset != null) {
-                    int x = e.getXOnScreen() - offset.x;
-                    int y = e.getYOnScreen() - offset.y;
-                    obj.setLocation(x, y);
-                    Barrier b = (Barrier) newObjInfo.getAnimationObject();
-                    float colWidth = b.getSizeX() * (1 + 2 * MARGIN);
-        			float rowHeight = b.getSizeX() * (1 + 2 * MARGIN);
-        		//	System.out.println((x - b.getSizeX() * MARGIN) / colWidth);
-        			
-                    int col = (int) ((x - b.getSizeX() * MARGIN) / colWidth);
-                 //   System.out.println(col);
-                    col--;
-                    int row = (int) ((y- b.getSizeX() * MARGIN) / rowHeight);
-                    row--;
-                 //   Barrier b = (Barrier) newObjInfo.getAnimationObject();
-                    b.setGridPosition(col, row);
-//                    System.out.println(newObjInfo.getSizeX());
-                    b.setPosition(new Vector((int)(colWidth * col + b.getSizeX() * MARGIN + b.getSizeX()), (int)(rowHeight * row + b.getSizeY() * MARGIN + 2*b.getSizeY())));
+                    float x = e.getXOnScreen() - offset.getX();
+                    float y = e.getYOnScreen() - offset.getY();
+
+                    obj.setLocation((int)x , (int)y);
+                    
+                   
                 }
             }
         });

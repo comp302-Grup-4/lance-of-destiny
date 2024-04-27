@@ -33,7 +33,7 @@ public class PlayView extends JPanel {
 		
 		drawnObjects = new HashMap<>();
 		this.animator = game.getAnimator();
-		this.converter = new AnimatorAdapter(animator, new Dimension(windowWidth, windowHeight));
+		this.converter = new AnimatorAdapter(animator, new Dimension(windowWidth, windowHeight),this);
 
 		this.setLayout(null);
 		this.setVisible(true);

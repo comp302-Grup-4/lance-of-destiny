@@ -27,5 +27,11 @@ public class ReinforcedBarrier extends Barrier{
 	public int getHitCount() {
 		return hitCount;
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return "reinforced";
+	}
 }
 

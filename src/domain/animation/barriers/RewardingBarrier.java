@@ -14,6 +14,12 @@ public class RewardingBarrier extends Barrier{
 	public RewardingBarrier(BarrierGrid grid) {
 		super(grid);
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return "rewarding";
+	}
 	
 }
 

@@ -11,5 +11,11 @@ public class SimpleBarrier extends Barrier{
 	public SimpleBarrier(BarrierGrid grid) {
 		super(grid);
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return "simple";
+	}
 	
 }

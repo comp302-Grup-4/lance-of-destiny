@@ -15,7 +15,7 @@ import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
 	private final int COL_NUMBER = 37;
-	private final int ROW_NUMBER;
+	private final int ROW_NUMBER = 25;
 	
 	public static int MIN_SIMPLE_BARRIERS = 75;
 	public static int MIN_FIRM_BARRIERS = 10;
@@ -37,7 +37,7 @@ public class BarrierGrid implements Serializable{
 		
 
 		totalBarrierNumber = simple + firm + explosive + gift;
-		ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
+	//	ROW_NUMBER = totalBarrierNumber / COL_NUMBER + 1;
 		
 		position = new Vector(20, 40);
 		
@@ -71,8 +71,7 @@ public class BarrierGrid implements Serializable{
 			float rowHeight = 20 * (1 + 2 * MARGIN);
 			
 			barrier.setGridPosition(barrierGridColumn, barrierGridRow);
-			barrierArray[barrierGridRow]
-					    [barrierGridColumn] = barrier;
+			barrierArray[barrierGridRow][barrierGridColumn] = barrier;
 			
 			barrier.setPosition(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
 															 rowHeight * (float) barrierGridRow + 20 * MARGIN)));
@@ -94,8 +93,8 @@ public class BarrierGrid implements Serializable{
 	}
 	
 	public Barrier getBarrierAt(int x, int y) throws InvalidBarrierPositionException {
-		if (x >= COL_NUMBER || y >= ROW_NUMBER || x < 0 || y < 0)
-			throw new InvalidBarrierPositionException(x, y, COL_NUMBER, ROW_NUMBER);
+		if (x >= ROW_NUMBER || y >= COL_NUMBER || x < 0 || y < 0)
+			throw new InvalidBarrierPositionException(x, y, ROW_NUMBER, COL_NUMBER);
 		return barrierArray[x][y];
 	}
 	
@@ -103,8 +102,45 @@ public class BarrierGrid implements Serializable{
 		return barrierList;
 	}
 	
-	public boolean setBarrierPosition(Vector position) {
+	public void printBarrierArray(){
+		for(int i = 0; i < ROW_NUMBER;i++) {
+			for(int j= 0; j< COL_NUMBER;j++) {
+				if(barrierArray[i][j]!=null) {
+				System.out.printf("%s, ", barrierArray[i][j].getName());
+				}
+				else {
+					System.out.print("null, ");
+				}
+			}
+			System.out.println();
+			System.out.println();
+		}
+
+	}
+	
+	public boolean changeBarrierPosition(Barrier b,Vector newPosition, Vector initialPosition) throws InvalidBarrierPositionException {
+	//	float colWidth = 20 * (1 + 2 * MARGIN);
+		float cellSize = 20 * (1 + 2 * MARGIN);
+		int oldCol = (int)((initialPosition.getX() - 20 * MARGIN) / cellSize);
+        int oldRow = (int)((initialPosition.getY( )- 20 * MARGIN) / cellSize);
 		
+		
+        int col = (int)((newPosition.getX() - 20 * MARGIN) / cellSize);
+        int row = (int)((newPosition.getY() - 20 * MARGIN) / cellSize);
+        System.out.printf("row_num: %d, col_num: %d\n",row,col);
+
+		if(this.getBarrierAt(row,col)==null) {
+			
+				b.setGridPosition(col, row);
+				barrierArray[row][col]=b;
+				Vector pos = this.position.add(new Vector(cellSize * (float) col + 20 * MARGIN,
+						 cellSize * (float) row + 20 * MARGIN));
+				b.setPosition(pos);
+				barrierArray[oldRow][oldCol]=null;
+				return true;
+		
+		}
+        
 		return false;
 	}
 	

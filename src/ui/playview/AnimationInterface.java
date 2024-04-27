@@ -8,7 +8,9 @@ public interface AnimationInterface {
 	
 	public HashMap<Integer, ObjectSpatialInfo> getObjectSpatialInfoList();
 	
-	public boolean setBarrierPosition(Vector position);
+	//public boolean setBarrierPosition(Vector position);
+
+	Vector convertPosition(Vector position);
 	
 	
 }

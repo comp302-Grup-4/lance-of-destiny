@@ -18,5 +18,12 @@ public class ExplosiveBarrier extends Barrier {
 	public void explode() {
 		isExploded = true;
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		
+		return "explosive";
+	}
 }
 
