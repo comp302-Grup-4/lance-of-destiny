@@ -40,13 +40,13 @@ public class Wall extends AnimationObject {
 	}
 
 	@Override
-	public void initializeBoundaryPoints() {
+	public Vector[] initializeBoundaryPoints() {
 		boundaryPoints = new Vector[4];
 		boundaryPoints[0] = new Vector(position.getX(), position.getY());
 		boundaryPoints[1] = new Vector(position.getX() + sizeX, position.getY());
 		boundaryPoints[2] = new Vector(position.getX() + sizeX, position.getY() + sizeY);
 		boundaryPoints[3] = new Vector(position.getX(), position.getY() + sizeY);
-		
+		return boundaryPoints;
 	}
 
 	@Override

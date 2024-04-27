@@ -39,7 +39,7 @@ public class TestScreen extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 			
-				((GameApp) TestScreen.this.getRootPane().getParent()).openRunningScreen();
+			//	((GameApp) TestScreen.this.getRootPane().getParent()).openRunningScreen();
 			}
 					
 		});

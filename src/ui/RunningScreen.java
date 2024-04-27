@@ -1,7 +1,10 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+
 import javax.swing.JPanel;
 
 import domain.Game;
@@ -14,10 +17,15 @@ public class RunningScreen extends JPanel {
 	 * Create the panel.
 	 */
 	public RunningScreen(Game game) {
-		playView = new PlayView(this, game);
-		game.getAnimator();
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int height = screenSize.height;
+		int width = screenSize.width;
+		this.setBounds(0, 0, width, height);
 		
 		this.setLayout(new GridBagLayout());
+		
+		playView = new PlayView(this, game);
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		

@@ -74,8 +74,9 @@ public class BarrierGrid implements Serializable{
 			barrierArray[barrierGridRow]
 					    [barrierGridColumn] = barrier;
 			
-			barrier.setPosition(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
-															 rowHeight * (float) barrierGridRow + 20 * MARGIN)));
+			barrier.setPlacement(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
+															 rowHeight * (float) barrierGridRow + 20 * MARGIN)),
+					             0);
 			i++;
 		}
 		return barrierArray;

@@ -5,16 +5,26 @@ public class Player {
 	private int score;
 	
 	public Player() {
-		
+		chances = 3;
+		score = 0;
 	}
 	
 	public int getChances() {
 		return this.chances;
 	}
 	
+	public int getScore() {
+		return score;
+	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
 	public void incrementChances() {
 		this.chances++;
 	}
+	
 	public void decrementChances() {
 		this.chances--;
 	}

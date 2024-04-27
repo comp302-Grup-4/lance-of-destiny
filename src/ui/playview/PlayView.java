@@ -1,6 +1,9 @@
 package ui.playview;
-
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -17,12 +20,15 @@ import domain.Game;
 import domain.animation.Animator;
 
 public class PlayView extends JPanel {
+	
 	private static float FPS = 80;
 	private static final long serialVersionUID = 6L;
 	private Animator animator;
 	private AnimatorUIConverter converter;
 	private Thread drawingThread, focusThread;
 	private HashMap<Integer, JComponent> drawnObjects;
+	ChancesPanel chancesPanel;
+	JLabel scoreText;
 	/**
 	 * Create the panel.
 	 */
@@ -34,18 +40,77 @@ public class PlayView extends JPanel {
 		drawnObjects = new HashMap<>();
 		this.animator = game.getAnimator();
 		this.converter = new AnimatorUIConverter(animator, new Dimension(windowWidth, windowHeight));
-
+		
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setFocusable(true);
+		
+		JPanel rightInfoPanel = new JPanel();
+		rightInfoPanel.setLayout(new GridLayout(2, 1));
+
+		chancesPanel = new ChancesPanel();
+		chancesPanel.setChances(game.getPlayerChances());
+		chancesPanel.setSize( 
+				chancesPanel.getWidth(), 
+				chancesPanel.getHeight());
+		chancesPanel.setVisible(true);
+		chancesPanel.setBounds(0,0,500,500);
+		rightInfoPanel.add(chancesPanel, 0, 0);
+		
+		scoreText = new JLabel();
+		scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+		scoreText.setBackground(new Color(0,0,0,0));
+		scoreText.setHorizontalAlignment(JLabel.RIGHT);
+		scoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
+		rightInfoPanel.add(scoreText, 1, 0);
+		
+		rightInfoPanel.setBackground(new Color(0,0,0,0));
+		rightInfoPanel.setVisible(true);
+		rightInfoPanel.setBounds((int) (windowWidth * 0.8), 
+								(int) (windowHeight * 0.83),
+								250,
+								100);
+		
+		this.add(rightInfoPanel);
+		
+		JLabel pauseText = new JLabel("Pause");
+		pauseText.setBounds((int) (windowWidth * 0.05), 
+							(int) (windowHeight * 0.85),
+							100,
+							50);
+		pauseText.setFont(new Font("Monospaced", Font.BOLD, 30));
+		pauseText.setForeground(Color.blue);
+		pauseText.setVisible(true);
+		
+		pauseText.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				super.mouseEntered(e);
+				pauseText.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				animator.pause();
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				pauseText.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		
+		this.add(pauseText);
 		
 		drawingThread = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				while (true) { // TODO
+				while (true) {
 					rebuildDrawableObjects(converter.getObjectSpatialInfoList());
-					PlayView.this.repaint();					
+					chancesPanel.setChances(game.getPlayerChances());
+					scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+					PlayView.this.repaint();
 					try {
 						Thread.sleep((long) (1 / FPS));
 					} catch (InterruptedException e) {
@@ -72,8 +137,24 @@ public class PlayView extends JPanel {
 					animator.moveMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					animator.moveMagicalStaff(Animator.RIGHT);
-				} else if (e.getKeyCode() == KeyEvent.VK_W) {
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_A) {
+					animator.rotateMagicalStaff(Animator.LROTATE);
+				} else if (e.getKeyCode() == KeyEvent.VK_D) {
+					animator.rotateMagicalStaff(Animator.RROTATE);
+				}
+				 else if (e.getKeyCode() == KeyEvent.VK_W) {
 					startPlay();
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					if (animator.isPaused()) {
+						try {
+							animator.resume();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					} else {
+						animator.pause();
+					}
 				}
 			}
 			@Override
@@ -83,6 +164,12 @@ public class PlayView extends JPanel {
 					animator.stopMagicalStaff(Animator.LEFT);
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					animator.stopMagicalStaff(Animator.RIGHT);
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_A) {
+					animator.stopRotationOfMagicalStaff(Animator.LROTATE);
+					
+				}else if (e.getKeyCode() == KeyEvent.VK_D) {
+					animator.stopRotationOfMagicalStaff(Animator.RROTATE);
 				}
 			}
 		});
@@ -96,6 +183,8 @@ public class PlayView extends JPanel {
 		});
 		
 		focusOnPlayView();
+
+		drawingThread.start();
 	}
 	
 	public void focusOnPlayView() {
@@ -105,65 +194,51 @@ public class PlayView extends JPanel {
 		focusThread.start();
 	}
 	
-	public void startPlay() {	
-		if (!drawingThread.isAlive()) {
+	public void startPlay() {
+		try {
 			animator.run();
-			drawingThread.start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
+	private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjects) {
 		Stream<Integer> toBeDeleted = drawnObjects.keySet()
 				.stream()
-				.filter(x -> !newObjectsInfo.containsKey(x));
+				.filter(x -> !newObjects.containsKey(x));
 		
 		toBeDeleted.forEach(x -> removeDrawableObject(x));
 		
-		drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
-		for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
+		drawnObjects.keySet().retainAll(newObjects.keySet()); // remove all non-existent objects in new info
+		for (Integer id : newObjects.keySet()) { // adjust each object in drawn objects
 			if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
-				updateDrawableObject(newObjectsInfo.get(id));
+				updateDrawableObject(newObjects.get(id));
 			} else {
-				addDrawableObject(newObjectsInfo.get(id));
+				addDrawableObject(newObjects.get(id));
 			}
 		}
 	}
 	
-	private void updateDrawableObject(ObjectSpatialInfo newObjInfo) {
-		drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
-				(int) newObjInfo.position.getY(), 
-				(int) newObjInfo.getSizeX(),
-				(int) newObjInfo.getSizeY());
+	private void updateDrawableObject(SpatialObject newObj) {
+		
+		  SpatialObject prevObj = (SpatialObject) drawnObjects.get(newObj.ID);
+		  prevObj.setCenter(newObj.getCenter());
+		  prevObj.setRotation(newObj.rotation);
+		  prevObj.setIcon(newObj.getImage());
+		  
 	}
 	
-	private void addDrawableObject(ObjectSpatialInfo newObjInfo) {
-		JLabel newObj = new JLabel(newObjInfo.getImage());
-		newObj.setBounds((int) newObjInfo.position.getX(), 
-				(int) newObjInfo.position.getY(), 
-				(int) newObjInfo.getSizeX(),
-				(int) newObjInfo.getSizeY());
+	private void addDrawableObject(SpatialObject newObj) {
 		this.add(newObj);
 		this.revalidate();
 		this.repaint();
-		drawnObjects.put(newObjInfo.ID, newObj);
+		drawnObjects.put(newObj.ID, newObj);
 	}
 	
 	private void removeDrawableObject(Integer objID) {
 		this.remove(drawnObjects.get(objID));
 		this.revalidate();
 		this.repaint();
-	}
-	
-	public void resumePlay() {
-		drawingThread.notify();
-	}
-	
-	public void pausePlay() {
-		try {
-			drawingThread.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 }
