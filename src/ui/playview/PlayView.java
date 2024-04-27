@@ -1,7 +1,11 @@
 package ui.playview;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -11,19 +15,26 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import domain.Game;
 import domain.animation.Animator;
 
 public class PlayView extends JPanel {
+	
 	private static float FPS = 80;
 	private static final long serialVersionUID = 6L;
 	private Animator animator;
 	private AnimatorUIConverter converter;
 	private Thread drawingThread, focusThread;
 	private HashMap<Integer, JComponent> drawnObjects;
+	ChancesPanel chancesPanel;
+	JLabel scoreText;
 	/**
 	 * Create the panel.
 	 */
@@ -35,10 +46,57 @@ public class PlayView extends JPanel {
 		drawnObjects = new HashMap<>();
 		this.animator = game.getAnimator();
 		this.converter = new AnimatorUIConverter(animator, new Dimension(windowWidth, windowHeight));
-
+		
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setFocusable(true);
+		
+		JPanel rightInfoPanel = new JPanel();
+		rightInfoPanel.setLayout(new GridLayout(2, 1));
+
+		chancesPanel = new ChancesPanel();
+		chancesPanel.setChances(game.getPlayerChances());
+		chancesPanel.setSize( 
+				chancesPanel.getWidth(), 
+				chancesPanel.getHeight());
+		chancesPanel.setVisible(true);
+		chancesPanel.setBounds(0,0,500,500);
+		rightInfoPanel.add(chancesPanel, 0, 0);
+		
+		scoreText = new JLabel();
+		scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+		scoreText.setBackground(new Color(0,0,0,0));
+		scoreText.setHorizontalAlignment(JLabel.RIGHT);
+		scoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
+		rightInfoPanel.add(scoreText, 1, 0);
+		
+		rightInfoPanel.setBackground(new Color(0,0,0,0));
+		rightInfoPanel.setVisible(true);
+		rightInfoPanel.setBounds((int) (windowWidth * 0.8), 
+								(int) (windowHeight * 0.83),
+								250,
+								100);
+		
+		this.add(rightInfoPanel);
+		
+		JLabel pauseText = new JLabel("Pause");
+		pauseText.setBounds((int) (windowWidth * 0.05), 
+							(int) (windowHeight * 0.85),
+							100,
+							50);
+		pauseText.setFont(new Font("Monospaced", Font.BOLD, 30));
+		pauseText.setForeground(Color.blue);
+		pauseText.setVisible(true);
+		
+		pauseText.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				animator.pause();
+			}
+		});
+		
+		this.add(pauseText);
 		
 		drawingThread = new Thread(new Runnable() {
 			
@@ -46,6 +104,8 @@ public class PlayView extends JPanel {
 			public void run() {
 				while (true) {
 					rebuildDrawableObjects(converter.getObjectSpatialInfoList());
+					chancesPanel.setChances(game.getPlayerChances());
+					scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
 					PlayView.this.repaint();
 					try {
 						Thread.sleep((long) (1 / FPS));
@@ -165,8 +225,6 @@ public class PlayView extends JPanel {
 	}
 	
 	private void addDrawableObject(SpatialObject newObj) {
-//		JLabel newObj = new JLabel(newObjInfo.getImage());
-		
 		this.add(newObj);
 		this.revalidate();
 		this.repaint();

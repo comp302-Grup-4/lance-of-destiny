@@ -22,7 +22,7 @@ public class Game {
 		gameMode = 0;
 		player = new Player();
 		spellDepot = new SpellDepot();
-		animator = new Animator();
+		animator = new Animator(this);
 	}
 	
 	public void saveGame() throws IOException {
@@ -68,5 +68,13 @@ public class Game {
 	
 	public Animator getAnimator() {
 		return animator;
+	}
+	
+	public int getPlayerChances() {
+		return player.getChances();
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 }

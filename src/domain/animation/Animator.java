@@ -3,6 +3,7 @@ package domain.animation;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import domain.Game;
 import domain.animation.barriers.Barrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
@@ -27,9 +28,11 @@ public class Animator {
 	private CollisionStrategy collisionCalculator;
 	private boolean staffMovesRight = false, staffMovesLeft = false;
 	private boolean staffRotatesRight = false, staffRotatesLeft = false;
+	private Game game;
 	boolean paused = false;
 
-	public Animator() {
+	public Animator(Game game) {
+		this.game = game;
 		ball = new FireBall();
 		staff = new MagicalStaff();
 		try {
@@ -94,7 +97,9 @@ public class Animator {
 						} else if (collidedObject == lowerWall) {
 							ball.reset();
 							staff.reset();
+							game.getPlayer().decrementChances();
 							pause();
+							break;
 						}
 					}
 
