@@ -31,6 +31,10 @@ public class Vector {
 		return new Vector(radius * (float) Math.cos(-Math.toRadians(x)), radius * (float) Math.sin(-Math.toRadians(x)));
 	}
 	
+	public Vector rotate(float x) {
+		return new Vector(length() * (float) Math.cos(-Math.toRadians(x)), length() * (float) Math.sin(-Math.toRadians(x)));
+	}
+	
 	public Vector add(Vector v) {
 		return new Vector(x + v.getX(), y + v.getY());
 	}

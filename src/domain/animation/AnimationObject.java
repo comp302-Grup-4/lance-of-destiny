@@ -5,32 +5,53 @@ public abstract class AnimationObject implements Movable, Collidable {
 	protected int objectID;
 	protected Vector position;
 	protected Vector velocity; // pixel per milisecond
-	protected float rotation;
 	protected boolean isCollidable;
 	protected float sizeX;
 	protected float sizeY;
 	protected Vector[] boundaryPoints;
 	protected Vector center;
+	protected float rotationAngle = 0;
+	protected float angularVelocity = 0;
 	
+
 	public AnimationObject() {
 		objectID = objectIDCounter++;
 	}
 	
+	@Override
+	public float getRotation() {
+		return rotationAngle;
+	}
+	
+	@Override
+	public float getAngularVelocity() {
+		return angularVelocity;
+	}
+	
+	@Override
+	public float getNextRotation(float dtime) {
+		return rotationAngle + angularVelocity * dtime / 1000;
+	}
+
 	public Vector getPosition() {
 		return position;
 	}
 
-	public void setPosition(Vector newPosition) {
+	protected void setPlacement(Vector newPosition, float newRotation) {
 		Vector disp = newPosition.subtract(this.position);
-		updateBoundaryPoints(disp);
+		float dRot = newRotation - this.rotationAngle;
+
 		updateCenterPoint(disp);
+		updateBoundaryPoints(disp, dRot);
+		
 		this.position = newPosition;
+		this.rotationAngle = newRotation;
 	}
 
 	public Vector getVelocity() {
 		return velocity;
 	}
-	
+
 	public float getSpeed() {
 		return getVelocity().length();
 	}
@@ -39,6 +60,10 @@ public abstract class AnimationObject implements Movable, Collidable {
 		this.velocity = velocity;
 	}
 	
+	protected void setAngularVelocity(float angularVelocity) {
+		this.angularVelocity = angularVelocity;
+	}
+
 	public int getObjectID() {
 		return objectID;
 	}
@@ -48,96 +73,132 @@ public abstract class AnimationObject implements Movable, Collidable {
 		return position.add(velocity.scale(dTimeMilisecond / 1000));
 	}
 
-	@Override
-	public Vector move(float dTimeMilisecond) {
-		Vector disp = new Vector(velocity.x * dTimeMilisecond / 1000,
-								 velocity.y * dTimeMilisecond / 1000);
-		
-		this.position.setX(position.x + disp.x);
-		this.position.setY(position.y + disp.y);
-		
-		updateBoundaryPoints(disp);
-		updateCenterPoint(disp);
-		
-		return position;
-	}	
+	private Vector rotateCalculation(Vector point, float dRot) {
+		double radians = Math.toRadians(dRot);
+		float sin = (float) Math.sin(radians);
+		float cos = (float) Math.cos(radians);
+
+		float x = point.x - center.x;
+		float y = point.y - center.y;
+		float newX = x * cos - y * sin;
+		float newY = x * sin + y * cos;
+		newX += center.x;
+		newY += center.y;
+		return new Vector(newX, newY);
+	}
 	
+	@Override
+	public void move(float dTimeMilisecond) {
+		/**
+		 * Calculates the linear displacement by linear velocity,
+		 * the rotational change by rotational velocity.
+		 * 
+		 * Updates the position and rotation.
+		 * 
+		 */
+		Vector disp = new Vector(velocity.x * dTimeMilisecond / 1000, velocity.y * dTimeMilisecond / 1000);
+		float dRot = angularVelocity * dTimeMilisecond / 1000;
+		
+		setPlacement(position.add(disp), rotationAngle + dRot);
+	}
+
 	public void setSize(float sizeX, float sizeY) {
 		float expansionX = sizeX / this.sizeX;
 		float expansionY = sizeY / this.sizeY;
-		updateBoundaryPoints(Vector.zero(), 
-				expansionX, 
-				expansionY);
-		updateCenterPoint(Vector.zero(), 
-				expansionX, 
-				expansionY);
+		updateCenterPoint(Vector.zero(), expansionX, expansionY);
+		updateBoundaryPoints(Vector.zero(), expansionX, expansionY);
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 	}
-	
+
 	public float getSizeX() {
 		return sizeX;
 	}
-	
+
 	public float getSizeY() {
 		return sizeY;
 	}
-	
-	public abstract void initializeBoundaryPoints();
-	
-	public abstract void initializeCenterPoint();
-	
-	public void updateBoundaryPoints(Vector displacement) {
-		updateBoundaryPoints(displacement, 1, 1);
+
+	protected Vector[] initializeBoundaryPoints() {
+		boundaryPoints = new Vector[4];
+		boundaryPoints[0] = new Vector(position.getX(), position.getY());
+		boundaryPoints[1] = new Vector(position.getX() + sizeX, position.getY());
+		boundaryPoints[2] = new Vector(position.getX() + sizeX, position.getY() + sizeY);
+		boundaryPoints[3] = new Vector(position.getX(), position.getY() + sizeY);
+		updateBoundaryPoints(rotationAngle);
+		return boundaryPoints;
+	}
+
+	protected abstract void initializeCenterPoint();
+
+	protected void updateBoundaryPoints(float dRot) {
+		updateBoundaryPoints(Vector.zero(), dRot, 1, 1);
 	}
 	
-	public void updateBoundaryPoints(Vector displacement, float expansionX, float expansionY) {
+	protected void updateBoundaryPoints(Vector displacement) {
+		updateBoundaryPoints(displacement, rotationAngle, 1, 1);
+	}
+	
+	protected void updateBoundaryPoints(Vector displacement, float dRot) {
+		updateBoundaryPoints(displacement, dRot, 1, 1);
+	}
+	
+	protected void updateBoundaryPoints(Vector displacement, float expansionX, float expansionY) {
+		updateBoundaryPoints(displacement, 0, expansionX, expansionY);
+	}
+
+	protected void updateBoundaryPoints(Vector displacement, float dRot, float expansionX, float expansionY) {
 		/**
-		 * displacement: the change in the position of the element.
+		 * displacement: the change in the position of the element. 
 		 * expansionX: ratio of getting larger in the direction of x
 		 * expansionY: ratio of getting larger in the direction of x
-		 */
+		 */	
+		
 		for (Vector vector : boundaryPoints) {
 			vector.setX(vector.getX() + (displacement.getX() * expansionX));
 			vector.setY(vector.getY() + (displacement.getY() * expansionY));
 		}
+		
+		for (int i = 0; i < boundaryPoints.length; i++) {
+			boundaryPoints[i] = rotateCalculation(boundaryPoints[i], dRot);
+		}
 	}
-	
-	public void updateCenterPoint(Vector displacement) {
+
+	protected void updateCenterPoint(Vector displacement) {
 		updateCenterPoint(displacement, 1, 1);
 	};
-	
-	public void updateCenterPoint(Vector displacement, float expansionX, float expansionY) {
+
+	protected void updateCenterPoint(Vector displacement, float expansionX, float expansionY) {
 		this.center.setX(this.center.x + (displacement.x * expansionX));
 		this.center.setY(this.center.y + (displacement.y * expansionY));
 	};
-	
+
 	@Override
 	public Vector[] getBoundaryPoints() {
 		return boundaryPoints;
 	}
-	
+
 	@Override
 	public Vector getCenterPoint() {
 		return center;
 	}
-	
+
 	@Override
 	public boolean contains(Vector point) {
 		for (int i = 0; i < boundaryPoints.length; i++) {
 			Vector collisionPoint = boundaryPoints[i];
 			Vector nextCollisionPoint = boundaryPoints[(i + 1) % boundaryPoints.length];
-			
+
 			Vector boundaryLine = nextCollisionPoint.subtract(collisionPoint);
-			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX()) -
-							boundaryLine.getX() * (point.getY() - collisionPoint.getY());
-			
+			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX())
+					- boundaryLine.getX() * (point.getY() - collisionPoint.getY());
+
 			if (crossProdVal > 0)
 				return false;
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AnimationObject) {

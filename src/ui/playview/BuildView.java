@@ -19,14 +19,16 @@ import domain.animation.BarrierGrid;
 import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
+
 import exceptions.InvalidBarrierPositionException;
 import ui.BuildingScreen;
-import ui.playview.AnimatorAdapter;
-import ui.playview.ObjectSpatialInfo;
+import ui.playview.AnimatorUIConverter;
+import ui.playview.SpatialObject;
+
 
 public class BuildView extends JPanel {
     private static final long serialVersionUID = 7L; 
-    private AnimatorAdapter converter;
+    private AnimatorUIConverter converter;
     private HashMap<Integer, JComponent> drawnObjects;
     private Game game;
     private Vector offset; 
@@ -50,15 +52,11 @@ public class BuildView extends JPanel {
     	Dimension parentSize = parent.getSize();
         this.windowHeight = parentSize.height;
         this.windowWidth = parentSize.width;
-//        System.out.println(parentSize.height);
-//        System.out.println(parentSize.width);
-//        System.out.println(Toolkit.getDefaultToolkit().getScreenSize().height);
-        width= this.WIDTH;
-        height= this.HEIGHT;
+
        
         this.game = game;
         drawnObjects = new HashMap<>();
-        this.converter = new AnimatorAdapter(game.getAnimator(), new Dimension(windowWidth, windowHeight), this);
+        this.converter = new AnimatorUIConverter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
         
         this.position = new Vector(24.0,49.0);
 
@@ -70,11 +68,10 @@ public class BuildView extends JPanel {
     }
     
     
-    private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
- 
+    private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjectsInfo) {
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
         for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
-        	ObjectSpatialInfo newObjInfo = newObjectsInfo.get(id);
+        	SpatialObject newObjInfo = newObjectsInfo.get(id);
             if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
                 updateDrawableObject(newObjectsInfo.get(id));
             } else {
@@ -83,14 +80,14 @@ public class BuildView extends JPanel {
         }
     }
     
-    private void updateDrawableObject(ObjectSpatialInfo newObjInfo) {
+    private void updateDrawableObject(SpatialObject newObjInfo) {
         drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
                 (int) newObjInfo.position.getY(), 
                 (int) newObjInfo.getSizeX(),
                 (int) newObjInfo.getSizeY());
     }
     
-    private void addDrawableObject(ObjectSpatialInfo newObjInfo) {
+    private void addDrawableObject(SpatialObject newObjInfo) {
         JLabel newObj = new JLabel(newObjInfo.getImage());
         newObj.setBounds((int) newObjInfo.position.getX(), 
                 (int) newObjInfo.position.getY(), 
@@ -109,7 +106,8 @@ public class BuildView extends JPanel {
     }
     
     
-    private void addDragDropFunctionality(JLabel obj, ObjectSpatialInfo newObjInfo) {
+
+    private void addDragDropFunctionality(JLabel obj, SpatialObject newObjInfo) {
     	Barrier b = (Barrier) newObjInfo.getAnimationObject();
     	obj.addMouseListener(new MouseAdapter() {
            
@@ -121,7 +119,7 @@ public class BuildView extends JPanel {
                 float a = e.getXOnScreen(); //??
                 float b = e.getYOnScreen();//??
                 init = new Vector(a,b);
-//                offset= converter.convertPosition(offset);
+
             }
 
             @Override
@@ -129,11 +127,10 @@ public class BuildView extends JPanel {
             	float i = e.getXOnScreen() - offset.getX();
                 float j = e.getYOnScreen() - offset.getY();
                          
-                Vector p = converter.convertPosition(new Vector(i,j));
-                init = converter.convertPosition(init);
+
                 
                 try {
-					game.getAnimator().getBarrierGrid().changeBarrierPosition(b, p, init);
+					game.getAnimator().getBarrierGrid().changeBarrierPosition(b, new Vector(i,j), init);
 				} catch (InvalidBarrierPositionException e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(parent, "Invalid barrier position", "Error", JOptionPane.ERROR_MESSAGE);
@@ -152,14 +149,18 @@ public class BuildView extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (offset != null) {
+
                     float x = e.getXOnScreen() - offset.getX();
                     float y = e.getYOnScreen() - offset.getY();
 
                     obj.setLocation((int)x , (int)y);
-                    
-                   
                 }
+                   
+
             }
         });
     }
 }
+    
+
+

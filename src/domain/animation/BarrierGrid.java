@@ -73,8 +73,9 @@ public class BarrierGrid implements Serializable{
 			barrier.setGridPosition(barrierGridColumn, barrierGridRow);
 			barrierArray[barrierGridRow][barrierGridColumn] = barrier;
 			
-			barrier.setPosition(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
-															 rowHeight * (float) barrierGridRow + 20 * MARGIN)));
+			barrier.setPlacement(this.position.add(new Vector(colWidth * (float) barrierGridColumn + 20 * MARGIN,
+															 rowHeight * (float) barrierGridRow + 20 * MARGIN)),
+					             0);
 			i++;
 		}
 		return barrierArray;
@@ -119,7 +120,6 @@ public class BarrierGrid implements Serializable{
 	}
 	
 	public boolean changeBarrierPosition(Barrier b,Vector newPosition, Vector initialPosition) throws InvalidBarrierPositionException {
-	//	float colWidth = 20 * (1 + 2 * MARGIN);
 		float cellSize = 20 * (1 + 2 * MARGIN);
 		int oldCol = (int)((initialPosition.getX() - 20 * MARGIN) / cellSize);
         int oldRow = (int)((initialPosition.getY( )- 20 * MARGIN) / cellSize);
@@ -135,7 +135,7 @@ public class BarrierGrid implements Serializable{
 				barrierArray[row][col]=b;
 				Vector pos = this.position.add(new Vector(cellSize * (float) col + 20 * MARGIN,
 						 cellSize * (float) row + 20 * MARGIN));
-				b.setPosition(pos);
+				b.setPlacement(pos,0);
 				barrierArray[oldRow][oldCol]=null;
 				return true;
 		

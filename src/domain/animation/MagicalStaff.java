@@ -1,7 +1,7 @@
 package domain.animation;
 
 public class MagicalStaff extends AnimationObject {	
-	public static int MS_HORIZON = 650; // MS will not move up and down 
+	public static int MS_HORIZON = 650; // MS will not move up and down
 	
 	public MagicalStaff() {
 		super();
@@ -18,15 +18,6 @@ public class MagicalStaff extends AnimationObject {
 	public boolean isCollidable() {
 		return true;
 	}
-	
-	public void setRotation(float rotation) {
-		this.rotation = rotation;
-	}
-	
-	@Override
-	public float getRotation() {
-		return rotation;
-	}
 
 	@Override
 	public Vector[] getBoundaryPoints() {
@@ -36,15 +27,6 @@ public class MagicalStaff extends AnimationObject {
 	@Override
 	public Vector getCenterPoint() {
 		return center;
-	}
-
-	@Override
-	public void initializeBoundaryPoints() {
-		boundaryPoints = new Vector[4];
-		boundaryPoints[0] = new Vector(position.getX(), position.getY());
-		boundaryPoints[1] = new Vector(position.getX() + sizeX, position.getY());
-		boundaryPoints[2] = new Vector(position.getX() + sizeX, position.getY() + sizeY);
-		boundaryPoints[3] = new Vector(position.getX(), position.getY() + sizeY);
 	}
 
 	@Override
@@ -58,5 +40,10 @@ public class MagicalStaff extends AnimationObject {
 	
 	public void setLength(float newLength) {
 		sizeX = newLength;
+	}
+	
+	public void reset() {
+		this.setPlacement(Vector.of(450, MS_HORIZON), 0);
+		this.angularVelocity = 0;
 	}
 }
