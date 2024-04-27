@@ -28,7 +28,7 @@ public class Animator {
 	private boolean staffMovesRight = false, staffMovesLeft = false;
 	private boolean staffRotatesRight = false, staffRotatesLeft = false;
 	boolean paused = false;
-	
+
 	public Animator() {
 		ball = new FireBall();
 		staff = new MagicalStaff();
@@ -45,7 +45,7 @@ public class Animator {
 
 		initializeAnimationObjects();
 		collisionCalculator = new PointBasedCollision();
-		
+
 		initAnimationThread();
 	}
 
@@ -55,17 +55,17 @@ public class Animator {
 		case NEW:
 			animationThread.start();
 			break;
-			
+
 		case TERMINATED:
 			initAnimationThread();
 			animationThread.start();
-		
+
 		default:
 			break;
 		}
-		
+
 	}
-	
+
 	private void initAnimationThread() {
 		animationThread = new Thread(new Runnable() {
 			@Override
@@ -77,17 +77,17 @@ public class Animator {
 						Thread.sleep(dTime);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					}				
+					}
 
 					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
 							.filter(x -> !x.equals(ball)).map(x -> (Collidable) x).toList());
-	
+
 					forceDirection = ballCollisionInfo.getNextDirection();
 					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
 
 					ball.setVelocity(ball.getVelocity().add(velocityChange));
 					ball.move(dTime);
-					
+
 					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
 						if (collidedObject instanceof Barrier) {
 							removeAnimationObject((AnimationObject) collidedObject);
@@ -97,14 +97,6 @@ public class Animator {
 							pause();
 						}
 					}
-					
-				    if (staffMovesLeft && !staffMovesRight) {
-				        staff.setVelocity(Vector.of(-200, 0));
-				    } else if (!staffMovesLeft && staffMovesRight) {
-				        staff.setVelocity(Vector.of(200, 0));
-				    } else {
-				        staff.setVelocity(Vector.zero());
-				    }
 
 				    if (!staffRotatesLeft && staffRotatesRight) {
 				        staff.setAngularVelocity(180);//D throws right
@@ -119,6 +111,14 @@ public class Animator {
 				    if (staff.getNextRotation(dTime) > 45 || staff.getNextRotation(dTime) < -45) {
 				    	staff.setAngularVelocity(0);
 				    }
+				    
+					if (staffMovesLeft && !staffMovesRight) {
+						staff.setVelocity(Vector.of(-200, 0));
+					} else if (!staffMovesLeft && staffMovesRight) {
+						staff.setVelocity(Vector.of(200, 0));
+					} else {
+						staff.setVelocity(Vector.zero());
+					}
 
 				    if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
 				        staff.getNextPosition(dTime).x > 15) {
@@ -126,13 +126,13 @@ public class Animator {
 				    }
 				    
 				}}});
+
 	}
-	
 
 	public void pause() {
 		paused = true;
 	}
-	
+
 	public boolean isPaused() {
 		return paused;
 	}
@@ -184,6 +184,7 @@ public class Animator {
 			staffMovesLeft = true;
 		}
 	}
+
 	public void rotateMagicalStaff(int direction) {
 		if (direction == RROTATE) {
 			staffRotatesRight = true;
@@ -199,6 +200,7 @@ public class Animator {
 			staffMovesLeft = false;
 		}
 	}
+
 	public void stopRotationOfMagicalStaff(int direction) {
 		if (direction == RROTATE) {
 			staffRotatesRight = false;
