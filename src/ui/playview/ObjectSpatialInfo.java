@@ -131,14 +131,23 @@ public class ObjectSpatialInfo {
 	
 	
 	public ImageIcon getScaledImage() {
-		ScaleInfo scaleInfo = new ScaleInfo((int) sizeX, (int) sizeY, image, rotation);
-		if (cacheScaledImages.containsKey(scaleInfo)) {
-			return cacheScaledImages.get(scaleInfo);
-		} else {
-			ImageIcon icon = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
-			cacheScaledImages.put(scaleInfo, icon);
-			return icon;
-		}
+		  ScaleInfo scaleInfo = new ScaleInfo((int) sizeX, (int) sizeY, image, rotation);
+		    if (cacheScaledImages.containsKey(scaleInfo)) {
+		        return cacheScaledImages.get(scaleInfo);
+		    } else {
+		        BufferedImage scaledImage = new BufferedImage((int) sizeX, (int) sizeY, BufferedImage.TYPE_INT_ARGB);
+		        Graphics2D g2 = scaledImage.createGraphics();
+		       // AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rotation), sizeX / 2.0, sizeY / 2.0);
+		        AffineTransform rotate = AffineTransform.getRotateInstance(Math.toRadians(rotation), 
+		        		magicalStaffImage.getIconWidth() / 2.0, magicalStaffImage.getIconHeight()/ 2.0);
+		       // System.out.println(rotation);
+		        g2.setTransform(rotate);
+		        g2.drawImage(image.getImage(), 0, 0, (int) sizeX, (int) sizeY, null);
+		        g2.dispose();
+		        ImageIcon icon = new ImageIcon(scaledImage);
+		        cacheScaledImages.put(scaleInfo, icon);
+		        return icon;
+		    }
 	}
 	
 	public Vector getPosition() {
