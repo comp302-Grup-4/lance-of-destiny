@@ -65,15 +65,6 @@ public abstract class Barrier extends AnimationObject {
 	}
 	
 	@Override
-	public void initializeBoundaryPoints() {
-		boundaryPoints = new Vector[4];
-		boundaryPoints[0] = new Vector(position.getX(), position.getY());
-		boundaryPoints[1] = new Vector(position.getX() + sizeX, position.getY());
-		boundaryPoints[2] = new Vector(position.getX() + sizeX, position.getY() + sizeY);
-		boundaryPoints[3] = new Vector(position.getX(), position.getY() + sizeY);
-	}
-	
-	@Override
 	public void initializeCenterPoint() {
 		center = new Vector(position.getX() + sizeX / 2, position.getY() + sizeY / 2);
 	}

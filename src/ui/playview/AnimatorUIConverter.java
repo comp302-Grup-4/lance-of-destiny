@@ -18,13 +18,13 @@ public class AnimatorUIConverter {
 		this.windowSize = windowSize;
 	}
 	
-	public HashMap<Integer, ObjectSpatialInfo> getObjectSpatialInfoList() {
+	public HashMap<Integer, SpatialObject> getObjectSpatialInfoList() {
 		
 		CopyOnWriteArraySet<AnimationObject> movables = (CopyOnWriteArraySet<AnimationObject>) animator.getAnimationObjects();
 		return movables.stream().collect(Collectors.toMap(x -> x.getObjectID(),
 												                     x -> {
 																		try {
-																			return new ObjectSpatialInfo(x, windowSize);
+																			return new SpatialObject(x, windowSize);
 																		} catch (Exception e) {
 																			e.printStackTrace();
 																		}

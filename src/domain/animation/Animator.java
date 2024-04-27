@@ -93,7 +93,7 @@ public class Animator {
 							removeAnimationObject((AnimationObject) collidedObject);
 						} else if (collidedObject == lowerWall) {
 							ball.reset();
-							staff.resetPosition();
+							staff.reset();
 							pause();
 						}
 					}
@@ -106,22 +106,25 @@ public class Animator {
 				        staff.setVelocity(Vector.zero());
 				    }
 
-				    
 				    if (!staffRotatesLeft && staffRotatesRight) {
-				        staff.setRotation(staff.getRotation() + 20 );//D throws right
-				        //System.out.println((staff.getRotation()));
+				        staff.setAngularVelocity(180);//D throws right
 				    } else if (!staffRotatesRight && staffRotatesLeft) {
-				    	staff.setRotation(staff.getRotation() - 20 );//A//throws left
-				    	 //System.out.println((staff.getRotation()));
+				    	staff.setAngularVelocity(-180);//A//throws left
 				    } else {
-				    	staff.setRotation((staff.getRotation() + 360) % 360);
+				    	// this provides a smooth turn back to original position
+				    	// -12 is a magic number
+				    	staff.setAngularVelocity(-12 * staff.getRotation());
+				    }
+				 
+				    if (staff.getNextRotation(dTime) > 45 || staff.getNextRotation(dTime) < -45) {
+				    	staff.setAngularVelocity(0);
 				    }
 
 				    if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
 				        staff.getNextPosition(dTime).x > 15) {
 				        staff.move(dTime);
-				        staff.rotate(dTime);
 				    }
+				    
 				}}});
 	}
 	

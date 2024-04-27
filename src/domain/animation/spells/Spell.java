@@ -28,9 +28,9 @@ public class Spell extends AnimationObject {
 	}
 
 	@Override
-	public void initializeBoundaryPoints() {
+	public Vector[] initializeBoundaryPoints() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

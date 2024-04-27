@@ -39,17 +39,19 @@ public class FireBall extends AnimationObject {
 	}
 	
 	@Override
-	public void initializeBoundaryPoints() {
-		initializeCollisionPoints(10);
+	public Vector[] initializeBoundaryPoints() {
+		return initializeBoundaryPoints(10);
 	}
 
-	public void initializeCollisionPoints(int precisionAngle) {
+	public Vector[] initializeBoundaryPoints(int precisionAngle) {
 		int numPoints = 360 / precisionAngle;
 		boundaryPoints = new Vector[numPoints];
 		
 		for (int i = 0; i < numPoints; i++) {
 			boundaryPoints[i] = Vector.fromDegrees(- i * precisionAngle, RADIUS).add(center);
 		}
+		
+		return boundaryPoints;
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class FireBall extends AnimationObject {
 	}
 	
 	public void reset() {
-		this.setPosition(Vector.of(492, 600));
+		this.setPlacement(Vector.of(492, 600), 0);
 		this.setVelocity(Vector.fromDegrees(90).scale(400));
 	}
 

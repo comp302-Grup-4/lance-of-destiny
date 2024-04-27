@@ -138,43 +138,39 @@ public class PlayView extends JPanel {
 		}
 	}
 	
-	private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
+	private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjects) {
 		Stream<Integer> toBeDeleted = drawnObjects.keySet()
 				.stream()
-				.filter(x -> !newObjectsInfo.containsKey(x));
+				.filter(x -> !newObjects.containsKey(x));
 		
 		toBeDeleted.forEach(x -> removeDrawableObject(x));
 		
-		drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
-		for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
+		drawnObjects.keySet().retainAll(newObjects.keySet()); // remove all non-existent objects in new info
+		for (Integer id : newObjects.keySet()) { // adjust each object in drawn objects
 			if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
-				updateDrawableObject(newObjectsInfo.get(id));
+				updateDrawableObject(newObjects.get(id));
 			} else {
-				addDrawableObject(newObjectsInfo.get(id));
+				addDrawableObject(newObjects.get(id));
 			}
 		}
 	}
 	
-	private void updateDrawableObject(ObjectSpatialInfo newObjInfo) {
-		    
-		  ((JLabel) drawnObjects.get(newObjInfo.ID)).setIcon(newObjInfo.getScaledImage());//call scaleimage in objectSpatialInfo to add rotation    
-		  drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
-		                        (int) newObjInfo.position.getY(),
-		                        (int) newObjInfo.getSizeX(),  
-		                        (int) newObjInfo.getSizeY());
-
+	private void updateDrawableObject(SpatialObject newObj) {
+		
+		  SpatialObject prevObj = (SpatialObject) drawnObjects.get(newObj.ID);
+		  prevObj.setCenter(newObj.getCenter());
+		  prevObj.setRotation(newObj.rotation);
+		  prevObj.setIcon(newObj.getImage());
+		  
 	}
 	
-	private void addDrawableObject(ObjectSpatialInfo newObjInfo) {
-		JLabel newObj = new JLabel(newObjInfo.getImage());
-		newObj.setBounds((int) newObjInfo.position.getX(), 
-				(int) newObjInfo.position.getY(), 
-				(int) newObjInfo.getSizeX(),
-				(int) newObjInfo.getSizeY());
+	private void addDrawableObject(SpatialObject newObj) {
+//		JLabel newObj = new JLabel(newObjInfo.getImage());
+		
 		this.add(newObj);
 		this.revalidate();
 		this.repaint();
-		drawnObjects.put(newObjInfo.ID, newObj);
+		drawnObjects.put(newObj.ID, newObj);
 	}
 	
 	private void removeDrawableObject(Integer objID) {

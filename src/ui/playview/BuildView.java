@@ -17,7 +17,7 @@ import domain.animation.Animator;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
 import ui.playview.AnimatorUIConverter;
-import ui.playview.ObjectSpatialInfo;
+import ui.playview.SpatialObject;
 
 public class BuildView extends JPanel {
     private static final long serialVersionUID = 7L; 
@@ -47,7 +47,7 @@ public class BuildView extends JPanel {
     }
 
     
-    private void rebuildDrawableObjects(HashMap<Integer, ObjectSpatialInfo> newObjectsInfo) {
+    private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjectsInfo) {
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
         for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
             if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
@@ -58,14 +58,14 @@ public class BuildView extends JPanel {
         }
     }
     
-    private void updateDrawableObject(ObjectSpatialInfo newObjInfo) {
+    private void updateDrawableObject(SpatialObject newObjInfo) {
         drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
                 (int) newObjInfo.position.getY(), 
                 (int) newObjInfo.getSizeX(),
                 (int) newObjInfo.getSizeY());
     }
     
-    private void addDrawableObject(ObjectSpatialInfo newObjInfo) {
+    private void addDrawableObject(SpatialObject newObjInfo) {
         JLabel newObj = new JLabel(newObjInfo.getImage());
         newObj.setBounds((int) newObjInfo.position.getX(), 
                 (int) newObjInfo.position.getY(), 
