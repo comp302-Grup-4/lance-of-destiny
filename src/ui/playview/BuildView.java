@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import domain.Game;
 import domain.animation.Animator;
+import domain.animation.BarrierGrid;
+import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
 import ui.playview.AnimatorUIConverter;
@@ -25,6 +27,9 @@ public class BuildView extends JPanel {
     private HashMap<Integer, JComponent> drawnObjects;
     private Game game;
     private Point offset; 
+    
+    private float MARGIN = (float) 0.15;
+    
     /**
      * Create the panel.
      */
@@ -33,6 +38,10 @@ public class BuildView extends JPanel {
         int windowHeight = parentSize.height;
         int windowWidth = parentSize.width;
         
+//        System.out.println(parentSize.height);
+//        System.out.println(parentSize.width);
+//        System.out.println(Toolkit.getDefaultToolkit().getScreenSize().height);
+       
         this.game = game;
         drawnObjects = new HashMap<>();
         this.converter = new AnimatorUIConverter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
@@ -50,6 +59,7 @@ public class BuildView extends JPanel {
     private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjectsInfo) {
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
         for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
+        	ObjectSpatialInfo newObjInfo = newObjectsInfo.get(id);
             if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
                 updateDrawableObject(newObjectsInfo.get(id));
             } else {
@@ -71,9 +81,9 @@ public class BuildView extends JPanel {
                 (int) newObjInfo.position.getY(), 
                 (int) newObjInfo.getSizeX(),
                 (int) newObjInfo.getSizeY());
-        
+      
         if(newObjInfo.getAnimationObject() instanceof Barrier) {
-        	addDragDropFunctionality(newObj);
+        	addDragDropFunctionality(newObj, newObjInfo);
         }
  
         
@@ -84,8 +94,8 @@ public class BuildView extends JPanel {
     }
     
     
-    private void addDragDropFunctionality(JLabel obj) {
-    	 
+    private void addDragDropFunctionality(JLabel obj, ObjectSpatialInfo newObjInfo) {
+ 
     	obj.addMouseListener(new MouseAdapter() {
            
 
@@ -97,6 +107,11 @@ public class BuildView extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 offset = null;
+             //   newObjInfo.setPosition(new Vector(obj.getX(), obj.getY()));
+               
+                rebuildDrawableObjects(converter.getObjectSpatialInfoList());
+     
+              
             }
         });
 
@@ -108,6 +123,17 @@ public class BuildView extends JPanel {
                     int x = e.getXOnScreen() - offset.x;
                     int y = e.getYOnScreen() - offset.y;
                     obj.setLocation(x, y);
+                    Barrier b = (Barrier) newObjInfo.getAnimationObject();
+                    float colWidth = b.getSizeX() * (1 + 2 * MARGIN);
+        			float rowHeight = b.getSizeX() * (1 + 2 * MARGIN);
+                    int col = (int) ((x - b.getSizeX() * MARGIN) / colWidth);
+                    col--;
+                    int row = (int) ((y- b.getSizeX() * MARGIN) / rowHeight);
+                    row--;
+                 //   Barrier b = (Barrier) newObjInfo.getAnimationObject();
+                    b.setGridPosition(col, row);
+//                    System.out.println(newObjInfo.getSizeX());
+                    b.setPosition(new Vector((int)(colWidth * col + b.getSizeX() * MARGIN + b.getSizeX()), (int)(rowHeight * row + b.getSizeY() * MARGIN + 2*b.getSizeY())));
                 }
             }
         });

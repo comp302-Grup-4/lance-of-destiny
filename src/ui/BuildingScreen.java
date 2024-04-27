@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import domain.Game;
+import domain.animation.BarrierGrid;
 import exceptions.InvalidBarrierNumberException;
 import ui.playview.BuildView;
 //import domain.animation.SimpleBarrier;
@@ -42,6 +43,7 @@ public class BuildingScreen extends JPanel {
 	JLabel icon1, icon2, icon3, icon4, label1, label2, label3, label4;
 	JTextField field1, field2, field3, field4;
 	
+	BarrierGrid bg;
 	
 	public BuildingScreen(GameApp g) {
 		game = new Game();
@@ -108,17 +110,17 @@ public class BuildingScreen extends JPanel {
 		//deneme
 		JButton buildButton = new JButton("Build");
         
+		
         // Add ActionListener to handle build button action
         buildButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call method to handle building barriers based on user input
-            	 SwingUtilities.invokeLater(() -> {try {
-            		game.getAnimator().setBarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));BuildView buildView = new BuildView(gridPanel, game);
-            	//	game.getAnimator();
-            		
+            		try {
+            		bg = new BarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));
+            		game.getAnimator().setBarrierGrid(bg);
+            		BuildView buildView = new BuildView(gridPanel, game);
             		gridPanel.setLayout(new GridBagLayout());
-            		
             		GridBagConstraints gbc = new GridBagConstraints();
             		
             		gbc.fill = GridBagConstraints.BOTH;
@@ -137,7 +139,6 @@ public class BuildingScreen extends JPanel {
                     // Handle exception and show error message
                     JOptionPane.showMessageDialog(BuildingScreen.this, "Invalid number of barriers", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            });             
             }
         });
         
@@ -193,7 +194,7 @@ public class BuildingScreen extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					game.getAnimator().setBarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));	
+					game.getAnimator().setBarrierGrid(bg);	
 					g.openRunningScreen(game);
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block

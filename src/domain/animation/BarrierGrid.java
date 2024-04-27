@@ -22,6 +22,7 @@ public class BarrierGrid implements Serializable{
 	public static int MIN_EXPLOSIVE_BARRIERS = 5;
 	public static int MIN_GIFT_BARRIERS = 10;
 	
+	
 	private float MARGIN = (float) 0.15;
 	
 	int totalBarrierNumber;
