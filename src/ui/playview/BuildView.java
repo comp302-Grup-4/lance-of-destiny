@@ -59,7 +59,7 @@ public class BuildView extends JPanel {
     private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjectsInfo) {
         drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
         for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
-        	ObjectSpatialInfo newObjInfo = newObjectsInfo.get(id);
+        	SpatialObject newObjInfo = newObjectsInfo.get(id);
             if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
                 updateDrawableObject(newObjectsInfo.get(id));
             } else {
@@ -94,7 +94,7 @@ public class BuildView extends JPanel {
     }
     
     
-    private void addDragDropFunctionality(JLabel obj, ObjectSpatialInfo newObjInfo) {
+    private void addDragDropFunctionality(JLabel obj, SpatialObject newObjInfo) {
  
     	obj.addMouseListener(new MouseAdapter() {
            
@@ -133,7 +133,7 @@ public class BuildView extends JPanel {
                  //   Barrier b = (Barrier) newObjInfo.getAnimationObject();
                     b.setGridPosition(col, row);
 //                    System.out.println(newObjInfo.getSizeX());
-                    b.setPosition(new Vector((int)(colWidth * col + b.getSizeX() * MARGIN + b.getSizeX()), (int)(rowHeight * row + b.getSizeY() * MARGIN + 2*b.getSizeY())));
+//                    b.setPosition(new Vector((int)(colWidth * col + b.getSizeX() * MARGIN + b.getSizeX()), (int)(rowHeight * row + b.getSizeY() * MARGIN + 2*b.getSizeY())));
                 }
             }
         });
