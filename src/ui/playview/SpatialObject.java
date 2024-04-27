@@ -86,13 +86,13 @@ public class SpatialObject extends JLabel{
 		this.center = new Vector(object.getCenterPoint().getX() * windowSizeXCoeff, 
 				object.getCenterPoint().getY() * windowSizeYCoeff);
 				
-		if (object instanceof Barrier) {
+		if (object instanceof Barrier || object instanceof MagicalStaff) {
 			this.sizeX = object.getSizeX() * windowSizeXCoeff;
 			this.sizeY = object.getSizeY();
-		} else if (object instanceof MagicalStaff) {
+		} else if (object instanceof Wall) {
 			this.sizeX = object.getSizeX() * windowSizeXCoeff;
-			this.sizeY = object.getSizeY();
-		} else if (object instanceof FireBall || object instanceof Wall) {
+			this.sizeY = object.getSizeY() * windowSizeYCoeff;
+		} else if (object instanceof FireBall) {
 			this.sizeX = object.getSizeX() * windowSizeXCoeff;
 			this.sizeY = object.getSizeY() * windowSizeXCoeff;
 		} else {
@@ -122,14 +122,11 @@ public class SpatialObject extends JLabel{
 			throw new Exception("Resource not found.");
 		}
 		
-//		image = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
 		image = getScaledImage();
 
 		this.position = new Vector(center.getX() - image.getIconWidth() / 2, 
                 center.getY() - image.getIconHeight() / 2);
-		
-//		this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		
+				
 		updateIconPlacement();
 	}
 	
@@ -155,7 +152,7 @@ public class SpatialObject extends JLabel{
 		if (cacheScaledImages.containsKey(scaleInfo)) {
 			return cacheScaledImages.get(scaleInfo);
 		} else {
-			ImageIcon icon = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_FAST));
+			ImageIcon icon = new ImageIcon(image.getImage().getScaledInstance((int) sizeX, (int) sizeY, Image.SCALE_SMOOTH));
 			cacheScaledImages.put(scaleInfo, icon);
 			return icon;
 		}
