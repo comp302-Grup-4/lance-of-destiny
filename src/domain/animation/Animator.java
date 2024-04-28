@@ -35,6 +35,7 @@ public class Animator {
 	private boolean staffRotatesRight = false, staffRotatesLeft = false;
 	private Game game;
 	boolean paused = false;
+	private long startTimeMilli = 0;
 
 	public Animator(Game game) {
 		this.game = game;
@@ -59,6 +60,8 @@ public class Animator {
 
 	public void run() throws Exception {
 		paused = false;
+		if (startTimeMilli == 0)
+			startTimeMilli = System.currentTimeMillis();
 		switch (animationThread.getState()) {
 		case NEW:
 			animationThread.start();
@@ -71,7 +74,6 @@ public class Animator {
 		default:
 			break;
 		}
-
 	}
 
 	private void initAnimationThread() {
@@ -100,10 +102,12 @@ public class Animator {
 						if (collidedObject instanceof Barrier) {
 							if (collidedObject instanceof SimpleBarrier) {
 								removeAnimationObject((AnimationObject) collidedObject);
+								increaseScoreAfterDestroyingBarrier();
 							} else if (collidedObject instanceof ReinforcedBarrier) {
 								int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
 								if (NumberOfHitsNeeded == 1) {
 									removeAnimationObject((AnimationObject) collidedObject);
+									increaseScoreAfterDestroyingBarrier();
 								} else {
 									((ReinforcedBarrier) collidedObject).decreaseHitCount();
 									break;
@@ -112,6 +116,8 @@ public class Animator {
 							} else if (collidedObject instanceof ExplosiveBarrier) {
 								ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
 								removeAnimationObject(explosive);
+								increaseScoreAfterDestroyingBarrier();
+								
 								BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
 								Barrier[][] barrierArray = barrierGrid.getBarrierArray();
 								int gridX = explosive.getGridPositionX();
@@ -126,12 +132,14 @@ public class Animator {
 										Barrier neighbor = barrierArray[y][x];
 										if (neighbor != null) {
 											removeAnimationObject(neighbor);
+											increaseScoreAfterDestroyingBarrier();
 										}
 									}
 								}
 
 							} else if (collidedObject instanceof RewardingBarrier) {
 								removeAnimationObject((AnimationObject) collidedObject);
+								increaseScoreAfterDestroyingBarrier();
 							}
 
 						} else if (collidedObject == lowerWall) {
@@ -229,6 +237,15 @@ public class Animator {
 
 	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
+	}
+	
+	private long getPassedTime() {
+		return (System.currentTimeMillis() - startTimeMilli) / 1000;
+	}
+	
+	private void increaseScoreAfterDestroyingBarrier() {
+		int oldScore = game.getPlayer().getScore();
+		game.getPlayer().setScore((int) (oldScore + 300 / getPassedTime()));
 	}
 
 	public void moveMagicalStaff(int direction) {
