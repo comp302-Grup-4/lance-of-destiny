@@ -8,6 +8,10 @@ import java.util.LinkedList;
 
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.BarrierFactory;
+import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.ReinforcedBarrier;
+import domain.animation.barriers.RewardingBarrier;
+import domain.animation.barriers.SimpleBarrier;
 import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
@@ -53,15 +57,6 @@ public class BarrierGrid implements Serializable{
 		barrierListToString(); //TODO REMOVE
 	}
 
-	public void importBarrierGrid(String barrierString) {
-		this.barrierList = stringToBarrierList(barrierString);
-		this.factory = new BarrierFactory();
-
-		position = new Vector(20, 40);
-
-		barrierArray = createBarrierArray(barrierList);
-	}
-	
 	public void importBarrierGrid(String barrierString) {
 		this.barrierList = stringToBarrierList(barrierString);
 		this.factory = new BarrierFactory();
