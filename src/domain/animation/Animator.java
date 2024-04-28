@@ -111,12 +111,11 @@ public class Animator {
 
 							} else if (collidedObject instanceof ExplosiveBarrier) {
 								ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
-								removeAnimationObject(explosive); // Remove the explosive barrier itself
+								removeAnimationObject(explosive);
 								BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
 								Barrier[][] barrierArray = barrierGrid.getBarrierArray();
 								int gridX = explosive.getGridPositionX();
 								int gridY = explosive.getGridPositionY();
-
 								for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
 										barrierGrid.COL_NUMBER - 1); x++) {
 									for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
