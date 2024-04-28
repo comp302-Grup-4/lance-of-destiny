@@ -1,10 +1,13 @@
 package ui.playview;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -123,7 +126,23 @@ public class SpatialObject extends JLabel{
 		}
 		
 		image = getScaledImage();
-
+		
+		if (object instanceof ReinforcedBarrier) {
+			BufferedImage copyOfImage =
+					   new BufferedImage(image.getIconWidth(), 
+							   image.getIconHeight(), 
+							   BufferedImage.TYPE_INT_ARGB);
+			Graphics g = copyOfImage.createGraphics();
+			g.drawImage(image.getImage(), 0, 0, null);
+		    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+		    g.setColor(Color.yellow);
+//			Graphics g = ((BufferedImage) image.getImage()).createGraphics();
+			g.drawString(String.valueOf(((ReinforcedBarrier) object).getHitCount()),
+					(int) (image.getIconWidth() * 0.25), 
+					(int) (image.getIconHeight() * 0.9));
+			image = new ImageIcon(copyOfImage);
+		}
+		
 		this.position = new Vector(center.getX() - image.getIconWidth() / 2, 
                 center.getY() - image.getIconHeight() / 2);
 				

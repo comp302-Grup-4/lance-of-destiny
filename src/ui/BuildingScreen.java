@@ -186,15 +186,15 @@ public class BuildingScreen extends JPanel {
 		playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					game.getAnimator().setBarrierGrid(bg);	
+				if (bg != null) {
+					try {
+						game.getAnimator().setBarrierGrid(bg);
+					} catch (InvalidBarrierNumberException e1) {
+						e1.printStackTrace();
+					}	
 					g.openRunningScreen(game);
-				} catch (NumberFormatException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InvalidBarrierNumberException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} else {
+                    JOptionPane.showMessageDialog(BuildingScreen.this, "Game is not built yet.", "Error", JOptionPane.INFORMATION_MESSAGE);
 				}
 				
 			}
