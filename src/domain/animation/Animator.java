@@ -5,6 +5,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
 import domain.animation.barriers.Barrier;
+import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.ReinforcedBarrier;
+import domain.animation.barriers.RewardingBarrier;
+import domain.animation.barriers.SimpleBarrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
@@ -31,6 +35,7 @@ public class Animator {
 	private boolean staffRotatesRight = false, staffRotatesLeft = false;
 	private Game game;
 	boolean paused = false;
+	private long startTimeMilli = 0;
 
 	public Animator(Game game) {
 		this.game = game;
@@ -55,6 +60,8 @@ public class Animator {
 
 	public void run() throws Exception {
 		paused = false;
+		if (startTimeMilli == 0)
+			startTimeMilli = System.currentTimeMillis();
 		switch (animationThread.getState()) {
 		case NEW:
 			animationThread.start();
@@ -67,7 +74,6 @@ public class Animator {
 		default:
 			break;
 		}
-
 	}
 
 	private void initAnimationThread() {
@@ -94,7 +100,48 @@ public class Animator {
 
 					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
 						if (collidedObject instanceof Barrier) {
-							removeAnimationObject((AnimationObject) collidedObject);
+							if (collidedObject instanceof SimpleBarrier) {
+								removeAnimationObject((AnimationObject) collidedObject);
+								increaseScoreAfterDestroyingBarrier();
+							} else if (collidedObject instanceof ReinforcedBarrier) {
+								int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
+								if (NumberOfHitsNeeded == 1) {
+									removeAnimationObject((AnimationObject) collidedObject);
+									increaseScoreAfterDestroyingBarrier();
+								} else {
+									((ReinforcedBarrier) collidedObject).decreaseHitCount();
+									break;
+								}
+
+							} else if (collidedObject instanceof ExplosiveBarrier) {
+								ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
+								removeAnimationObject(explosive);
+								increaseScoreAfterDestroyingBarrier();
+								
+								BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
+								Barrier[][] barrierArray = barrierGrid.getBarrierArray();
+								int gridX = explosive.getGridPositionX();
+								int gridY = explosive.getGridPositionY();
+								for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
+										barrierGrid.COL_NUMBER - 1); x++) {
+									for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
+											barrierGrid.ROW_NUMBER - 1); y++) {
+										if (x == gridX && y == gridY) {
+											continue; //skip it self already removed
+										}
+										Barrier neighbor = barrierArray[y][x];
+										if (neighbor != null) {
+											removeAnimationObject(neighbor);
+											increaseScoreAfterDestroyingBarrier();
+										}
+									}
+								}
+
+							} else if (collidedObject instanceof RewardingBarrier) {
+								removeAnimationObject((AnimationObject) collidedObject);
+								increaseScoreAfterDestroyingBarrier();
+							}
+
 						} else if (collidedObject == lowerWall) {
 							ball.reset();
 							staff.reset();
@@ -104,20 +151,20 @@ public class Animator {
 						}
 					}
 
-				    if (!staffRotatesLeft && staffRotatesRight) {
-				        staff.setAngularVelocity(180);//D throws right
-				    } else if (!staffRotatesRight && staffRotatesLeft) {
-				    	staff.setAngularVelocity(-180);//A//throws left
-				    } else {
-				    	// this provides a smooth turn back to original position
-				    	// -12 is a magic number
-				    	staff.setAngularVelocity(-12 * staff.getRotation());
-				    }
-				 
-				    if (staff.getNextRotation(dTime) > 45 || staff.getNextRotation(dTime) < -45) {
-				    	staff.setAngularVelocity(0);
-				    }
-				    
+					if (!staffRotatesLeft && staffRotatesRight) {
+						staff.setAngularVelocity(180);// D throws right
+					} else if (!staffRotatesRight && staffRotatesLeft) {
+						staff.setAngularVelocity(-180);// A//throws left
+					} else {
+						// this provides a smooth turn back to original position
+						// -12 is a magic number
+						staff.setAngularVelocity(-12 * staff.getRotation());
+					}
+
+					if (staff.getNextRotation(dTime) > 45 || staff.getNextRotation(dTime) < -45) {
+						staff.setAngularVelocity(0);
+					}
+
 					if (staffMovesLeft && !staffMovesRight) {
 						staff.setVelocity(Vector.of(-200, 0));
 					} else if (!staffMovesLeft && staffMovesRight) {
@@ -126,12 +173,14 @@ public class Animator {
 						staff.setVelocity(Vector.zero());
 					}
 
-				    if (staff.getNextPosition(dTime).x < 985 - staff.getLength() &&
-				        staff.getNextPosition(dTime).x > 15) {
-				        staff.move(dTime);
-				    }
-				    
-				}}});
+					if (staff.getNextPosition(dTime).x < 985 - staff.getLength()
+							&& staff.getNextPosition(dTime).x > 15) {
+						staff.move(dTime);
+					}
+
+				}
+			}
+		});
 
 	}
 
@@ -159,19 +208,19 @@ public class Animator {
 		addAnimationObject(rightWall);
 		addAnimationObject(upperWall);
 		addAnimationObject(lowerWall);
-	
+
 	}
-	
+
 	public void deleteBarrierAt(Vector position) throws InvalidBarrierNumberException {
 		Barrier b = barrierGrid.deleteBarrierAt(position);
 		if (b != null) {
 			removeAnimationObject(b);
 		}
 	}
-	
+
 	public void setBarrierGrid(BarrierGrid newbg) throws InvalidBarrierNumberException {
-			this.barrierGrid = newbg;	
-			initializeAnimationObjects();
+		this.barrierGrid = newbg;
+		initializeAnimationObjects();
 	}
 
 	public BarrierGrid getBarrierGrid() {
@@ -188,6 +237,15 @@ public class Animator {
 
 	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
+	}
+	
+	private long getPassedTime() {
+		return (System.currentTimeMillis() - startTimeMilli) / 1000;
+	}
+	
+	private void increaseScoreAfterDestroyingBarrier() {
+		int oldScore = game.getPlayer().getScore();
+		game.getPlayer().setScore((int) (oldScore + 300 / getPassedTime()));
 	}
 
 	public void moveMagicalStaff(int direction) {

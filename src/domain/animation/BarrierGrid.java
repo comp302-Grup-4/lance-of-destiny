@@ -1,7 +1,6 @@
 package domain.animation;
 
 import java.awt.Dimension;
-import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,8 +16,8 @@ import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
-	private final int COL_NUMBER = 37;
-	private final int ROW_NUMBER = 20;
+	protected final int COL_NUMBER = 37;
+	protected final int ROW_NUMBER = 20;
 	
 	public static int MIN_SIMPLE_BARRIERS = 75;
 	public static int MIN_FIRM_BARRIERS = 10;
@@ -50,7 +49,7 @@ public class BarrierGrid implements Serializable{
 		this.factory = new BarrierFactory();
 		totalBarrierNumber = simple + firm + explosive + gift;
 		
-		position = new Vector(20, 40);
+		position = new Vector(20, 30);
 		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
@@ -208,6 +207,11 @@ public class BarrierGrid implements Serializable{
 	public Dimension getSize() {
 		return new Dimension((int) (COL_NUMBER * 20 * (1 + 2 * MARGIN)), 
 				            (int) (ROW_NUMBER * 20 * (1 + 2 * MARGIN)));
+	}
+
+	public Barrier[][] getBarrierArray() {
+		// TODO Auto-generated method stub
+		return barrierArray;
 	}
 	
 }
