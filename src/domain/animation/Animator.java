@@ -1,6 +1,6 @@
 package domain.animation;
 
-import java.util.HashSet;
+import java.io.Serializable;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
@@ -13,9 +13,9 @@ import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
 import exceptions.InvalidBarrierNumberException;
-import exceptions.InvalidBarrierPositionException;
 
-public class Animator {
+public class Animator implements Serializable{
+	private static final long serialVersionUID = -3426545588581994135L;
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
 	public static int RROTATE = 1;

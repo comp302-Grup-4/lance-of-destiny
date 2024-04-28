@@ -1,6 +1,9 @@
 package domain;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable{
+	private static final long serialVersionUID = 322548287069839758L;
 	private int chances;
 	private int score;
 	

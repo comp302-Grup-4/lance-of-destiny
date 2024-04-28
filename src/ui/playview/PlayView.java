@@ -20,6 +20,7 @@ import domain.Game;
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
 import exceptions.InvalidBarrierNumberException;
+import ui.BuildingScreen;
 
 public class PlayView extends JPanel {
 	
@@ -30,6 +31,7 @@ public class PlayView extends JPanel {
 	private Thread drawingThread, focusThread;
 	private HashMap<Integer, JComponent> drawnObjects;
 	ChancesPanel chancesPanel;
+	Game game;
 	JLabel scoreText;
 	/**
 	 * Create the panel.
@@ -40,6 +42,7 @@ public class PlayView extends JPanel {
 		int windowWidth = screenSize.width;
 		
 		drawnObjects = new HashMap<>();
+		this.game = game;
 		this.animator = game.getAnimator();
 
 		this.converter = new AnimatorUIConverter(animator, new Dimension(windowWidth, windowHeight));
@@ -252,6 +255,7 @@ public class PlayView extends JPanel {
 
 		// Create a new dialog for the pause menu
 		JDialog pauseMenu = new JDialog();
+		pauseMenu.setAlwaysOnTop(true);
 		pauseMenu.setTitle("Pause Menu");
 		pauseMenu.setLayout(new GridLayout(4, 1));
 
@@ -283,7 +287,11 @@ public class PlayView extends JPanel {
 //				// TODO Save the game state here...
 //				String filename = JOptionPane.showInputDialog("Enter save name:");
 //				if (filename != null) {
-//					saveGame(filename + ".txt");
+//					try {
+//						game.saveGame(filename);
+//					} catch (IOException e1) {
+//						JOptionPane.showMessageDialog(PlayView.this, "Error while saving the file.", "Error", JOptionPane.ERROR_MESSAGE);
+//					}
 //				}
 //			}
 //		});
@@ -295,10 +303,14 @@ public class PlayView extends JPanel {
 //				String filename = JOptionPane.showInputDialog("Enter save name to load:");
 //				if (filename != null) {
 //                    try {
-//                        loadGame(filename + ".ser");
+//                        game.loadGame(filename + ".txt");
 //                    } catch (FileNotFoundException ex) {
-//                        throw new RuntimeException(ex);
-//                    }
+//    					JOptionPane.showMessageDialog(PlayView.this, "File not found.", "Error", JOptionPane.ERROR_MESSAGE);
+//                    } catch (ClassNotFoundException e1) {
+//						e1.printStackTrace();
+//					} catch (IOException e1) {
+//    					JOptionPane.showMessageDialog(PlayView.this, "Error while loading the file.", "Error", JOptionPane.ERROR_MESSAGE);
+//					}
 //                }
 //			}
 //		});

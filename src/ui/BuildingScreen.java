@@ -193,7 +193,7 @@ public class BuildingScreen extends JPanel {
                 try {
     				String name = JOptionPane.showInputDialog("Enter a file name to load the grid:");
                     if (name != null)
-                    	loadBuild(name + ".txt");
+                    	loadBuild(name);
                 } catch (IOException ex) {
 					JOptionPane.showMessageDialog(BuildingScreen.this, "Error while loading the file.", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (ClassNotFoundException e1) {

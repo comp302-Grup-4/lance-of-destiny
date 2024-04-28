@@ -1,10 +1,12 @@
 package domain.animation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import domain.animation.spells.Spell;
 
-public class SpellDepot {
+public class SpellDepot implements Serializable {
+	private static final long serialVersionUID = -112337982175135601L;
 	private HashMap<Spell, Integer> spellMap;
 	
 	public SpellDepot() {

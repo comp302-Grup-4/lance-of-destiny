@@ -11,7 +11,8 @@ import exceptions.InvalidBarrierNumberException;
 
 import javax.swing.*;
 
-public class Game {
+public class Game implements Serializable {
+	private static final long serialVersionUID = 7679992000960473271L;
 	private Player player;
 	private SpellDepot spellDepot;	
 	private Animator animator;
@@ -25,15 +26,15 @@ public class Game {
 		animator = new Animator(this);
 	}
 	
-//	public void saveGame() throws IOException {
-//		FileOutputStream fileOutputStream
-//	      = new FileOutputStream("gameInstance.txt");
-//	    ObjectOutputStream objectOutputStream
-//	      = new ObjectOutputStream(fileOutputStream);
-//	    objectOutputStream.writeObject(this);
-//	    objectOutputStream.flush();
-//	    objectOutputStream.close();
-//	}
+	public void saveGame(String fileName) throws IOException {
+		FileOutputStream fileOutputStream
+	      = new FileOutputStream(fileName + ".txt");
+	    ObjectOutputStream objectOutputStream
+	      = new ObjectOutputStream(fileOutputStream);
+	    objectOutputStream.writeObject(this);
+	    objectOutputStream.flush();
+	    objectOutputStream.close();
+	}
 	
 	public void saveBarrierGrid(String name) throws IOException {
 		FileOutputStream fileOutputStream
@@ -44,21 +45,21 @@ public class Game {
 	    objectOutputStream.flush();
 	    objectOutputStream.close();
 	}
-//
-//	public Game loadGame() throws IOException, ClassNotFoundException {
-//		FileInputStream fileInputStream
-//	      = new FileInputStream("gameInstance.txt");
-//	    ObjectInputStream objectInputStream
-//	      = new ObjectInputStream(fileInputStream);
-//	    Game g = (Game) objectInputStream.readObject();
-//	    objectInputStream.close();
-//	    return g;
-//
-//	}
+
+	public Game loadGame(String name) throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream(name + ".txt");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    Game g = (Game) objectInputStream.readObject();
+	    objectInputStream.close();
+	    return g;
+
+	}
 
 	public BarrierGrid loadBarrierGrid(String name) throws IOException, ClassNotFoundException, InvalidBarrierNumberException {
 		FileInputStream fileInputStream
-	      = new FileInputStream(name);
+	      = new FileInputStream(name + ".txt");
 	    ObjectInputStream objectInputStream
 	      = new ObjectInputStream(fileInputStream);
 	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
@@ -78,27 +79,27 @@ public class Game {
 	public Player getPlayer() {
 		return player;
 	}
+//
+//	public void saveGame() {
+//		String filename = JOptionPane.showInputDialog(null, "Enter filename to save:");
+//		if (filename != null) {
+//			String str = this.animator.getBarrierGrid().barrierListToString();
+//			try {
+//				BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".sav"));
+//				writer.write(str);
+//				writer.close();
+//			} catch (IOException i) {
+//				i.printStackTrace();
+//			}
+//		}
+//	}
 
-	public void saveGame() {
-		String filename = JOptionPane.showInputDialog(null, "Enter filename to save:");
-		if (filename != null) {
-			String str = this.animator.getBarrierGrid().barrierListToString();
-			try {
-				BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".sav"));
-				writer.write(str);
-				writer.close();
-			} catch (IOException i) {
-				i.printStackTrace();
-			}
-		}
-	}
-
-	public String loadGame() throws IOException {
-		String filename = JOptionPane.showInputDialog(null, "Enter filename to load:");
-		if (filename != null) {
-			String content = Files.readString(Path.of(filename + ".sav"));
-			return content;
-		}
-		return null;
-	}
+//	public String loadGame() throws IOException {
+//		String filename = JOptionPane.showInputDialog(null, "Enter filename to load:");
+//		if (filename != null) {
+//			String content = Files.readString(Path.of(filename + ".sav"));
+//			return content;
+//		}
+//		return null;
+//	}
 }
