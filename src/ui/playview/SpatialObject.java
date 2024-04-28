@@ -75,7 +75,6 @@ public class SpatialObject extends JLabel{
 	float sizeX;
 	float sizeY;
 	private Vector center;
-	
 	private AnimationObject object;
 	
 	private final float windowSizeXCoeff, windowSizeYCoeff;
@@ -133,16 +132,16 @@ public class SpatialObject extends JLabel{
 							   image.getIconHeight(), 
 							   BufferedImage.TYPE_INT_ARGB);
 			Graphics g = copyOfImage.createGraphics();
-			g.drawImage(image.getImage(), 0, 0, null);
+			g.drawImage(image.getImage(), 0, 0, this);
 		    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
 		    g.setColor(Color.yellow);
-//			Graphics g = ((BufferedImage) image.getImage()).createGraphics();
 			g.drawString(String.valueOf(((ReinforcedBarrier) object).getHitCount()),
-					(int) (image.getIconWidth() * 0.25), 
+					(int) (image.getIconWidth() * 0.25),
 					(int) (image.getIconHeight() * 0.9));
-			image = new ImageIcon(copyOfImage);
+			image = new ImageIcon(copyOfImage);		
+			g.dispose();
 		}
-		
+
 		this.position = new Vector(center.getX() - image.getIconWidth() / 2, 
                 center.getY() - image.getIconHeight() / 2);
 				
@@ -208,6 +207,7 @@ public class SpatialObject extends JLabel{
 	@Override
 	public void setIcon(Icon icon) {
 		super.setIcon(icon);
+		this.image = (ImageIcon) icon;
 		updateIconPlacement();
 	}
 	

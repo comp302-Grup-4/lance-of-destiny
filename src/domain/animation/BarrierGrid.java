@@ -1,7 +1,6 @@
 package domain.animation;
 
 import java.awt.Dimension;
-import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +49,7 @@ public class BarrierGrid implements Serializable{
 		this.factory = new BarrierFactory();
 		totalBarrierNumber = simple + firm + explosive + gift;
 		
-		position = new Vector(20, 40);
+		position = new Vector(20, 30);
 		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
