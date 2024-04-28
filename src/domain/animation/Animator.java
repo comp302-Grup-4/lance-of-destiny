@@ -5,6 +5,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
 import domain.animation.barriers.Barrier;
+import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.ReinforcedBarrier;
+import domain.animation.barriers.RewardingBarrier;
+import domain.animation.barriers.SimpleBarrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
@@ -94,7 +98,22 @@ public class Animator {
 
 					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
 						if (collidedObject instanceof Barrier) {
-							removeAnimationObject((AnimationObject) collidedObject);
+							if(collidedObject instanceof SimpleBarrier) {
+								removeAnimationObject((AnimationObject) collidedObject);
+							}
+							else if(collidedObject instanceof ReinforcedBarrier) {
+								int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
+								if(NumberOfHitsNeeded == 1) {((ReinforcedBarrier) collidedObject).getHitCount();}
+								else {((ReinforcedBarrier) collidedObject).decreaseHitCount();}
+								
+							}
+							else if(collidedObject instanceof ExplosiveBarrier) {
+								removeAnimationObject((AnimationObject) collidedObject);
+							}
+							else if(collidedObject instanceof RewardingBarrier) {
+								removeAnimationObject((AnimationObject) collidedObject);
+							}
+							
 						} else if (collidedObject == lowerWall) {
 							ball.reset();
 							staff.reset();
