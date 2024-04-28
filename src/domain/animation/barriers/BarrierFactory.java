@@ -2,20 +2,22 @@ package domain.animation.barriers;
 
 import domain.animation.BarrierGrid;
 
-public class BarrierFactory {
+import java.io.Serializable;
+
+public class BarrierFactory implements Serializable {
 	
 	public Barrier createBarrier(String name, BarrierGrid bg) {
 		if(name.equals("simple")) {
-			return new SimpleBarrier(bg);
+			return new SimpleBarrier(bg, "simple");
 		}
 		else if (name.equals("firm")) {
-			return new ReinforcedBarrier(bg);
+			return new ReinforcedBarrier(bg, "firm");
 		}
 		else if (name.equals("explosive")) {
-			return new ExplosiveBarrier(bg);
+			return new ExplosiveBarrier(bg, "explosive");
 		}
 		else if (name.equals("gift")) {
-			return new RewardingBarrier(bg);
+			return new RewardingBarrier(bg, "gift");
 		}
 		else {
 			return null;

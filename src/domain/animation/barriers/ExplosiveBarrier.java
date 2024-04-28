@@ -5,8 +5,13 @@ import domain.animation.BarrierGrid;
 public class ExplosiveBarrier extends Barrier {
 	boolean isExploded;
 		
-	public ExplosiveBarrier(BarrierGrid grid, int gridPositionX, int gridPositionY) {
-		super(grid, gridPositionX, gridPositionY);
+	public ExplosiveBarrier(BarrierGrid grid, int gridPositionX, int gridPositionY, String type) {
+		super(grid, gridPositionX, gridPositionY, type);
+		isExploded = false;
+	}
+
+	public ExplosiveBarrier(BarrierGrid grid, String type) {
+		super(grid, type);
 		isExploded = false;
 	}
 
@@ -19,11 +24,5 @@ public class ExplosiveBarrier extends Barrier {
 		isExploded = true;
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		
-		return "explosive";
-	}
 }
 

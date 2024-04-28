@@ -2,12 +2,13 @@ package ui.playview;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class ChancesPanel extends JPanel {
+public class ChancesPanel extends JPanel implements Serializable {
 	public static ImageIcon heartImage = new ImageIcon("./res/drawable/largeHeart.png");
 	int chances;
 	JLabel[] heartLabels = new JLabel[3];
@@ -33,5 +34,9 @@ public class ChancesPanel extends JPanel {
 			else
 				heartLabels[i].setVisible(false);
 		}
+	}
+
+	public int getChances() {
+		return chances;
 	}
 }

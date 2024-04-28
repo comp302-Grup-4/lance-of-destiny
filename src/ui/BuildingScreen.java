@@ -168,7 +168,7 @@ public class BuildingScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				saveGrid();
+				saveBuild();
 			}
 		});
 		
@@ -177,8 +177,12 @@ public class BuildingScreen extends JPanel {
 		loadButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				loadSavedGrids();
-			}
+                try {
+                    loadBuild(game.loadGame());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
 		});
 		
 		JButton playButton = new JButton("Play Game");
@@ -238,10 +242,38 @@ public class BuildingScreen extends JPanel {
 			JOptionPane.showInputDialog(this, "Barrier grid could not be loaded.");
 		}
 	}
-	
-	
-	
 
+	private void loadBuild(String save) {
+		try {
+			bg = new BarrierGrid(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field4.getText()));
+			bg.importBarrierGrid(save);
+			game.getAnimator().setBarrierGrid(bg);
+			BuildView buildView = new BuildView(gridPanel, game);
+			gridPanel.setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+
+			gbc.fill = GridBagConstraints.BOTH;
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.weightx = 1;
+			gbc.weighty = 1;
+
+			buildView.setFocusable(true);
+			buildView.setVisible(true);
+
+			gridPanel.add(buildView, gbc);
+			gridPanel.revalidate();
+			gridPanel.repaint();
+		} catch (NumberFormatException | InvalidBarrierNumberException ex) {
+			// Handle exception and show error message
+			JOptionPane.showMessageDialog(BuildingScreen.this, "Invalid number of barriers", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void saveBuild() {
+			game.saveGame();
+	}
+	
 }
 
 

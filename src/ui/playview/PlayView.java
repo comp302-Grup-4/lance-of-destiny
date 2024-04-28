@@ -7,18 +7,19 @@ import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import domain.Game;
 import domain.animation.Animator;
+import domain.animation.BarrierGrid;
+import exceptions.InvalidBarrierNumberException;
 
 public class PlayView extends JPanel {
 	
@@ -94,7 +95,8 @@ public class PlayView extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				animator.pause();
+				pauseGame();
+				//animator.pause();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -156,7 +158,8 @@ public class PlayView extends JPanel {
 							e1.printStackTrace();
 						}
 					} else {
-						animator.pause();
+						pauseGame();
+						//animator.pause();
 					}
 				}
 			}
@@ -228,7 +231,7 @@ public class PlayView extends JPanel {
 		  prevObj.setCenter(newObj.getCenter());
 		  prevObj.setRotation(newObj.rotation);
 		  prevObj.setIcon(newObj.getImage());
-		  
+
 	}
 	
 	private void addDrawableObject(SpatialObject newObj) {
@@ -242,6 +245,80 @@ public class PlayView extends JPanel {
 		this.remove(drawnObjects.get(objID));
 		this.revalidate();
 		this.repaint();
+	}
+
+	private void pauseGame() {
+		animator.pause();
+
+		// Create a new dialog for the pause menu
+		JDialog pauseMenu = new JDialog();
+		pauseMenu.setTitle("Pause Menu");
+		pauseMenu.setLayout(new GridLayout(4, 1));
+
+		// Create buttons for each option
+		JButton resumeButton = new JButton("Resume");
+//		JButton saveButton = new JButton("Save");
+//		JButton loadButton = new JButton("Load");
+		JButton exitButton = new JButton("Exit");
+
+		// Add action listeners to each button
+		resumeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Resume the game logic here...
+                try {
+                    animator.resume();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                // Close the pause menu
+				pauseMenu.dispose();
+			}
+		});
+
+//		saveButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Save the game state here...
+//				String filename = JOptionPane.showInputDialog("Enter save name:");
+//				if (filename != null) {
+//					saveGame(filename + ".txt");
+//				}
+//			}
+//		});
+//
+//		loadButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Load the game state here...
+//				String filename = JOptionPane.showInputDialog("Enter save name to load:");
+//				if (filename != null) {
+//                    try {
+//                        loadGame(filename + ".ser");
+//                    } catch (FileNotFoundException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
+//                }
+//			}
+//		});
+
+		exitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
+		// Add buttons to the pause menu
+		pauseMenu.add(resumeButton);
+//		pauseMenu.add(saveButton);
+//		pauseMenu.add(loadButton);
+		pauseMenu.add(exitButton);
+
+		// Set the size of the pause menu and make it visible
+		pauseMenu.setSize(200, 200);
+		pauseMenu.setVisible(true);
 	}
 
 }
