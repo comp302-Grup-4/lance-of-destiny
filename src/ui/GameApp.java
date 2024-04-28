@@ -1,9 +1,11 @@
 package ui;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,10 +34,14 @@ public class GameApp extends JFrame {
 				try {
 					GameApp frame = new GameApp();
 					
-					GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-					GraphicsDevice device = graphics.getDefaultScreenDevice();
-
-					device.setFullScreenWindow(frame);
+					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+					final int H = screenSize.height;
+					final int W = screenSize.width;
+					frame.setSize(W, H);
+//					GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//					GraphicsDevice device = graphics.getDefaultScreenDevice();
+//
+//					device.setFullScreenWindow(frame);
 					
 					frame.setVisible(true);
 				} catch (Exception e) {
