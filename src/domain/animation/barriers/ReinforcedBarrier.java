@@ -14,9 +14,14 @@ public class ReinforcedBarrier extends Barrier{
 		super(grid);
 		this.hitCount = hitCount;
 	}
-	
-	public ReinforcedBarrier(BarrierGrid grid, int hitCount, int gridPositionX, int gridPositionY) {
-		super(grid, gridPositionX, gridPositionY);
+
+	public ReinforcedBarrier(BarrierGrid grid, String type) {
+		super(grid, type);
+		this.hitCount = 3;
+	}
+
+	public ReinforcedBarrier(BarrierGrid grid, int hitCount, int gridPositionX, int gridPositionY, String type) {
+		super(grid, gridPositionX, gridPositionY, type);
 		this.hitCount = hitCount;
 	}
 	
@@ -28,10 +33,5 @@ public class ReinforcedBarrier extends Barrier{
 		return hitCount;
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return "reinforced";
-	}
 }
 

@@ -1,15 +1,15 @@
 package domain;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
 import domain.animation.SpellDepot;
 import domain.animation.barriers.Barrier;
+
+import javax.swing.*;
 
 public class Game {
 	private Player player;
@@ -25,15 +25,15 @@ public class Game {
 		animator = new Animator(this);
 	}
 	
-	public void saveGame() throws IOException {
-		FileOutputStream fileOutputStream
-	      = new FileOutputStream("gameInstance.txt");
-	    ObjectOutputStream objectOutputStream 
-	      = new ObjectOutputStream(fileOutputStream);
-	    objectOutputStream.writeObject(this);
-	    objectOutputStream.flush();
-	    objectOutputStream.close();
-	}
+//	public void saveGame() throws IOException {
+//		FileOutputStream fileOutputStream
+//	      = new FileOutputStream("gameInstance.txt");
+//	    ObjectOutputStream objectOutputStream
+//	      = new ObjectOutputStream(fileOutputStream);
+//	    objectOutputStream.writeObject(this);
+//	    objectOutputStream.flush();
+//	    objectOutputStream.close();
+//	}
 	
 	public void saveBarrierGrid() throws IOException {
 		FileOutputStream fileOutputStream
@@ -44,17 +44,17 @@ public class Game {
 	    objectOutputStream.flush();
 	    objectOutputStream.close();
 	}
-	
-	public Game loadGame() throws IOException, ClassNotFoundException {
-		FileInputStream fileInputStream
-	      = new FileInputStream("gameInstance.txt");
-	    ObjectInputStream objectInputStream
-	      = new ObjectInputStream(fileInputStream);
-	    Game g = (Game) objectInputStream.readObject();
-	    objectInputStream.close();
-	    return g;
-		
-	}
+//
+//	public Game loadGame() throws IOException, ClassNotFoundException {
+//		FileInputStream fileInputStream
+//	      = new FileInputStream("gameInstance.txt");
+//	    ObjectInputStream objectInputStream
+//	      = new ObjectInputStream(fileInputStream);
+//	    Game g = (Game) objectInputStream.readObject();
+//	    objectInputStream.close();
+//	    return g;
+//
+//	}
 
 	public BarrierGrid loadBarrierGrid() throws IOException, ClassNotFoundException {
 		FileInputStream fileInputStream
@@ -76,5 +76,28 @@ public class Game {
 	
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void saveGame() {
+		String filename = JOptionPane.showInputDialog(null, "Enter filename to save:");
+		if (filename != null) {
+			String str = this.animator.getBarrierGrid().barrierListToString();
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".sav"));
+				writer.write(str);
+				writer.close();
+			} catch (IOException i) {
+				i.printStackTrace();
+			}
+		}
+	}
+
+	public String loadGame() throws IOException {
+		String filename = JOptionPane.showInputDialog(null, "Enter filename to load:");
+		if (filename != null) {
+			String content = Files.readString(Path.of(filename + ".sav"));
+			return content;
+		}
+		return null;
 	}
 }

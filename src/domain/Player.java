@@ -28,5 +28,8 @@ public class Player {
 	public void decrementChances() {
 		this.chances--;
 	}
-	
+
+	public void setChances(int chances) {
+		this.chances = chances;
+	}
 }

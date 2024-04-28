@@ -4,26 +4,34 @@ import domain.animation.AnimationObject;
 import domain.animation.BarrierGrid;
 import domain.animation.Vector;
 
-public abstract class Barrier extends AnimationObject {
+import java.io.Serializable;
+
+public abstract class Barrier extends AnimationObject implements Serializable {
 	public static final String SIMPLE_BARRIER = "simple";
 	public static final String FIRM_BARRIER = "firm";
 	public static final String EXPLOSIVE_BARRIER = "explosive";
 	public static final String GIFT_BARRIER = "gift";
 	
 	protected BarrierGrid parentGrid;
-	
+
+	private String type;
 	private int gridPositionX;
 	private int gridPositionY;
 		
 	public Barrier(BarrierGrid grid) {
-		this(grid, -1, -1);
+		this(grid, -1, -1, null);
 	}
-	
-	public Barrier(BarrierGrid grid, int gridPositionX, int gridPositionY) {
+
+	public Barrier(BarrierGrid grid, String type) {
+		this(grid, -1, -1, type);
+	}
+
+	public Barrier(BarrierGrid grid, int gridPositionX, int gridPositionY, String type) {
 		super();
 		this.position = new Vector(0, 0);
 		this.gridPositionX = gridPositionX;
 		this.gridPositionY = gridPositionY;
+		this.type = type;
 		
 		velocity = new Vector(0, 0);
 		
@@ -69,5 +77,15 @@ public abstract class Barrier extends AnimationObject {
 		center = new Vector(position.getX() + sizeX / 2, position.getY() + sizeY / 2);
 	}
 	
-	public abstract String getName();
+	public String getType() {
+		if (isCollidable) {
+			return type;
+		} else {
+			return "destroyed";
+		}
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

@@ -7,10 +7,6 @@ import java.util.LinkedList;
 
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.BarrierFactory;
-import domain.animation.barriers.ExplosiveBarrier;
-import domain.animation.barriers.ReinforcedBarrier;
-import domain.animation.barriers.RewardingBarrier;
-import domain.animation.barriers.SimpleBarrier;
 import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
@@ -35,7 +31,7 @@ public class BarrierGrid implements Serializable{
 	
 	private BarrierFactory factory;
 
-	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {	
+	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		this.factory = new BarrierFactory();
 
@@ -46,7 +42,17 @@ public class BarrierGrid implements Serializable{
 		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
-		
+
+		barrierListToString(); //TODO REMOVE
+	}
+
+	public void importBarrierGrid(String barrierString) {
+		this.barrierList = stringToBarrierList(barrierString);
+		this.factory = new BarrierFactory();
+
+		position = new Vector(20, 40);
+
+		barrierArray = createBarrierArray(barrierList);
 	}
 	
 	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
@@ -110,7 +116,7 @@ public class BarrierGrid implements Serializable{
 		for(int i = 0; i < ROW_NUMBER;i++) {
 			for(int j= 0; j< COL_NUMBER;j++) {
 				if(barrierArray[i][j]!=null) {
-				System.out.printf("%s, ", barrierArray[i][j].getName());
+				System.out.printf("%s, ", barrierArray[i][j].getType());
 				}
 				else {
 					System.out.print("null, ");
@@ -146,5 +152,58 @@ public class BarrierGrid implements Serializable{
         
 		return false;
 	}
-	
+
+	public int getWidth() {
+		return COL_NUMBER;
+	}
+
+	public int getHeight() {
+		return ROW_NUMBER;
+	}
+
+	public boolean getCell(int x, int y) {
+		return barrierArray[x][y] != null;
+	}
+
+	public String getBarrierType(int x, int y) {
+		if (barrierArray[x][y] != null) {
+			return barrierArray[x][y].getType();
+		} else {
+			return null;
+		}
+	}
+
+	public void setBarrierType(int x, int y, String type) {
+		if (barrierArray[x][y] != null) {
+			barrierArray[x][y].setType(type);
+		}
+	}
+
+	public void clearCell(int x, int y) {
+		barrierArray[x][y] = null;
+	}
+
+	public String barrierListToString() {
+		String str = "";
+		for (Barrier b : barrierList) {
+			str += b.getType() + " ";
+		}
+		System.out.println(str);
+		return str;
+	}
+
+	public LinkedList<Barrier> stringToBarrierList(String str) {
+		LinkedList<Barrier> bl = new LinkedList<>();
+		String[] barrierTypes = str.split(" ");
+		for (String type : barrierTypes) {
+			if (type.equals("destroyed")) {
+				Barrier b = factory.createBarrier("simple", this);
+				b.destroy();
+				bl.add(b);
+			} else {
+				bl.add(factory.createBarrier(type, this));
+			}
+		}
+		return bl;
+	}
 }
