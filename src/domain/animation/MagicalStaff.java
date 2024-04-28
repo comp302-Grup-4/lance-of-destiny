@@ -1,6 +1,6 @@
 package domain.animation;
 
-public class MagicalStaff extends AnimationObject {	
+public class MagicalStaff extends AnimationObject {
 	public static int MS_HORIZON = 650; // MS will not move up and down
 	
 	public MagicalStaff() {

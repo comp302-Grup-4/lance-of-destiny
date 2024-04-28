@@ -16,6 +16,7 @@ import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
+	private static final long serialVersionUID = -1112008210834819434L;
 	protected final int COL_NUMBER = 37;
 	protected final int ROW_NUMBER = 20;
 	
@@ -54,7 +55,7 @@ public class BarrierGrid implements Serializable{
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
 
-		barrierListToString(); //TODO REMOVE
+//		barrierListToString(); //TODO REMOVE
 	}
 
 	public void importBarrierGrid(String barrierString) {

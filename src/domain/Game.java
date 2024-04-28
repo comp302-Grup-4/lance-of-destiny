@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
 import domain.animation.SpellDepot;
-import domain.animation.barriers.Barrier;
+import exceptions.InvalidBarrierNumberException;
 
 import javax.swing.*;
 
@@ -35,9 +35,9 @@ public class Game {
 //	    objectOutputStream.close();
 //	}
 	
-	public void saveBarrierGrid() throws IOException {
+	public void saveBarrierGrid(String name) throws IOException {
 		FileOutputStream fileOutputStream
-	      = new FileOutputStream("barrierGridInstance.txt");
+	      = new FileOutputStream(name + ".txt");
 	    ObjectOutputStream objectOutputStream 
 	      = new ObjectOutputStream(fileOutputStream);
 	    objectOutputStream.writeObject(animator.getBarrierGrid());
@@ -56,13 +56,14 @@ public class Game {
 //
 //	}
 
-	public BarrierGrid loadBarrierGrid() throws IOException, ClassNotFoundException {
+	public BarrierGrid loadBarrierGrid(String name) throws IOException, ClassNotFoundException, InvalidBarrierNumberException {
 		FileInputStream fileInputStream
-	      = new FileInputStream("gameInstance.txt");
+	      = new FileInputStream(name);
 	    ObjectInputStream objectInputStream
 	      = new ObjectInputStream(fileInputStream);
 	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
 	    objectInputStream.close();
+	    animator.setBarrierGrid(bg);
 	    return bg;
 	}
 	

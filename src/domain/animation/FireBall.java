@@ -1,6 +1,9 @@
 package domain.animation;
 
-public class FireBall extends AnimationObject {
+import java.io.Serializable;
+
+public class FireBall extends AnimationObject implements Serializable {
+	private static final long serialVersionUID = 6744117051981779488L;
 	private int RADIUS = 8;
 	
 	public FireBall() {

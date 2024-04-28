@@ -57,12 +57,12 @@ public class BuildView extends JPanel {
         this.setVisible(true);
         this.setFocusable(true);
         
-        rebuildDrawableObjects(converter.getObjectSpatialInfoList());
+        rebuildDrawableObjects();
     }
+   
     
-
-    
-    private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjects) {
+    public void rebuildDrawableObjects() {
+    	HashMap<Integer, SpatialObject> newObjects = converter.getObjectSpatialInfoList();
 		Stream<Integer> toBeDeleted = drawnObjects.keySet()
 				.stream()
 				.filter(x -> !newObjects.containsKey(x));
@@ -140,7 +140,8 @@ public class BuildView extends JPanel {
 						} catch (InvalidBarrierNumberException e1) {
 	    					JOptionPane.showMessageDialog(parent, "Min barrier number requirement not satified.", "Error", JOptionPane.ERROR_MESSAGE);
 						}
-            			rebuildDrawableObjects(converter.getObjectSpatialInfoList());            		}
+            			rebuildDrawableObjects();            		
+            		}
             	}
             }
 
@@ -162,7 +163,7 @@ public class BuildView extends JPanel {
     				}
                     offset = null;
                 
-                    rebuildDrawableObjects(converter.getObjectSpatialInfoList());
+                    rebuildDrawableObjects();
             	}
             }
         });

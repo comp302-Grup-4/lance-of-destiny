@@ -4,6 +4,7 @@ package domain.animation;
 import java.io.Serializable;
 
 public class Vector implements Serializable {
+	private static final long serialVersionUID = -3248368031541036705L;
 	float x, y;
 	
 	public Vector(float x, float y) {

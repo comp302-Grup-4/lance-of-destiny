@@ -7,6 +7,7 @@ import domain.animation.Vector;
 import java.io.Serializable;
 
 public abstract class Barrier extends AnimationObject implements Serializable {
+	private static final long serialVersionUID = 7277758222630673174L;
 	public static final String SIMPLE_BARRIER = "simple";
 	public static final String FIRM_BARRIER = "firm";
 	public static final String EXPLOSIVE_BARRIER = "explosive";

@@ -1,6 +1,8 @@
 package domain.animation;
 
-public abstract class AnimationObject implements Movable, Collidable {
+import java.io.Serializable;
+
+public abstract class AnimationObject implements Movable, Collidable, Serializable {
 	private static int objectIDCounter = 0;
 	protected int objectID;
 	protected Vector position;
