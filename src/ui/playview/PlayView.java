@@ -9,6 +9,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -16,6 +18,8 @@ import javax.swing.*;
 
 import domain.Game;
 import domain.animation.Animator;
+import domain.animation.BarrierGrid;
+import exceptions.InvalidBarrierNumberException;
 
 public class PlayView extends JPanel {
 	
@@ -253,8 +257,8 @@ public class PlayView extends JPanel {
 
 		// Create buttons for each option
 		JButton resumeButton = new JButton("Resume");
-		JButton saveButton = new JButton("Save");
-		JButton loadButton = new JButton("Load");
+//		JButton saveButton = new JButton("Save");
+//		JButton loadButton = new JButton("Load");
 		JButton exitButton = new JButton("Exit");
 
 		// Add action listeners to each button
@@ -273,19 +277,31 @@ public class PlayView extends JPanel {
 			}
 		});
 
-		saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Save the game state here...
-			}
-		});
-
-		loadButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Load the game state here...
-			}
-		});
+//		saveButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Save the game state here...
+//				String filename = JOptionPane.showInputDialog("Enter save name:");
+//				if (filename != null) {
+//					saveGame(filename + ".txt");
+//				}
+//			}
+//		});
+//
+//		loadButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Load the game state here...
+//				String filename = JOptionPane.showInputDialog("Enter save name to load:");
+//				if (filename != null) {
+//                    try {
+//                        loadGame(filename + ".ser");
+//                    } catch (FileNotFoundException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
+//                }
+//			}
+//		});
 
 		exitButton.addActionListener(new ActionListener() {
 			@Override
@@ -296,8 +312,8 @@ public class PlayView extends JPanel {
 
 		// Add buttons to the pause menu
 		pauseMenu.add(resumeButton);
-		pauseMenu.add(saveButton);
-		pauseMenu.add(loadButton);
+//		pauseMenu.add(saveButton);
+//		pauseMenu.add(loadButton);
 		pauseMenu.add(exitButton);
 
 		// Set the size of the pause menu and make it visible

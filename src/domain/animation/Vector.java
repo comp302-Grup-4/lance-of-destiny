@@ -1,7 +1,9 @@
 package domain.animation;
 
 
-public class Vector {
+import java.io.Serializable;
+
+public class Vector implements Serializable {
 	float x, y;
 	
 	public Vector(float x, float y) {
