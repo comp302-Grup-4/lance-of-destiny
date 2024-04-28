@@ -70,4 +70,9 @@ public abstract class Barrier extends AnimationObject {
 	}
 	
 	public abstract String getName();
+
+	public BarrierGrid getParentGrid() {
+		// TODO Auto-generated method stub
+		return parentGrid;
+	}
 }

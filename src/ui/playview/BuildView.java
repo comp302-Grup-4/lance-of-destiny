@@ -60,6 +60,7 @@ public class BuildView extends JPanel {
         rebuildDrawableObjects(converter.getObjectSpatialInfoList());
     }
     
+
     
     private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjects) {
 		Stream<Integer> toBeDeleted = drawnObjects.keySet()
@@ -83,7 +84,7 @@ public class BuildView extends JPanel {
 		this.revalidate();
 		this.repaint();
 	}
-    
+
     private void updateDrawableObject(SpatialObject newObjInfo) {
         drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
                 (int) newObjInfo.position.getY(), 
@@ -110,7 +111,10 @@ public class BuildView extends JPanel {
     
     
     private void addDragDropFunctionality(JLabel obj, SpatialObject newObjInfo) {
+
     	Barrier b = (Barrier) newObjInfo.getAnimationObject();
+
+ 
     	obj.addMouseListener(new MouseAdapter() {
            
             @Override
@@ -169,10 +173,12 @@ public class BuildView extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (offset != null) {
 
+
                     float x = e.getXOnScreen() - offset.getX() - parent.getLocationOnScreen().x;
                     float y = e.getYOnScreen() - offset.getY() - parent.getLocationOnScreen().y;
 
                     obj.setLocation((int)x , (int)y);
+
                 }
             }
         });
