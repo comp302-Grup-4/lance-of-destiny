@@ -9,6 +9,7 @@ import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
 import exceptions.InvalidBarrierNumberException;
+import exceptions.InvalidBarrierPositionException;
 
 public class Animator {
 	public static int RIGHT = 1;
@@ -158,14 +159,16 @@ public class Animator {
 		addAnimationObject(rightWall);
 		addAnimationObject(upperWall);
 		addAnimationObject(lowerWall);
-	}
-
-//	// deneme
-//	public void setBarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
-//		this.barrierGrid = new BarrierGrid(simple, firm, explosive, gift);
-//		initializeAnimationObjects();
 	
-	//deneme
+	}
+	
+	public void deleteBarrierAt(Vector position) throws InvalidBarrierNumberException {
+		Barrier b = barrierGrid.deleteBarrierAt(position);
+		if (b != null) {
+			removeAnimationObject(b);
+		}
+	}
+	
 	public void setBarrierGrid(BarrierGrid newbg) throws InvalidBarrierNumberException {
 			this.barrierGrid = newbg;	
 			initializeAnimationObjects();

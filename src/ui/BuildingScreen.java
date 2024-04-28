@@ -1,8 +1,6 @@
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -13,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -22,15 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 
 import domain.Game;
 import domain.animation.BarrierGrid;
 import exceptions.InvalidBarrierNumberException;
 import ui.playview.BuildView;
-//import domain.animation.SimpleBarrier;
-import ui.playview.PlayView;
 
 public class BuildingScreen extends JPanel {
 
@@ -58,6 +52,7 @@ public class BuildingScreen extends JPanel {
 		
 		gridPanel = new JPanel();
 		gridPanel.setBackground(Color.gray);
+		gridPanel.setBorder(new LineBorder(Color.black, 3));
 		
 		cons.weightx = 50;
 		cons.gridx = 0;
@@ -74,10 +69,10 @@ public class BuildingScreen extends JPanel {
 		icon2 = new JLabel(new ImageIcon("res/drawable/largeFirm.png"));
 		icon3 = new JLabel(new ImageIcon("res/drawable/largeRedGem.png"));
 		icon4 = new JLabel(new ImageIcon("res/drawable/largeGreenGem.png"));
-		label1 = new JLabel("Number of simple obstacles");
-		label2 = new JLabel("Number of firm obstacles");
-		label3 = new JLabel("Number of explosive obstacles");
-		label4 = new JLabel("Number of gift obstacles");
+		label1 = new JLabel("<html>Simple barriers</html>");
+		label2 = new JLabel("<html>Firm barriers</html>");
+		label3 = new JLabel("<html>Explosive barriers</html>");
+		label4 = new JLabel("<html>Gift barriers</html>");
 		field1 = new JTextField();
 		field2 = new JTextField();
 		field3 = new JTextField();
@@ -100,7 +95,6 @@ public class BuildingScreen extends JPanel {
 		inputPanel.add(icon4);
 		inputPanel.add(label4);
 		inputPanel.add(field4);
-		inputPanel.setBackground(Color.blue);
 
 		cons.ipady = 0;
 		
@@ -156,18 +150,17 @@ public class BuildingScreen extends JPanel {
 		cons.weighty = 8;
 		cons.gridx = 1;
 		cons.gridy = 0;
-		barrierPanel.setBackground(Color.CYAN);
 		
 		this.add(barrierPanel, cons);
 		
-		buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		cons.ipady = 0;
 		cons.weightx = 0;
 		cons.weighty = 1;
 		cons.gridwidth = 2;
 		cons.gridx = 0;
 		cons.gridy = 1;
-		buttonPanel.setBackground(Color.green);
+		buttonPanel.setBackground(new Color(30,55,120));
 		
 		JButton saveButton = new JButton("Save");
 		

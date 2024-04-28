@@ -1,29 +1,28 @@
 package ui.playview;
 
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import domain.Game;
-import domain.animation.Animator;
-import domain.animation.BarrierGrid;
 import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
-import domain.animation.barriers.ExplosiveBarrier;
-
+import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
-import ui.BuildingScreen;
-import ui.playview.AnimatorUIConverter;
-import ui.playview.SpatialObject;
 
 
 public class BuildView extends JPanel {
@@ -31,20 +30,16 @@ public class BuildView extends JPanel {
     private AnimatorUIConverter converter;
     private HashMap<Integer, JComponent> drawnObjects;
     private Game game;
-    private Vector offset; 
+    private Vector offset = null; 
     
     private Vector init;
     
     private int windowHeight;
     private int windowWidth;
 
-    private float MARGIN = (float) 0.15;
-	private int width;
-	private int height;
-	private JPanel parent;
+    private JPanel parent;
     
-	private Vector position;
-    /**
+	/**
      * Create the panel.
      */
     public BuildView(JPanel parent, Game game) {
@@ -52,33 +47,42 @@ public class BuildView extends JPanel {
     	Dimension parentSize = parent.getSize();
         this.windowHeight = parentSize.height;
         this.windowWidth = parentSize.width;
-
-       
+        
+               
         this.game = game;
         drawnObjects = new HashMap<>();
         this.converter = new AnimatorUIConverter(game.getAnimator(), new Dimension(windowWidth, windowHeight));
         
-        this.position = new Vector(24.0,49.0);
-
         this.setLayout(null);
         this.setVisible(true);
         this.setFocusable(true);
-
+        
         rebuildDrawableObjects(converter.getObjectSpatialInfoList());
     }
     
     
-    private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjectsInfo) {
-        drawnObjects.keySet().retainAll(newObjectsInfo.keySet()); // remove all non-existent objects in new info
-        for (Integer id : newObjectsInfo.keySet()) { // adjust each object in drawn objects
-        	SpatialObject newObjInfo = newObjectsInfo.get(id);
-            if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
-                updateDrawableObject(newObjectsInfo.get(id));
-            } else {
-                addDrawableObject(newObjectsInfo.get(id));
-            }
-        }
-    }
+    private void rebuildDrawableObjects(HashMap<Integer, SpatialObject> newObjects) {
+		Stream<Integer> toBeDeleted = drawnObjects.keySet()
+				.stream()
+				.filter(x -> !newObjects.containsKey(x));
+		
+		toBeDeleted.forEach(x -> removeDrawableObject(x));
+		
+		drawnObjects.keySet().retainAll(newObjects.keySet()); // remove all non-existent objects in new info
+		for (Integer id : newObjects.keySet()) { // adjust each object in drawn objects
+			if (drawnObjects.containsKey(id)) { // if new object was already in drawn objects
+				updateDrawableObject(newObjects.get(id));
+			} else {
+				addDrawableObject(newObjects.get(id));
+			}
+		}
+    }	
+    
+    private void removeDrawableObject(Integer objID) {
+		this.remove(drawnObjects.get(objID));
+		this.revalidate();
+		this.repaint();
+	}
     
     private void updateDrawableObject(SpatialObject newObjInfo) {
         drawnObjects.get(newObjInfo.ID).setBounds((int) newObjInfo.position.getX(),
@@ -98,7 +102,6 @@ public class BuildView extends JPanel {
         	addDragDropFunctionality(newObj, newObjInfo);
         }
  
-        
         this.add(newObj);
         this.revalidate();
         this.repaint();
@@ -106,41 +109,57 @@ public class BuildView extends JPanel {
     }
     
     
-
     private void addDragDropFunctionality(JLabel obj, SpatialObject newObjInfo) {
     	Barrier b = (Barrier) newObjInfo.getAnimationObject();
     	obj.addMouseListener(new MouseAdapter() {
            
-
             @Override
             public void mousePressed(MouseEvent e) {
-            	
-                offset = new Vector(e.getX(), e.getY());
-                float a = e.getXOnScreen(); //??
-                float b = e.getYOnScreen();//??
-                init = new Vector(a,b);
-
+            	if (e.getButton() == MouseEvent.BUTTON1) {
+	                offset = new Vector(e.getX(), e.getY());
+	                float a = e.getXOnScreen();
+	                float b = e.getYOnScreen();
+	                init = new Vector(a,b);
+            	} else if (e.getButton() == MouseEvent.BUTTON3) {
+	                float a = e.getXOnScreen();
+	                float b = e.getYOnScreen();
+	                init = new Vector(a,b);
+            		int res = JOptionPane.showConfirmDialog(BuildView.this, 
+            				"Delete the barrier?", 
+            				"Barrier Deletion", 
+            				JOptionPane.OK_CANCEL_OPTION);
+            		if (res == JOptionPane.OK_OPTION) {
+            			try {
+							game.getAnimator()
+							    .deleteBarrierAt(converter.convertPositionToAnimator(init.subtract(new Vector(parent.getLocationOnScreen().x, 
+							                                                      parent.getLocationOnScreen().y))));
+						} catch (InvalidBarrierNumberException e1) {
+	    					JOptionPane.showMessageDialog(parent, "Min barrier number requirement not satified.", "Error", JOptionPane.ERROR_MESSAGE);
+						}
+            			rebuildDrawableObjects(converter.getObjectSpatialInfoList());            		}
+            	}
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-            	float i = e.getXOnScreen() - offset.getX();
-                float j = e.getYOnScreen() - offset.getY();
-                         
+            	if (offset != null) {
+            		float i = e.getXOnScreen() - parent.getLocationOnScreen().x;
+                    float j = e.getYOnScreen() - parent.getLocationOnScreen().y;
 
+                    try {
+    					game.getAnimator()
+    					    .getBarrierGrid()
+    					    .changeBarrierPosition(b, 
+    							converter.convertPositionToAnimator(new Vector(i,j)), 
+    							converter.convertPositionToAnimator(init.subtract(new Vector(parent.getLocationOnScreen().x, 
+    									                                                parent.getLocationOnScreen().y))));
+    				} catch (InvalidBarrierPositionException e1) {
+    					JOptionPane.showMessageDialog(parent, "Invalid barrier position", "Error", JOptionPane.ERROR_MESSAGE);
+    				}
+                    offset = null;
                 
-                try {
-					game.getAnimator().getBarrierGrid().changeBarrierPosition(b, new Vector(i,j), init);
-				} catch (InvalidBarrierPositionException e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(parent, "Invalid barrier position", "Error", JOptionPane.ERROR_MESSAGE);
-				}
-                offset = null;
-            
-                rebuildDrawableObjects(converter.getObjectSpatialInfoList());
-              //  game.getAnimator().getBarrierGrid().printBarrierArray();
-               
-              
+                    rebuildDrawableObjects(converter.getObjectSpatialInfoList());
+            	}
             }
         });
 
@@ -150,15 +169,27 @@ public class BuildView extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (offset != null) {
 
-                    float x = e.getXOnScreen() - offset.getX();
-                    float y = e.getYOnScreen() - offset.getY();
+                    float x = e.getXOnScreen() - offset.getX() - parent.getLocationOnScreen().x;
+                    float y = e.getYOnScreen() - offset.getY() - parent.getLocationOnScreen().y;
 
                     obj.setLocation((int)x , (int)y);
                 }
-                   
-
             }
         });
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+    	super.paintComponent(g);
+    	if (offset != null) {
+    		g.setColor(Color.red);
+    		g.drawLine(0,
+    				(int) game.getAnimator().getBarrierGrid().getSize().getHeight(), 
+    				this.getWidth(),
+    				(int) game.getAnimator().getBarrierGrid().getSize().getHeight());
+    	}
+    	this.repaint();
+    		
     }
 }
     
