@@ -5,8 +5,8 @@ import java.io.Serializable;
 public abstract class AnimationObject implements Movable, Collidable, Serializable {
 	private static int objectIDCounter = 0;
 	protected int objectID;
-	protected Vector position;
-	protected Vector velocity; // pixel per milisecond
+	protected Vector position = Vector.zero();
+	protected Vector velocity; // pixel per millisecond
 	protected boolean isCollidable;
 	protected float sizeX;
 	protected float sizeY;
@@ -107,7 +107,8 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 	public void setSize(float sizeX, float sizeY) {
 		float expansionX = sizeX / this.sizeX;
 		float expansionY = sizeY / this.sizeY;
-		updateCenterPoint(Vector.zero(), expansionX, expansionY);
+		this.position = Vector.of(center.x - sizeX / 2, center.y - sizeY / 2);
+		updateCenterPoint(Vector.zero());
 		updateBoundaryPoints(Vector.zero(), expansionX, expansionY);
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
@@ -157,8 +158,8 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		 */	
 		
 		for (Vector vector : boundaryPoints) {
-			vector.setX(vector.getX() + (displacement.getX() * expansionX));
-			vector.setY(vector.getY() + (displacement.getY() * expansionY));
+			vector.setX((vector.getX() - center.x) * expansionX + center.x + displacement.x);
+			vector.setY((vector.getY() - center.y) * expansionY + center.y + displacement.y);
 		}
 		
 		for (int i = 0; i < boundaryPoints.length; i++) {
@@ -167,14 +168,10 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 	}
 
 	protected void updateCenterPoint(Vector displacement) {
-		updateCenterPoint(displacement, 1, 1);
+		this.center.setX(this.center.x + displacement.x);
+		this.center.setY(this.center.y + displacement.y);
 	};
-
-	protected void updateCenterPoint(Vector displacement, float expansionX, float expansionY) {
-		this.center.setX(this.center.x + (displacement.x * expansionX));
-		this.center.setY(this.center.y + (displacement.y * expansionY));
-	};
-
+	
 	@Override
 	public Vector[] getBoundaryPoints() {
 		return boundaryPoints;

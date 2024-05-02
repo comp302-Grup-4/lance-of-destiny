@@ -3,6 +3,7 @@ package domain.animation.barriers;
 import domain.animation.BarrierGrid;
 
 public class ReinforcedBarrier extends Barrier{
+	private static final long serialVersionUID = -318953954618353308L;
 	private int hitCount;
 	
 	public ReinforcedBarrier(BarrierGrid grid) {

@@ -1,11 +1,11 @@
 package domain.animation.barriers;
 
 import domain.animation.BarrierGrid;
-
 import java.io.Serializable;
 
 public class BarrierFactory implements Serializable {
-	
+	private static final long serialVersionUID = 4452747295618332851L;
+
 	public Barrier createBarrier(String name, BarrierGrid bg) {
 		if(name.equals("simple")) {
 			return new SimpleBarrier(bg, "simple");

@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class FireBall extends AnimationObject implements Serializable {
 	private static final long serialVersionUID = 6744117051981779488L;
 	private int RADIUS = 8;
+	private boolean isOverwhelming = false;
 	
 	public FireBall() {
 		this(492, 600);
@@ -65,6 +66,14 @@ public class FireBall extends AnimationObject implements Serializable {
 	public void reset() {
 		this.setPlacement(Vector.of(492, 600), 0);
 		this.setVelocity(Vector.fromDegrees(90).scale(400));
+	}
+	
+	public boolean isOverwhelming() {
+		return isOverwhelming;
+	}
+	
+	public void setOverwhelming(boolean isOverwhelming) {
+		this.isOverwhelming = isOverwhelming;
 	}
 
 }

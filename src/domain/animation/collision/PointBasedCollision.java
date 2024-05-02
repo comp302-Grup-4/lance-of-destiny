@@ -11,7 +11,7 @@ public class PointBasedCollision implements CollisionStrategy {
 		CollisionInfo info = new CollisionInfo();
 		for (Vector collisionPoint : object.getBoundaryPoints()) {
 			for (Collidable collidable : otherObjects) {
-				if (collidable.contains(collisionPoint)) {
+				if (collidable.isCollidable() && collidable.contains(collisionPoint)) {
 					info.addCollidedObject(collidable);
 					info.addToPreviousVelocity(object.getCenterPoint().subtract(collisionPoint));
 				}

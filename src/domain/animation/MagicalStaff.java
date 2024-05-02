@@ -39,11 +39,13 @@ public class MagicalStaff extends AnimationObject {
 	}
 	
 	public void setLength(float newLength) {
-		sizeX = newLength;
+		if (newLength < 980) {
+			setSize(newLength, sizeY);			
+		}
 	}
 	
 	public void reset() {
-		this.setPlacement(Vector.of(450, MS_HORIZON), 0);
+		this.setPlacement(Vector.of(500 - getLength() / 2, MS_HORIZON), 0);
 		this.angularVelocity = 0;
 	}
 }

@@ -262,7 +262,7 @@ public class BuildingScreen extends JPanel {
 //	}
 
 	private void loadBuild(String fileName) throws ClassNotFoundException, IOException, InvalidBarrierNumberException {
-		game.loadBarrierGrid(fileName);
+		bg = game.loadBarrierGrid(fileName);
 	    
 	    if (buildView != null) 
 			gridPanel.remove(buildView);
