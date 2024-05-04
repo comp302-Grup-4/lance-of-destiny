@@ -204,7 +204,6 @@ public class Animator implements Serializable{
 		for (Barrier barrier : barrierGrid.getBarrierList()) {
 			addAnimationObject(barrier);
 			if (barrier.getType().equals("destroyed")) {
-				System.out.println("HELLOOOO!!");
 				removeAnimationObject(barrier);
 			}
 		}
@@ -246,14 +245,16 @@ public class Animator implements Serializable{
 	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
 	}
-	
-	private long getPassedTime() {
+
+	// is this exact enough?
+	public long getPassedTime() {
 		return (System.currentTimeMillis() - startTimeMilli) / 1000;
 	}
 	
 	private void increaseScoreAfterDestroyingBarrier() {
 		int oldScore = game.getPlayer().getScore();
-		game.getPlayer().setScore((int) (oldScore + 300 / getPassedTime()));
+		int newScore = (int) (oldScore + 300 / getPassedTime());
+		game.getPlayer().setScore(newScore);
 	}
 
 	public void moveMagicalStaff(int direction) {
@@ -286,5 +287,29 @@ public class Animator implements Serializable{
 		} else if (direction == LROTATE) {
 			staffRotatesLeft = false;
 		}
+	}
+
+	public long getStartTimeMilli() {
+		return startTimeMilli;
+	}
+
+	public void setStartTimeMilli(long startTimeMilli) {
+		this.startTimeMilli = startTimeMilli;
+	}
+
+	public FireBall getFireball() {
+		return ball;
+	}
+
+	public void setFireball(FireBall ball) {
+		this.ball = ball;
+	}
+
+	public MagicalStaff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(MagicalStaff staff) {
+		this.staff = staff;
 	}
 }

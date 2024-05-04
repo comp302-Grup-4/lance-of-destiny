@@ -255,6 +255,7 @@ public class PlayView extends JPanel {
 
 		// Create a new dialog for the pause menu
 		JDialog pauseMenu = new JDialog();
+		pauseMenu.setModal(true);
 		pauseMenu.setAlwaysOnTop(true);
 		pauseMenu.setTitle("Pause Menu");
 		pauseMenu.setLayout(new GridLayout(4, 1));
@@ -287,10 +288,12 @@ public class PlayView extends JPanel {
 				String filename = JOptionPane.showInputDialog("Enter save name:");
 				if (filename != null) {
 					try {
+//						game.saveGame(filename);
 						game.saveGameState(filename);
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(PlayView.this, "Error while saving the file.", "Error", JOptionPane.ERROR_MESSAGE);
-					}
+						throw new RuntimeException(e1);
+                    }
 				}
 			}
 		});
@@ -301,6 +304,7 @@ public class PlayView extends JPanel {
 				String filename = JOptionPane.showInputDialog("Enter save name to load:");
 				if (filename != null) {
                     try {
+//						game.loadGame(filename);
                         game.loadGameState(filename);
                     } catch (FileNotFoundException ex) {
     					JOptionPane.showMessageDialog(PlayView.this, "File not found.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -326,6 +330,7 @@ public class PlayView extends JPanel {
 
 		// Set the size of the pause menu and make it visible
 		pauseMenu.setSize(200, 200);
+		pauseMenu.setLocationRelativeTo(null);
 		pauseMenu.setVisible(true);
 	}
 

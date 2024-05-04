@@ -3,10 +3,9 @@ package domain;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import domain.animation.Animator;
-import domain.animation.BarrierGrid;
-import domain.animation.SpellDepot;
+import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
 
 import javax.swing.*;
@@ -47,9 +46,26 @@ public class Game implements Serializable {
 
 	}
 
+	public void saveStats(String name) throws IOException {
+		BufferedWriter writer = Files.newBufferedWriter(Path.of(name + ".st"));
+		writer.write(player.getChances() + "\n");
+		writer.write(player.getScore() + "\n");
+		long timeElapsed = System.currentTimeMillis() - animator.getStartTimeMilli();
+		writer.write(timeElapsed + "\n");
+		writer.close();
+	}
+
+	public void loadStats(String name) throws IOException {
+		BufferedReader reader = Files.newBufferedReader(Path.of(name + ".st"));
+		player.setChances(Integer.parseInt(reader.readLine()));
+		player.setScore(Integer.parseInt(reader.readLine()));
+		animator.setStartTimeMilli(System.currentTimeMillis() - Long.parseLong(reader.readLine()));
+		reader.close();
+	}
+
 	public void saveBarrierGrid(String name) throws IOException {
 		FileOutputStream fileOutputStream
-				= new FileOutputStream(name + ".txt");
+				= new FileOutputStream(name + ".bg");
 		ObjectOutputStream objectOutputStream
 				= new ObjectOutputStream(fileOutputStream);
 		objectOutputStream.writeObject(animator.getBarrierGrid());
@@ -57,9 +73,10 @@ public class Game implements Serializable {
 		objectOutputStream.close();
 	}
 
+
 	public BarrierGrid loadBarrierGrid(String name) throws IOException, ClassNotFoundException, InvalidBarrierNumberException {
 		FileInputStream fileInputStream
-	      = new FileInputStream(name + ".txt");
+	      = new FileInputStream(name + ".bg");
 	    ObjectInputStream objectInputStream
 	      = new ObjectInputStream(fileInputStream);
 	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
@@ -68,21 +85,60 @@ public class Game implements Serializable {
 	    return bg;
 	}
 
+	public void saveFireball(String name) throws IOException {
+		FileOutputStream fileOutputStream
+				= new FileOutputStream(name + ".fb");
+		ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(fileOutputStream);
+		objectOutputStream.writeObject(animator.getFireball());
+		objectOutputStream.flush();
+		objectOutputStream.close();
+	}
+
+	public void loadFireball(String name) throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream(name + ".fb");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    animator.setFireball((FireBall) objectInputStream.readObject());
+	    objectInputStream.close();
+	}
+
+	public void saveStaff(String name) throws IOException {
+		FileOutputStream fileOutputStream
+				= new FileOutputStream(name + ".stf");
+		ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(fileOutputStream);
+		objectOutputStream.writeObject(animator.getStaff());
+		objectOutputStream.flush();
+		objectOutputStream.close();
+	}
+
+	public void loadStaff(String name) throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream(name + ".stf");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    animator.setStaff((MagicalStaff) objectInputStream.readObject());
+	    objectInputStream.close();
+	}
+
+	// TODO save and load spells
+
 	public void saveGameState(String name) throws IOException {
 		if (name != null) {
 			try {
-				System.out.println("Saving barrier grid...");
-				saveBarrierGrid(name);
-				System.out.println("Barrier grid saved successfully.");
+				Path path = Paths.get("saved_games/" + name);
+				if (!Files.exists(path)) {
+					Files.createDirectories(path);
+				}
 
-				System.out.println("Saving player chances and score...");
-				BufferedWriter writer = Files.newBufferedWriter(Path.of(name + ".st"));
-				int chances = player.getChances();
-				int score = player.getScore();
-				writer.write(chances + "\n");
-				writer.write(score + "\n");
-				writer.close();
-				System.out.println("Player chances (" + chances + ") and score (" + score + ") saved successfully.");
+				String savePath = "saved_games/" + name + "/";
+				saveStats(savePath);
+				saveStaff(savePath);
+				saveFireball(savePath);
+				saveBarrierGrid(savePath);
+
 			} catch (IOException e) {
 				System.out.println("An error occurred while saving the game state.");
 				e.printStackTrace();
@@ -93,17 +149,12 @@ public class Game implements Serializable {
 	public void loadGameState(String name) throws IOException {
 		if (name != null) {
 			try {
-				System.out.println("Loading barrier grid...");
-				loadBarrierGrid(name);
-				System.out.println("Barrier grid loaded successfully.");
+				String loadPath = "saved_games/" + name + "/";
+				loadStats(loadPath);
+				loadStaff(loadPath);
+				loadFireball(loadPath);
+				loadBarrierGrid(loadPath); // this should be last
 
-				System.out.println("Loading player chances and score...");
-				BufferedReader reader = Files.newBufferedReader(Path.of(name + ".st"));
-				int chances = Integer.parseInt(reader.readLine());
-				int score = Integer.parseInt(reader.readLine());
-				player.setChances(chances);
-				player.setScore(score);
-				System.out.println("Player chances (" + chances + ") and score (" + score + ") loaded successfully.");
 			} catch (IOException e) {
 				System.out.println("An error occurred while loading the game state.");
 				e.printStackTrace();
