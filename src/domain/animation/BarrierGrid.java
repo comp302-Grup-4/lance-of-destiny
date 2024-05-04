@@ -256,6 +256,7 @@ public class BarrierGrid implements Serializable{
 				checkBarrierNumberValidity(simpleBarrierNumber, firmBarriers, explosiveBarriers, giftBarriers - 1);
 				giftBarriers--;
 			}
+			b.setType("destroyed");
 			this.barrierList.remove(b);
 			barrierArray[(int) gridPos.x][(int) gridPos.y] = null;
 		} catch (InvalidBarrierPositionException e) {

@@ -288,8 +288,11 @@ public class Animator implements Serializable{
 		animationObjects = new CopyOnWriteArraySet<AnimationObject>();
 		addAnimationObject(ball);
 		addAnimationObject(staff);
-		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
+		for (Barrier barrier : barrierGrid.getBarrierList()) {
 			addAnimationObject(barrier);
+			if (barrier.getType().equals("destroyed")) {
+				removeAnimationObject(barrier);
+			}
 		}
 		addAnimationObject(leftWall);
 		addAnimationObject(rightWall);
@@ -319,6 +322,10 @@ public class Animator implements Serializable{
 	}
 
 	private void removeAnimationObject(AnimationObject movable) {
+		if (movable instanceof Barrier) {
+			Barrier barrier = (Barrier) movable;
+			barrier.setType("destroyed");
+		}
 		animationObjects.remove(movable);
 	}
 
@@ -333,7 +340,8 @@ public class Animator implements Serializable{
 	
 	private void increaseScoreAfterDestroyingBarrier() {
 		int oldScore = game.getPlayer().getScore();
-		game.getPlayer().setScore((int) (oldScore + 300 / getPassedTime()));
+		int newScore = (int) (oldScore + 300 / getPassedTime());
+		game.getPlayer().setScore(newScore);
 	}
 
 	public void moveMagicalStaff(int direction) {
@@ -366,5 +374,29 @@ public class Animator implements Serializable{
 		} else if (direction == LROTATE) {
 			staffRotatesLeft = false;
 		}
+	}
+
+	public long getStartTimeMilli() {
+		return startTimeMilli;
+	}
+
+	public void setStartTimeMilli(long startTimeMilli) {
+		this.startTimeMilli = startTimeMilli;
+	}
+
+	public FireBall getFireball() {
+		return ball;
+	}
+
+	public void setFireball(FireBall ball) {
+		this.ball = ball;
+	}
+
+	public MagicalStaff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(MagicalStaff staff) {
+		this.staff = staff;
 	}
 }

@@ -232,34 +232,14 @@ public class BuildingScreen extends JPanel {
 				g.exitGame();
 			}
 		});
-		
 
 		buttonPanel.add(saveButton);
 		buttonPanel.add(loadButton);
 		buttonPanel.add(playButton);
 		buttonPanel.add(exitButton);
 		
-		
 		this.add(buttonPanel, cons);
-		
-		
 	}
-	
-//	private void saveGrid() {
-//		try {
-//			game.saveBarrierGrid();
-//		} catch (IOException e) {
-//			JOptionPane.showInputDialog(this, "Barrier grid could not be saved.");
-//		}
-//	}
-//	
-//	private void loadSavedGrids() {
-//		try {
-//			game.loadBarrierGrid();
-//		} catch (Exception e) {
-//			JOptionPane.showInputDialog(this, "Barrier grid could not be loaded.");
-//		}
-//	}
 
 	private void loadBuild(String fileName) throws ClassNotFoundException, IOException, InvalidBarrierNumberException {
 		bg = game.loadBarrierGrid(fileName);

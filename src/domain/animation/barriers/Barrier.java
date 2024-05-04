@@ -79,11 +79,7 @@ public abstract class Barrier extends AnimationObject implements Serializable {
 	}
 	
 	public String getType() {
-		if (isCollidable) {
-			return type;
-		} else {
-			return "destroyed";
-		}
+		return type;
 	}
 
 	public void setType(String type) {

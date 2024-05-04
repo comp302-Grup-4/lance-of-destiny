@@ -255,14 +255,15 @@ public class PlayView extends JPanel {
 
 		// Create a new dialog for the pause menu
 		JDialog pauseMenu = new JDialog();
+		pauseMenu.setModal(true);
 		pauseMenu.setAlwaysOnTop(true);
 		pauseMenu.setTitle("Pause Menu");
 		pauseMenu.setLayout(new GridLayout(4, 1));
 
 		// Create buttons for each option
 		JButton resumeButton = new JButton("Resume");
-//		JButton saveButton = new JButton("Save");
-//		JButton loadButton = new JButton("Load");
+		JButton saveButton = new JButton("Save");
+		JButton loadButton = new JButton("Load");
 		JButton exitButton = new JButton("Exit");
 
 		// Add action listeners to each button
@@ -281,39 +282,38 @@ public class PlayView extends JPanel {
 			}
 		});
 
-//		saveButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// TODO Save the game state here...
-//				String filename = JOptionPane.showInputDialog("Enter save name:");
-//				if (filename != null) {
-//					try {
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String filename = JOptionPane.showInputDialog("Enter save name:");
+				if (filename != null) {
+					try {
 //						game.saveGame(filename);
-//					} catch (IOException e1) {
-//						JOptionPane.showMessageDialog(PlayView.this, "Error while saving the file.", "Error", JOptionPane.ERROR_MESSAGE);
-//					}
-//				}
-//			}
-//		});
-//
-//		loadButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// TODO Load the game state here...
-//				String filename = JOptionPane.showInputDialog("Enter save name to load:");
-//				if (filename != null) {
-//                    try {
-//                        game.loadGame(filename + ".txt");
-//                    } catch (FileNotFoundException ex) {
-//    					JOptionPane.showMessageDialog(PlayView.this, "File not found.", "Error", JOptionPane.ERROR_MESSAGE);
-//                    } catch (ClassNotFoundException e1) {
-//						e1.printStackTrace();
-//					} catch (IOException e1) {
-//    					JOptionPane.showMessageDialog(PlayView.this, "Error while loading the file.", "Error", JOptionPane.ERROR_MESSAGE);
-//					}
-//                }
-//			}
-//		});
+						game.saveGameState(filename);
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(PlayView.this, "Error while saving the file.", "Error", JOptionPane.ERROR_MESSAGE);
+						throw new RuntimeException(e1);
+                    }
+				}
+			}
+		});
+
+		loadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String filename = JOptionPane.showInputDialog("Enter save name to load:");
+				if (filename != null) {
+                    try {
+//						game.loadGame(filename);
+                        game.loadGameState(filename);
+                    } catch (FileNotFoundException ex) {
+    					JOptionPane.showMessageDialog(PlayView.this, "File not found.", "Error", JOptionPane.ERROR_MESSAGE);
+					} catch (IOException e1) {
+    					JOptionPane.showMessageDialog(PlayView.this, "Error while loading the file.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+                }
+			}
+		});
 
 		exitButton.addActionListener(new ActionListener() {
 			@Override
@@ -324,12 +324,13 @@ public class PlayView extends JPanel {
 
 		// Add buttons to the pause menu
 		pauseMenu.add(resumeButton);
-//		pauseMenu.add(saveButton);
-//		pauseMenu.add(loadButton);
+		pauseMenu.add(saveButton);
+		pauseMenu.add(loadButton);
 		pauseMenu.add(exitButton);
 
 		// Set the size of the pause menu and make it visible
 		pauseMenu.setSize(200, 200);
+		pauseMenu.setLocationRelativeTo(null);
 		pauseMenu.setVisible(true);
 	}
 

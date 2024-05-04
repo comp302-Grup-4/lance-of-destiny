@@ -1,8 +1,11 @@
 package domain;
 
 import java.io.*;
-import domain.animation.Animator;
-import domain.animation.BarrierGrid;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
 
 public class Game implements Serializable {
@@ -28,16 +31,6 @@ public class Game implements Serializable {
 	    objectOutputStream.close();
 	}
 	
-	public void saveBarrierGrid(String name) throws IOException {
-		FileOutputStream fileOutputStream
-	      = new FileOutputStream(name + ".txt");
-	    ObjectOutputStream objectOutputStream 
-	      = new ObjectOutputStream(fileOutputStream);
-	    objectOutputStream.writeObject(animator.getBarrierGrid());
-	    objectOutputStream.flush();
-	    objectOutputStream.close();
-	}
-
 	public Game loadGame(String name) throws IOException, ClassNotFoundException {
 		FileInputStream fileInputStream
 	      = new FileInputStream(name + ".txt");
@@ -49,9 +42,37 @@ public class Game implements Serializable {
 
 	}
 
+	public void saveStats(String name) throws IOException {
+		BufferedWriter writer = Files.newBufferedWriter(Path.of(name + ".st"));
+		writer.write(player.getChances() + "\n");
+		writer.write(player.getScore() + "\n");
+		long timeElapsed = System.currentTimeMillis() - animator.getStartTimeMilli();
+		writer.write(timeElapsed + "\n");
+		writer.close();
+	}
+
+	public void loadStats(String name) throws IOException {
+		BufferedReader reader = Files.newBufferedReader(Path.of(name + ".st"));
+		player.setChances(Integer.parseInt(reader.readLine()));
+		player.setScore(Integer.parseInt(reader.readLine()));
+		animator.setStartTimeMilli(System.currentTimeMillis() - Long.parseLong(reader.readLine()));
+		reader.close();
+	}
+
+	public void saveBarrierGrid(String name) throws IOException {
+		FileOutputStream fileOutputStream
+				= new FileOutputStream(name + ".bg");
+		ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(fileOutputStream);
+		objectOutputStream.writeObject(animator.getBarrierGrid());
+		objectOutputStream.flush();
+		objectOutputStream.close();
+	}
+
+
 	public BarrierGrid loadBarrierGrid(String name) throws IOException, ClassNotFoundException, InvalidBarrierNumberException {
 		FileInputStream fileInputStream
-	      = new FileInputStream(name + ".txt");
+	      = new FileInputStream(name + ".bg");
 	    ObjectInputStream objectInputStream
 	      = new ObjectInputStream(fileInputStream);
 	    BarrierGrid bg = (BarrierGrid) objectInputStream.readObject();
@@ -59,7 +80,88 @@ public class Game implements Serializable {
 	    animator.setBarrierGrid(bg);
 	    return bg;
 	}
-	
+
+	public void saveFireball(String name) throws IOException {
+		FileOutputStream fileOutputStream
+				= new FileOutputStream(name + ".fb");
+		ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(fileOutputStream);
+		objectOutputStream.writeObject(animator.getFireball());
+		objectOutputStream.flush();
+		objectOutputStream.close();
+	}
+
+	public void loadFireball(String name) throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream(name + ".fb");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    animator.setFireball((FireBall) objectInputStream.readObject());
+	    objectInputStream.close();
+	}
+
+	public void saveStaff(String name) throws IOException {
+		FileOutputStream fileOutputStream
+				= new FileOutputStream(name + ".stf");
+		ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(fileOutputStream);
+		objectOutputStream.writeObject(animator.getStaff());
+		objectOutputStream.flush();
+		objectOutputStream.close();
+	}
+
+	public void loadStaff(String name) throws IOException, ClassNotFoundException {
+		FileInputStream fileInputStream
+	      = new FileInputStream(name + ".stf");
+	    ObjectInputStream objectInputStream
+	      = new ObjectInputStream(fileInputStream);
+	    animator.setStaff((MagicalStaff) objectInputStream.readObject());
+	    objectInputStream.close();
+	}
+
+	// TODO save and load spells
+
+	public void saveGameState(String name) throws IOException {
+		if (name != null) {
+			try {
+				Path path = Paths.get("saved_games/" + name);
+				if (!Files.exists(path)) {
+					Files.createDirectories(path);
+				}
+
+				String savePath = "saved_games/" + name + "/";
+				saveStats(savePath);
+				saveStaff(savePath);
+				saveFireball(savePath);
+				saveBarrierGrid(savePath);
+
+			} catch (IOException e) {
+				System.out.println("An error occurred while saving the game state.");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void loadGameState(String name) throws IOException {
+		if (name != null) {
+			try {
+				String loadPath = "saved_games/" + name + "/";
+				loadStats(loadPath);
+				loadStaff(loadPath);
+				loadFireball(loadPath);
+				loadBarrierGrid(loadPath); // this should be last
+
+			} catch (IOException e) {
+				System.out.println("An error occurred while loading the game state.");
+				e.printStackTrace();
+			} catch (InvalidBarrierNumberException e) {
+				throw new RuntimeException(e);
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	public Animator getAnimator() {
 		return animator;
 	}
@@ -71,27 +173,4 @@ public class Game implements Serializable {
 	public Player getPlayer() {
 		return player;
 	}
-//
-//	public void saveGame() {
-//		String filename = JOptionPane.showInputDialog(null, "Enter filename to save:");
-//		if (filename != null) {
-//			String str = this.animator.getBarrierGrid().barrierListToString();
-//			try {
-//				BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".sav"));
-//				writer.write(str);
-//				writer.close();
-//			} catch (IOException i) {
-//				i.printStackTrace();
-//			}
-//		}
-//	}
-
-//	public String loadGame() throws IOException {
-//		String filename = JOptionPane.showInputDialog(null, "Enter filename to load:");
-//		if (filename != null) {
-//			String content = Files.readString(Path.of(filename + ".sav"));
-//			return content;
-//		}
-//		return null;
-//	}
 }
