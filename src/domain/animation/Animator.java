@@ -201,8 +201,12 @@ public class Animator implements Serializable{
 		animationObjects = new CopyOnWriteArraySet<AnimationObject>();
 		addAnimationObject(ball);
 		addAnimationObject(staff);
-		for (AnimationObject barrier : barrierGrid.getBarrierList()) {
+		for (Barrier barrier : barrierGrid.getBarrierList()) {
 			addAnimationObject(barrier);
+			if (barrier.getType().equals("destroyed")) {
+				System.out.println("HELLOOOO!!");
+				removeAnimationObject(barrier);
+			}
 		}
 		addAnimationObject(leftWall);
 		addAnimationObject(rightWall);
@@ -232,6 +236,10 @@ public class Animator implements Serializable{
 	}
 
 	private void removeAnimationObject(AnimationObject movable) {
+		if (movable instanceof Barrier) {
+			Barrier barrier = (Barrier) movable;
+			barrier.setType("destroyed");
+		}
 		animationObjects.remove(movable);
 	}
 
