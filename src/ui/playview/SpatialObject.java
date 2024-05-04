@@ -24,6 +24,10 @@ import domain.animation.barriers.ExplosiveBarrier;
 import domain.animation.barriers.ReinforcedBarrier;
 import domain.animation.barriers.RewardingBarrier;
 import domain.animation.barriers.SimpleBarrier;
+import domain.animation.spells.FelixFelicis;
+import domain.animation.spells.Hex;
+import domain.animation.spells.MagicalStaffExpansion;
+import domain.animation.spells.OverwhelmingFireball;
 
 public class SpatialObject extends JLabel{
 	
@@ -66,6 +70,13 @@ public class SpatialObject extends JLabel{
 	public static ImageIcon bgImage = new ImageIcon("./res/drawable/largeBackground.png");
 	public static ImageIcon horizontalWall = new ImageIcon("./res/drawable/horizontalWall.png");
 	public static ImageIcon verticalWall = new ImageIcon("./res/drawable/verticalWall.png");
+	public static ImageIcon heartImage = new ImageIcon("./res/drawable/smallHeart.png");
+	public static ImageIcon overwhelmingFireball = new ImageIcon("./res/drawable/overwhelmingFireball.png");
+	public static ImageIcon overwhelmingFireballSpell = new ImageIcon("./res/drawable/owFireballSpell.png");
+	public static ImageIcon hexSpell = new ImageIcon("./res/drawable/hexSpell.png");
+	public static ImageIcon felixFelicisSpell = new ImageIcon("./res/drawable/felixFelicisSpell.png");
+	public static ImageIcon staffExpansionSpell = new ImageIcon("./res/drawable/magicalStaffExpansionSpell.png");
+	
 	private static HashMap<ScaleInfo, ImageIcon> cacheScaledImages = new HashMap<>();
 	
 	int ID;
@@ -113,14 +124,26 @@ public class SpatialObject extends JLabel{
 		} else if (object instanceof MagicalStaff) {
 			image = magicalStaffImage;
 		} else if (object instanceof FireBall) {
-			image = fireBallImage;
+			if (((FireBall) object).isOverwhelming())
+				image = overwhelmingFireball;
+			else
+				image = fireBallImage;
 		} else if (object instanceof Wall) {
 			if (((Wall) object).getOrientation() == Wall.HORIZONTAL) {
 				image = horizontalWall;
 			} else {
 				image = verticalWall;
 			}
-		} else {
+		} else if (object instanceof FelixFelicis) {
+			image = heartImage;
+		} else if (object instanceof Hex) {
+			image = hexSpell;
+		} else if (object instanceof MagicalStaffExpansion) {
+			image = staffExpansionSpell;
+		} else if (object instanceof OverwhelmingFireball) {
+			image = overwhelmingFireballSpell;
+		}
+		else {
 			throw new Exception("Resource not found.");
 		}
 		

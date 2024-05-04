@@ -8,12 +8,9 @@ import java.nio.file.Paths;
 import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
 
-import javax.swing.*;
-
 public class Game implements Serializable {
 	private static final long serialVersionUID = 7679992000960473271L;
 	private Player player;
-	private SpellDepot spellDepot;	
 	private Animator animator;
 	
 	private int gameMode; // 0 for building, 1 for running
@@ -21,7 +18,6 @@ public class Game implements Serializable {
 	public Game() {
 		gameMode = 0;
 		player = new Player();
-		spellDepot = new SpellDepot();
 		animator = new Animator(this);
 	}
 	
