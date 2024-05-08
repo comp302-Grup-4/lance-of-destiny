@@ -9,14 +9,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 public class LoginScreen extends JPanel  {
 
-	private GameApp g;
+	private GameApp g = GameApp.getInstance();
 	private static final long serialVersionUID = 2L;
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int H = screenSize.height / 2;
 	final int W = screenSize.width / 4;
 
-	public LoginScreen(GameApp g) {
-		this.g = g;
+	public LoginScreen() {
 		if (!Files.exists(Paths.get("users.txt"))) {
 		try {
 			Files.createFile(Paths.get("users.txt"));

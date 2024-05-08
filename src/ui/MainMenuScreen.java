@@ -1,23 +1,23 @@
 package ui;
 
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class MainMenuScreen extends JPanel {
-	private JButton playButton;
+	private static final long serialVersionUID = -6398901547224782581L;
+	
+	GameApp g = GameApp.getInstance();
+	private JButton singlePlayerButton;
+	private JButton multiplayerButton;
 	private JButton viewHighScoresButton;
 	private JButton exitButton;
 	
-	public MainMenuScreen(GameApp g) {
+	public MainMenuScreen() {
 		this.setLayout(new GridBagLayout());
 		
 		JPanel menuPanel = new JPanel();
@@ -29,15 +29,24 @@ public class MainMenuScreen extends JPanel {
 		gbc.ipady = 10;
 		this.add(menuPanel, gbc);
 		
-		playButton = new JButton("Play");
+		singlePlayerButton = new JButton("Single Player");
 		viewHighScoresButton = new JButton("View High Scores");
 		exitButton = new JButton("Exit");
-		
-		playButton.addMouseListener(new MouseAdapter() {
+		multiplayerButton = new JButton("Multiplayer");
+				
+		singlePlayerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				g.openBuildingScreen();
+			}
+		});
+		
+		multiplayerButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				g.openConnectionScreen();
 			}
 		});
 		
@@ -49,7 +58,8 @@ public class MainMenuScreen extends JPanel {
 			}
 		});
 		
-		menuPanel.add(playButton);
+		menuPanel.add(singlePlayerButton);
+		menuPanel.add(multiplayerButton);
 		menuPanel.add(viewHighScoresButton);
 		menuPanel.add(exitButton);
 	}

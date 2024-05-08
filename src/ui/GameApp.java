@@ -1,10 +1,7 @@
 package ui;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -13,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import domain.Game;
-import domain.animation.BarrierGrid;
 
 public class GameApp extends JFrame {
 
@@ -24,6 +20,8 @@ public class GameApp extends JFrame {
 	private JPanel loginScreen;
 	private JPanel mainMenuScreen;
 	private JPanel buildingScreen;
+	
+	private static GameApp instance = new GameApp();
 	
 	/**
 	 * Launch the application.
@@ -54,13 +52,17 @@ public class GameApp extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public GameApp() {
+	private GameApp() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 450, 300);
-		contentPane = new MainMenuScreen(this);
+		contentPane = new MainMenuScreen();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
+	}
+	
+	public static GameApp getInstance() {
+		return instance;
 	}
 	
 	public void openRunningScreen(Game g) {
@@ -72,21 +74,21 @@ public class GameApp extends JFrame {
 	}
 	
 	public void openRegisterScreen() {
-		registerScreen = new RegisterScreen(this);
+		registerScreen = new RegisterScreen();
 		setContentPane(registerScreen);
 		this.revalidate();
 		this.repaint();
 	}
 
 	public void openLoginScreen() {
-		loginScreen = new LoginScreen(this);
+		loginScreen = new LoginScreen();
 		setContentPane(loginScreen);
 		this.revalidate();
 		this.repaint();
 	}
 	
 	public void openMainMenuScreen() {
-		mainMenuScreen = new MainMenuScreen(this);
+		mainMenuScreen = new MainMenuScreen();
 		setContentPane(mainMenuScreen);
 		
 		this.revalidate();
@@ -94,13 +96,12 @@ public class GameApp extends JFrame {
 	}
 	
 	public void openBuildingScreen() {
-		buildingScreen = new BuildingScreen(this);
+		buildingScreen = new BuildingScreen();
 		setContentPane(buildingScreen);
 		
 		this.revalidate();
 		this.repaint();
 	}
-	
 
 	public void exitGame() {
 		int result = JOptionPane.showConfirmDialog(this, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);

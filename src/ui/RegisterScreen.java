@@ -12,14 +12,13 @@ import java.nio.file.*;
 public class RegisterScreen extends JPanel {
 
 	private static final long serialVersionUID = 3L;
-	private final ui.GameApp g;
+	private final ui.GameApp g = GameApp.getInstance();
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int H = screenSize.height / 2;
 	final int W = screenSize.width / 4;
 
-	public RegisterScreen(GameApp g1) {
-        this.g = g1;
+	public RegisterScreen() {
 		this.setBounds(0, 0, W, H);
 		this.setLayout(new GridBagLayout());
 

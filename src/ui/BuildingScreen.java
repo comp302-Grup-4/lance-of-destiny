@@ -37,8 +37,9 @@ public class BuildingScreen extends JPanel {
 	JTextField field1, field2, field3, field4;
 	BuildView buildView;
 	BarrierGrid bg;
+	GameApp g = GameApp.getInstance();
 	
-	public BuildingScreen(GameApp g) {
+	public BuildingScreen() {
 		game = new Game();
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
