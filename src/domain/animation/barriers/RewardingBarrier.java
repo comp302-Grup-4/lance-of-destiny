@@ -1,8 +1,8 @@
 package domain.animation.barriers;
 
 import domain.animation.BarrierGrid;
-import domain.animation.collision.SpellFactory;
 import domain.animation.spells.Spell;
+import domain.animation.spells.SpellFactory;
 
 public class RewardingBarrier extends Barrier{
 	private static final long serialVersionUID = 2665711170614117331L;

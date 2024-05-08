@@ -1,18 +1,10 @@
-package domain.animation.collision;
+package domain.animation.spells;
 
 import java.security.SecureRandom;
 
 import domain.animation.SpellDepot;
 import domain.animation.Vector;
 import domain.animation.barriers.Barrier;
-import domain.animation.spells.DoubleAccel;
-import domain.animation.spells.FelixFelicis;
-import domain.animation.spells.Hex;
-import domain.animation.spells.HollowPurple;
-import domain.animation.spells.InfiniteVoid;
-import domain.animation.spells.MagicalStaffExpansion;
-import domain.animation.spells.OverwhelmingFireball;
-import domain.animation.spells.Spell;
 
 public class SpellFactory {
 	

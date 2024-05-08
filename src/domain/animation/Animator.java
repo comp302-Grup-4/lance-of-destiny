@@ -16,8 +16,8 @@ import domain.animation.barriers.SimpleBarrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
-import domain.animation.collision.SpellFactory;
 import domain.animation.spells.Spell;
+import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
 
 public class Animator implements Serializable{
