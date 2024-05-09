@@ -21,7 +21,7 @@ public class GameApp extends JFrame {
 	private JPanel mainMenuScreen;
 	private JPanel buildingScreen;
 	
-	private static GameApp instance = new GameApp();
+	private static GameApp instance = null;
 	
 	/**
 	 * Launch the application.
@@ -30,18 +30,17 @@ public class GameApp extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GameApp frame = new GameApp();
-					
+					instance = new GameApp();
 					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 					final int H = screenSize.height;
 					final int W = screenSize.width;
-					frame.setSize(W, H);
+					instance.setSize(W, H);
 //					GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
 //					GraphicsDevice device = graphics.getDefaultScreenDevice();
 //
 //					device.setFullScreenWindow(frame);
 					
-					frame.setVisible(true);
+					instance.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -96,6 +95,14 @@ public class GameApp extends JFrame {
 	}
 	
 	public void openBuildingScreen() {
+		buildingScreen = new BuildingScreen();
+		setContentPane(buildingScreen);
+		
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void openConnectionScreen() {
 		buildingScreen = new BuildingScreen();
 		setContentPane(buildingScreen);
 		

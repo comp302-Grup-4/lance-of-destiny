@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 public class MainMenuScreen extends JPanel {
 	private static final long serialVersionUID = -6398901547224782581L;
 	
-	GameApp g = GameApp.getInstance();
 	private JButton singlePlayerButton;
 	private JButton multiplayerButton;
 	private JButton viewHighScoresButton;
@@ -38,7 +37,7 @@ public class MainMenuScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				g.openBuildingScreen();
+				GameApp.getInstance().openBuildingScreen();
 			}
 		});
 		
@@ -46,7 +45,7 @@ public class MainMenuScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				g.openConnectionScreen();
+				GameApp.getInstance().openConnectionScreen();
 			}
 		});
 		
@@ -54,7 +53,7 @@ public class MainMenuScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				g.exitGame();
+				GameApp.getInstance().exitGame();
 			}
 		});
 		
