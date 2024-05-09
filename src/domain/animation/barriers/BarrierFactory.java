@@ -23,6 +23,9 @@ public class BarrierFactory implements Serializable {
 		else if (name.equals("gift")) {
 			return new RewardingBarrier(bg, "gift");
 		}
+		else if (name.equals("purple")) {
+			return new PurpleBarrier(bg, "purple");
+		}
 		else {
 			return null;
 		}

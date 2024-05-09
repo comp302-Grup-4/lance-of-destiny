@@ -48,7 +48,7 @@ public class SpellFactory {
 	}
 	
 	public Spell createRandomSpellForBarriers(Barrier barrier) {
-		int spellType = rand.nextInt(0, 4);
+		int spellType = rand.nextInt(0, 7);
 		return createSpell(spellType, barrier.getCenterPoint());
 	}
 	

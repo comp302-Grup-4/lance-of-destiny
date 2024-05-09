@@ -12,12 +12,14 @@ public abstract class Barrier extends AnimationObject implements Serializable {
 	public static final String FIRM_BARRIER = "firm";
 	public static final String EXPLOSIVE_BARRIER = "explosive";
 	public static final String GIFT_BARRIER = "gift";
+	public static final String PURPLE_BARRIER = "purple";
 	
 	protected BarrierGrid parentGrid;
 
 	private String type;
 	private int gridPositionX;
 	private int gridPositionY;
+	private boolean isFrozen = false;
 		
 	public Barrier(BarrierGrid grid) {
 		this(grid, -1, -1, null);
@@ -89,5 +91,13 @@ public abstract class Barrier extends AnimationObject implements Serializable {
 	public BarrierGrid getParentGrid() {
 		// TODO Auto-generated method stub
 		return parentGrid;
+	}
+	
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+	
+	public void setFrozen(boolean isFrozen) {
+		this.isFrozen = isFrozen;
 	}
 }
