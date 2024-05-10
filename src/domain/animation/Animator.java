@@ -266,8 +266,7 @@ public class Animator implements Serializable{
 								initializeAnimationObjects();
 								break;
 							case Spell.DOUBLE_ACCEL:
-								DoubleAccel da = new DoubleAccel(ball.getVelocity());
-								da.spellDuration(5);
+								ball.setVelocity(ball.getVelocity().scale((float) 10)); 
 								break;
 							default:
 								break;

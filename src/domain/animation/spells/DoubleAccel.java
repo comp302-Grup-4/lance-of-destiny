@@ -18,7 +18,7 @@ public class DoubleAccel extends Spell {
 	@Override
 	public void startSpell() {
 		FireBall ball = new FireBall();
-		ball.setVelocity(ball.getVelocity().scale((float) 0.5));
+		ball.setVelocity(ball.getVelocity().scale((float) 10)); 
 		
 	}
 
