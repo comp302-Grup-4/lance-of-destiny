@@ -49,6 +49,7 @@ public class Animator implements Serializable{
 	private long startTimeMilli = 0;
 	private SpellDepot spellDepot = new SpellDepot();
 	private static final SpellFactory spellFactory = SpellFactory.getInstance();
+	private int totalBarriers;
 	
 	public Animator(Game game) {
 		this.game = game;
@@ -60,6 +61,7 @@ public class Animator implements Serializable{
 		} catch (InvalidBarrierNumberException e) {
 			e.printStackTrace();
 		}
+		this.totalBarriers = barrierGrid.getTotalBarrierNumber();
 		rightWall = new Wall(Wall.VERTICAL, new Vector(985, 0));
 		leftWall = new Wall(Wall.VERTICAL, new Vector(-15, 0));
 		upperWall = new Wall(Wall.HORIZONTAL, new Vector(0, -15));
@@ -207,6 +209,7 @@ public class Animator implements Serializable{
 						staff.reset();
 						game.getPlayer().decrementChances();
 						pause();
+						if (checkGameOver()) {gameOver();}
 						break;
 					}
 					
@@ -367,8 +370,10 @@ public class Animator implements Serializable{
 
 	private void removeAnimationObject(AnimationObject movable) {
 		if (movable instanceof Barrier) {
+			totalBarriers--;
 			Barrier barrier = (Barrier) movable;
 			barrier.setType("destroyed");
+			if (checkGameOver()) {gameOver();}
 		}
 		animationObjects.remove(movable);
 	}
@@ -376,7 +381,7 @@ public class Animator implements Serializable{
 	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
 	}
-	
+
 	private float getPassedTime() {
 		long currTime = System.currentTimeMillis();
 		return (float) (currTime - startTimeMilli) / 1000;
@@ -443,4 +448,16 @@ public class Animator implements Serializable{
 	public void setStaff(MagicalStaff staff) {
 		this.staff = staff;
 	}
+
+	public boolean checkGameOver() {
+		if (totalBarriers == 0 || this.game.getPlayer().getChances() == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public void gameOver() {
+		System.out.println("Game over"); // TODO REMOVe
+		this.game.writeHighScore(this.game.getPlayer().getScore());
+	}; // TODO game over stuff
 }

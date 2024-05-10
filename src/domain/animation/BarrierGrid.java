@@ -289,5 +289,9 @@ public class BarrierGrid implements Serializable{
 		barrierArray = createBarrierArray(barrierList);
 		
 	}
+
+	public int getTotalBarrierNumber() {
+		return totalBarrierNumber;
+	}
 	
 }

@@ -6,6 +6,7 @@ public class Player implements Serializable{
 	private static final long serialVersionUID = 322548287069839758L;
 	private int chances;
 	private int score;
+	private PlayerAccount pa; // TODO idk do stuff
 	
 	public Player() {
 		chances = 3;
@@ -34,5 +35,9 @@ public class Player implements Serializable{
 
 	public void setChances(int chances) {
 		this.chances = chances;
+	}
+
+	public PlayerAccount getPlayerAccount() {
+		return pa;
 	}
 }
