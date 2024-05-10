@@ -1,5 +1,6 @@
 package domain.animation.spells;
 
+import domain.animation.FireBall;
 import domain.animation.Vector;
 
 public class DoubleAccel extends Spell {
@@ -12,5 +13,18 @@ public class DoubleAccel extends Spell {
 	@Override
 	public int getType() {
 		return DOUBLE_ACCEL;
+	}
+
+	@Override
+	public void startSpell() {
+		FireBall ball = new FireBall();
+		ball.setVelocity(ball.getVelocity().scale((float) 0.5));
+		
+	}
+
+	@Override
+	public void stopSpell() {
+		// TODO Auto-generated method stub
+		
 	}
 }
