@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import domain.Game;
+import domain.animation.Vector;
+import domain.animation.spells.OverwhelmingFireball;
 
 public class GameApp extends JFrame {
 
@@ -39,7 +41,7 @@ public class GameApp extends JFrame {
 //					GraphicsDevice device = graphics.getDefaultScreenDevice();
 //
 //					device.setFullScreenWindow(frame);
-					
+
 					instance.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
