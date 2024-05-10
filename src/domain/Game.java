@@ -10,6 +10,7 @@ import exceptions.InvalidBarrierNumberException;
 
 public class Game implements Serializable {
 	private static final long serialVersionUID = 7679992000960473271L;
+	private static final long gameVersion = 1;
 	private Player player;
 	private Animator animator;
 	
@@ -48,15 +49,25 @@ public class Game implements Serializable {
 		writer.write(player.getScore() + "\n");
 		long timeElapsed = System.currentTimeMillis() - animator.getStartTimeMilli();
 		writer.write(timeElapsed + "\n");
+		writer.write(gameVersion + "\n"); // version number
 		writer.close();
 	}
 
-	public void loadStats(String name) throws IOException {
+	public int loadStats(String name) throws IOException {
 		BufferedReader reader = Files.newBufferedReader(Path.of(name + ".st"));
-		player.setChances(Integer.parseInt(reader.readLine()));
-		player.setScore(Integer.parseInt(reader.readLine()));
-		animator.setStartTimeMilli(System.currentTimeMillis() - Long.parseLong(reader.readLine()));
+		int chances = Integer.parseInt(reader.readLine());
+		int score = Integer.parseInt(reader.readLine());
+		int timeElapsed = Integer.parseInt(reader.readLine());
+		long versionNumber = Long.parseLong(reader.readLine());
+		if (versionNumber > gameVersion) {
+			System.out.println("Save version is higher than current version.");
+			return 1;
+		}
 		reader.close();
+		player.setChances(chances);
+		player.setScore(score);
+		animator.setStartTimeMilli(System.currentTimeMillis() - timeElapsed);
+		return 0;
 	}
 
 	public void saveBarrierGrid(String name) throws IOException {
@@ -119,6 +130,7 @@ public class Game implements Serializable {
 	    objectInputStream.close();
 	}
 
+	// TODO save and load Ymir
 	// TODO save and load spells
 
 	public void saveGameState(String name) throws IOException {
@@ -146,7 +158,10 @@ public class Game implements Serializable {
 		if (name != null) {
 			try {
 				String loadPath = "saved_games/" + name + "/";
-				loadStats(loadPath);
+				// cancel loading if version is higher than current version
+				if (loadStats(loadPath) == 1) {
+					return;
+				}
 				loadStaff(loadPath);
 				loadFireball(loadPath);
 				loadBarrierGrid(loadPath); // this should be last
