@@ -20,6 +20,7 @@ import domain.animation.barriers.SimpleBarrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
+import domain.animation.spells.DoubleAccel;
 import domain.animation.spells.Spell;
 import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
@@ -264,7 +265,10 @@ public class Animator implements Serializable{
 								}
 								initializeAnimationObjects();
 								break;
-								
+							case Spell.DOUBLE_ACCEL:
+								DoubleAccel da = new DoubleAccel(ball.getVelocity());
+								da.spellDuration(5);
+								break;
 							default:
 								break;
 							}
