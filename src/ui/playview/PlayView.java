@@ -19,6 +19,8 @@ import javax.swing.*;
 import domain.Game;
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
+import domain.animation.Vector;
+import domain.animation.spells.DoubleAccel;
 import exceptions.InvalidBarrierNumberException;
 import ui.BuildingScreen;
 
@@ -321,6 +323,19 @@ public class PlayView extends JPanel {
 				System.exit(0);
 			}
 		});
+
+		// TODO REMOVE DEBUG
+		JButton debugButton = new JButton("Debug");
+		debugButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Vector testVector = new Vector(0,0);
+				// Test stuff
+				new DoubleAccel(testVector).spellDuration(5);
+			}
+		});
+		pauseMenu.add(debugButton);
+		// TODO DEBUG REMOVE END
 
 		// Add buttons to the pause menu
 		pauseMenu.add(resumeButton);
