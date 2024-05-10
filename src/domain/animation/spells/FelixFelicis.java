@@ -13,5 +13,11 @@ public class FelixFelicis extends Spell {
 	public int getType() {
 		return FELIX_FELICIS;
 	}
+
+	public void startSpell() {
+	}
+
+	public void stopSpell() {
+	}
 }
 

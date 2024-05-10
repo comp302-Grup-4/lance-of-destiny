@@ -13,4 +13,7 @@ public class InfiniteVoid extends Spell {
 	public int getType() {
 		return INFINITE_VOID;
 	}
+
+	public void startSpell() {};
+	public void stopSpell() {};
 }

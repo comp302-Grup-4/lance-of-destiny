@@ -14,5 +14,7 @@ public class Hex extends Spell {
 		return HEX;
 	}
 
-}
+	public void startSpell() {};
+	public void stopSpell() {};
 
+}

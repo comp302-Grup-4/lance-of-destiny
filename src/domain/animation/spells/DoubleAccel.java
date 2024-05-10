@@ -24,7 +24,5 @@ public class DoubleAccel extends Spell {
 
 	@Override
 	public void stopSpell() {
-		// TODO Auto-generated method stub
-		
 	}
 }

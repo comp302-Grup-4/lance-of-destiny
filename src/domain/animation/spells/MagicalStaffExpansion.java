@@ -14,5 +14,7 @@ public class MagicalStaffExpansion extends Spell {
 		return MAGICAL_STAFF_EXPANSION;
 	}
 
+	public void startSpell() {};
+	public void stopSpell() {};
 }
 
