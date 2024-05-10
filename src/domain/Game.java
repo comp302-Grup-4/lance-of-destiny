@@ -177,6 +177,36 @@ public class Game implements Serializable {
 		}
 	}
 
+	public void writeHighScore(int score) {
+		// check if the file highscores exists, create if not
+		Path path = Paths.get("highscores");
+		if (!Files.exists(path)) {
+			try {
+				Files.createFile(path);
+			} catch (IOException e) {
+				System.out.println("An error occurred while creating the highscores file.");
+				e.printStackTrace();
+			}
+		}
+		//append score to new line
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(path);
+			// get username, NULL if dne
+			String username;
+			if (player.getPlayerAccount() != null) {
+				username = player.getPlayerAccount().getUserName();
+			} else {
+				username = "NULL";
+			}
+			writer.write(Integer.toString(score) + ":" + username);
+			writer.newLine();
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("An error occurred while writing the highscore.");
+			e.printStackTrace();
+		}
+	}
+
 	public Animator getAnimator() {
 		return animator;
 	}
