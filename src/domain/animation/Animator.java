@@ -24,6 +24,7 @@ import domain.animation.spells.DoubleAccel;
 import domain.animation.spells.Spell;
 import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
+import ui.GameApp;
 
 public class Animator implements Serializable{
 	private static final long serialVersionUID = -3426545588581994135L;
@@ -34,7 +35,7 @@ public class Animator implements Serializable{
 
 	private final float FPS = 150;
 	private final long dTime = (long) (1000 / FPS);
-
+	GameApp g = GameApp.getInstance();
 	private FireBall ball;
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
@@ -450,7 +451,9 @@ public class Animator implements Serializable{
 	}
 
 	public boolean checkGameOver() {
-		if (totalBarriers == 0 || this.game.getPlayer().getChances() == 0) {
+		if (getBarrierGrid().totalBarrierNumber == 0 || this.game.getPlayer().getChances() == 0) {//totalBarriers
+			g.openMainMenuScreen();
+			
 			return true;
 		}
 		return false;
@@ -459,5 +462,6 @@ public class Animator implements Serializable{
 	public void gameOver() {
 		System.out.println("Game over"); // TODO REMOVe
 		this.game.writeHighScore(this.game.getPlayer().getScore());
+		
 	}; // TODO game over stuff
 }
