@@ -452,8 +452,7 @@ public class Animator implements Serializable{
 
 	public boolean checkGameOver() {
 		if (getBarrierGrid().totalBarrierNumber == 0 || this.game.getPlayer().getChances() == 0) {//totalBarriers
-			g.openMainMenuScreen();
-			
+			g.openMainMenuScreen();	
 			return true;
 		}
 		return false;
