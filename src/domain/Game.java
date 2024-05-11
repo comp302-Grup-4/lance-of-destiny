@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
@@ -190,8 +191,7 @@ public class Game implements Serializable {
 		}
 		//append score to new line
 		try {
-			BufferedWriter writer = Files.newBufferedWriter(path);
-			// get username, NULL if dne
+			BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND);
 			String username;
 			if (player.getPlayerAccount() != null) {
 				username = player.getPlayerAccount().getUserName();
