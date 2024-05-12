@@ -20,7 +20,7 @@ import domain.animation.spells.Spell;
 import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
 
-public class Animator implements Serializable{
+public class Animator implements Serializable, YmirObserver{
 	private static final long serialVersionUID = -3426545588581994135L;
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
@@ -398,5 +398,21 @@ public class Animator implements Serializable{
 
 	public void setStaff(MagicalStaff staff) {
 		this.staff = staff;
+	}
+
+	@Override
+	public void update(Spell s) {
+		switch(s.getType()) {
+		case Spell.DOUBLE_ACCEL:
+			Vector v = ball.getVelocity();
+			Vector newVelocity = new Vector(v.getX()/2,v.getY()/2);
+			ball.setVelocity(newVelocity);
+		case Spell.INFINITE_VOID:
+			
+		case Spell.HOLLOW_PURPLE:
+			
+			
+		}
+		
 	}
 }
