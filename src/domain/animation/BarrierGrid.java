@@ -276,4 +276,18 @@ public class BarrierGrid implements Serializable{
 		return barrierArray;
 	}
 	
+	public void changeBarrier(Barrier oldBarrier, BarrierGrid bg) {
+		int gridX = oldBarrier.getGridPositionX();
+		int gridY = oldBarrier.getGridPositionY();
+		int ind = barrierList.indexOf(oldBarrier);
+		Barrier purpleBar = factory.createBarrier("purple", bg);
+		barrierList.remove(oldBarrier);
+		barrierList.add(ind, purpleBar);
+		//this.clearCell(gridX, gridY);
+		//barrierArray[gridX][gridY] = purpleBar;
+		
+		barrierArray = createBarrierArray(barrierList);
+		
+	}
+	
 }
