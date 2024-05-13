@@ -2,12 +2,7 @@ package domain.animation;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
@@ -225,16 +220,20 @@ public class Animator implements Serializable{
 						if (spellCollisionInfo.getCollidedObjects().size() != 0) {
 							removeAnimationObject(spell);
 							spellsToBeRemoved.add(spell);
+
+							final int spellDurationShort = 15000;
+							final int spellDurationLong = 30000;
 							
 							switch (spell.getType()) {
-							case Spell.HEX:
+							case Spell.HEX: // lasts for 30 seconds
+								//TODO
 								break;
 								
 							case Spell.FELIX_FELICIS:
 								game.getPlayer().incrementChances();
 								break;
 								
-							case Spell.MAGICAL_STAFF_EXPANSION:
+							case Spell.MAGICAL_STAFF_EXPANSION: // lasts for 30 seconds
 								staff.setLength(staff.getLength() * 2);
 								if (staff.getNextPosition(dTime).x <= 15) {
 									staff.setPlacement(Vector.of(15, MagicalStaff.MS_HORIZON), staff.getRotation());
@@ -243,11 +242,26 @@ public class Animator implements Serializable{
 								}
 								break;
 								
-							case Spell.OVERWHELMING_FIREBALL:
+							case Spell.OVERWHELMING_FIREBALL: // lasts for 30 seconds
+								// TODO remove print debug
+
+								System.out.println("Overwhelming fireball spell started");
 								ball.setOverwhelming(true);
+
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										if (ball.isOverwhelming()) {
+											System.out.println("Overwhelming fireball spell ended");
+											ball.setOverwhelming(false);
+										}
+									}
+								}, spellDurationLong);
+
 								break;
 								
-							case Spell.INFINITE_VOID:
+							case Spell.INFINITE_VOID: // lasts for 15 seconds
+
 								LinkedList<Barrier> barriers = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
 								List<Barrier> barriersLeft = new ArrayList <> (barriers.stream()
 										.filter(x -> !x.isFrozen() && x.getType() != "purple")
@@ -256,9 +270,11 @@ public class Animator implements Serializable{
 								for (int i = 0; i < Math.min(8, barriersLeft.size()); i++) {
 									barriersLeft.get(i).setFrozen(true);
 								}
+
 								break;
 								
 							case Spell.HOLLOW_PURPLE:
+
 								LinkedList<Barrier> barr = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
 								List<Barrier> barrLeft = new ArrayList <> (barr.stream()
 										.filter(x -> !x.isFrozen() && x.getType() != "purple")
@@ -268,9 +284,23 @@ public class Animator implements Serializable{
 									barrierGrid.changeBarrier(barrLeft.get(i), barrierGrid);
 								}
 								initializeAnimationObjects();
+
 								break;
-							case Spell.DOUBLE_ACCEL:
-								ball.setVelocity(ball.getVelocity().scale((float) 10)); 
+							case Spell.DOUBLE_ACCEL: // lasts for 15 seconds
+
+								ball.setVelocity(ball.getVelocity().scale((float) 10));
+								ball.setSpedUp(true);
+
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										if (ball.isSpedUp()) {
+											ball.setVelocity(ball.getVelocity().scale((float) 0.1));
+											ball.setSpedUp(false);
+										}
+									}
+								}, spellDurationShort);
+
 								break;
 							default:
 								break;
