@@ -24,7 +24,7 @@ public class FireBall extends AnimationObject implements Serializable {
 		initializeCenterPoint();
 		initializeBoundaryPoints();
 	}
-	
+
 	@Override
 	public boolean isCollidable() {
 		return true;

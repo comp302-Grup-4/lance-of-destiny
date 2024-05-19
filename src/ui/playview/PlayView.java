@@ -324,19 +324,6 @@ public class PlayView extends JPanel {
 			}
 		});
 
-		// TODO REMOVE DEBUG
-		JButton debugButton = new JButton("Debug");
-		debugButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Vector testVector = new Vector(0,0);
-				// Test stuff
-				new DoubleAccel(testVector).spellDuration(5);
-			}
-		});
-		pauseMenu.add(debugButton);
-		// TODO DEBUG REMOVE END
-
 		// Add buttons to the pause menu
 		pauseMenu.add(resumeButton);
 		pauseMenu.add(saveButton);

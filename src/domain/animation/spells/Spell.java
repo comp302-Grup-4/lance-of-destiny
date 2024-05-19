@@ -17,7 +17,7 @@ public abstract class Spell extends AnimationObject {
 	public static final int DOUBLE_ACCEL = 5;
 	public static final int HOLLOW_PURPLE = 6;
 
-	protected String spellType;
+	protected int spellType;
 
 	public Spell(Vector position) {
 		this.position = position;
@@ -31,7 +31,7 @@ public abstract class Spell extends AnimationObject {
 	}
 	
 	public abstract int getType();
-	
+
 	@Override
 	public float getRotation() {
 		return 0;
@@ -60,8 +60,7 @@ public abstract class Spell extends AnimationObject {
     public abstract void startSpell();
     public abstract void stopSpell();
 
-    public void spellDuration(int dur) {
-		startSpell();
-		CompletableFuture.delayedExecutor(dur, TimeUnit.SECONDS).execute(this::stopSpell);
+	public void setType(int type) {
+		this.spellType = type;
 	}
 }
