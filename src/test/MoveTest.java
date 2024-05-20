@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //BLACKBOX: for dTimeMilisecond = 100 position and rotation should be updated correctly same for dTimeMilisecond = 0(expect 0 disp&rotation) and dTimeMilisecond = 50,
 //GALSSBOX: dTimeMilisecond = 1000, velocity = (0, 0), angularVelocity = 1(should only change the rotation position remains the same)
 //dTimeMilisecond = 1000, velocity = (10, 10), angularVelocity = 0(only position changes rotation remains the same)
+//implemented these in the tests below
 public class MoveTest extends Game {
 	private AnimationObject obj = new MagicalStaff();
 	Vector v = new Vector(0, 0);
