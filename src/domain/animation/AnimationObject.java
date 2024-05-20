@@ -39,7 +39,7 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		return position;
 	}
 
-	protected void setPlacement(Vector newPosition, float newRotation) {
+	public void setPlacement(Vector newPosition, float newRotation) {
 		Vector disp = newPosition.subtract(this.position);
 		float dRot = newRotation - this.rotationAngle;
 
@@ -62,7 +62,7 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		this.velocity = velocity;
 	}
 	
-	protected void setAngularVelocity(float angularVelocity) {
+	public void setAngularVelocity(float angularVelocity) {
 		this.angularVelocity = angularVelocity;
 	}
 
