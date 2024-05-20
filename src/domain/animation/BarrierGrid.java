@@ -307,11 +307,17 @@ public class BarrierGrid implements Serializable{
 		
 	}
 	
-	private boolean repOk(){
-		if (barrierList.size() != totalBarrierNumber || totalBarrierNumber > ROW_NUMBER * COL_NUMBER) return false;
-		if (simpleBarrierNumber < MIN_SIMPLE_BARRIERS || firmBarriers < MIN_FIRM_BARRIERS || explosiveBarriers < MIN_EXPLOSIVE_BARRIERS || giftBarriers < MIN_GIFT_BARRIERS) return false;
+	public boolean repOk(){
+		if (barrierList.size() != totalBarrierNumber || totalBarrierNumber > ROW_NUMBER * COL_NUMBER) {
+			System.out.println("size");
+			return false;
+		}
+		if (simpleBarrierNumber < MIN_SIMPLE_BARRIERS || firmBarriers < MIN_FIRM_BARRIERS || explosiveBarriers < MIN_EXPLOSIVE_BARRIERS || giftBarriers < MIN_GIFT_BARRIERS) {
+			System.out.println("bariyer sayııs");
+			return false;
+		}
 		for(Barrier b: barrierList) {
-			if(b.getGridPositionX() < 0 || b.getGridPositionY() < 0 || b.getGridPositionX() >= ROW_NUMBER || b.getGridPositionY() >= COL_NUMBER ) {
+			if(b.getGridPositionX() < 0 || b.getGridPositionY() < 0 || b.getGridPositionX() >= COL_NUMBER || b.getGridPositionY() >= ROW_NUMBER ) {
 				return false;
 			}
 		}	

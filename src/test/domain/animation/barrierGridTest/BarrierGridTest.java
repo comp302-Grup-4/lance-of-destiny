@@ -13,23 +13,22 @@ class BarrierGridTest {
 		private BarrierGrid grid;
 
 		@BeforeEach
-		public void setUpBeforeClass() {
+		public void setUp(){
 			
 				try {
 					grid = new BarrierGrid(75,10,5,10);
-					//assertTrue(grid.repOk());
+					assertTrue(grid.repOk());
 				} catch (InvalidBarrierNumberException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					fail("Setup failed due to InvalidBarrierNumberException");
 				}
 		}
 		
 		@Test
 		public void testInvalidBarrierGrid() {
 	        try {
-				new BarrierGrid(50, 10, 5, 10);
+				grid = new BarrierGrid(50, 10, 5, 10);
+				assertFalse(grid.repOk());
 			} catch (InvalidBarrierNumberException e) {
-				// TODO Auto-generated catch block
 				return;
 			}
 	    }
@@ -38,16 +37,11 @@ class BarrierGridTest {
 	    public void testBarrierGridWithExceedingCapacity() {
 	        int capacity = grid.getWidth() * grid.getHeight();
 	        try {
-	            new BarrierGrid(capacity, capacity, capacity, capacity);
-	            fail("Expected an InvalidBarrierNumberException to be thrown");
+	            grid = new BarrierGrid(capacity, capacity, capacity, capacity);
+	            assertFalse(grid.repOk());
 	        } catch (InvalidBarrierNumberException e) {
 	        	return;
 	        }
 	    }
-		
-
-		
-
-
 	}
 
