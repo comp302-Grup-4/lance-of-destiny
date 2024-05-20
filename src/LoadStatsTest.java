@@ -22,7 +22,7 @@ public class LoadStatsTest extends Game {
     }
 
     @Test
-    public void testNonexistentFile() {
+    public void testNonexistentFile() { // test 1
         assertThrows(IOException.class, () -> this.loadStats("nonexistent"));
     }
 
@@ -48,7 +48,7 @@ public class LoadStatsTest extends Game {
     }
 
     @Test
-    public void testVersions() throws IOException {
+    public void testVersions() throws IOException { // test 2
         String wrongVersion = "3\n0\n1000\n2\n"; // should fail
         BufferedReader reader = createReaderWithString(wrongVersion);
         assertEquals(1, loadStats(reader));
@@ -61,7 +61,7 @@ public class LoadStatsTest extends Game {
     }
 
     @Test
-    public void testValidInput() throws IOException {
+    public void testValidInput() throws IOException { // test 3
         String input = "3\n0\n1000\n1\n";
         BufferedReader reader = createReaderWithString(input);
         assertEquals(0, loadStats(reader));
@@ -71,7 +71,7 @@ public class LoadStatsTest extends Game {
     }
 
     @Test
-    public void testLoadStatsInvalidInput() {
+    public void testLoadStatsInvalidInput() { // test 4
         String invalidInput = "invalid\ninput\n";
         BufferedReader reader = new BufferedReader(new StringReader(invalidInput));
         LoadStatsTest game = new LoadStatsTest();
