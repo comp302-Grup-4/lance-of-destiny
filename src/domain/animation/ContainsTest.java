@@ -41,7 +41,7 @@ class ContainsTest {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             ms.contains(new Vector(1, 1));
         });
-        assertEquals("Invalid Shape: Boundary points array must contain exactly 4 points.", thrown.getMessage());
+        assertEquals("Invalid Shape: Boundary points array must contain exactly 4 non-null points.", thrown.getMessage());
     }
     
     @Test
@@ -52,7 +52,7 @@ class ContainsTest {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             ms.contains(new Vector(1, 1));
         });
-        assertEquals("Invalid Shape: Boundary points array must contain exactly 4 points.", thrown.getMessage());
+        assertEquals("Invalid Shape: Boundary points array must contain exactly 4 non-null points.", thrown.getMessage());
     }
 
 }

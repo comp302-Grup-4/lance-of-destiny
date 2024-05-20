@@ -196,8 +196,14 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		 * 
 		 */
 		if (boundaryPoints == null || boundaryPoints.length != 4) {
-            throw new IllegalArgumentException("Invalid Shape: Boundary points array must contain at least 3 points.");
+            throw new IllegalArgumentException("Invalid Shape: Boundary points array must contain exactly 4 non-null points.");
         }
+		
+		for(Vector p: boundaryPoints) {
+			if(p==null) {
+				throw new IllegalArgumentException("Invalid Shape: Boundary points array must contain exactly 4 non-null points.");
+			}
+		}
 		
 		for (int i = 0; i < boundaryPoints.length; i++) {
 			Vector collisionPoint = boundaryPoints[i];
