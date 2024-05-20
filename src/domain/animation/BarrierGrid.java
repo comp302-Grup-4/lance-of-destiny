@@ -295,7 +295,7 @@ public class BarrierGrid implements Serializable{
 		
 	}
 	
-	private boolean repOk() {
+	private boolean repOk(){
 		if (barrierList.size() != totalBarrierNumber || totalBarrierNumber > ROW_NUMBER * COL_NUMBER) return false;
 		if (simpleBarrierNumber < MIN_SIMPLE_BARRIERS || firmBarriers < MIN_FIRM_BARRIERS || explosiveBarriers < MIN_EXPLOSIVE_BARRIERS || giftBarriers < MIN_GIFT_BARRIERS) return false;
 		for(Barrier b: barrierList) {
