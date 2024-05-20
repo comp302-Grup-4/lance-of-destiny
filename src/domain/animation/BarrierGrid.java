@@ -295,4 +295,15 @@ public class BarrierGrid implements Serializable{
 		
 	}
 	
+	private boolean repOk() {
+		if (barrierList.size() != totalBarrierNumber || totalBarrierNumber > ROW_NUMBER * COL_NUMBER) return false;
+		if (simpleBarrierNumber < MIN_SIMPLE_BARRIERS || firmBarriers < MIN_FIRM_BARRIERS || explosiveBarriers < MIN_EXPLOSIVE_BARRIERS || giftBarriers < MIN_GIFT_BARRIERS) return false;
+		for(Barrier b: barrierList) {
+			if(b.getGridPositionX() < 0 || b.getGridPositionY() < 0 || b.getGridPositionX() >= ROW_NUMBER || b.getGridPositionY() >= COL_NUMBER ) {
+				return false;
+			}
+		}	
+		return true;
+	}
+	
 }
