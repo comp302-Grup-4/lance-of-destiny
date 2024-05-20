@@ -40,7 +40,7 @@ public class BarrierGrid implements Serializable{
 	private Vector position;
 	private float cellSize = 20 * (1 + 2 * MARGIN);
 	
-	private BarrierFactory factory;
+	private static final BarrierFactory factory = BarrierFactory.getInstance();
 
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
 		/**
@@ -53,8 +53,6 @@ public class BarrierGrid implements Serializable{
 		firmBarriers = firm;
 		explosiveBarriers = explosive;
 		giftBarriers = gift;
-		
-		this.factory = new BarrierFactory();
 		totalBarrierNumber = simple + firm + explosive + gift;
 		
 		position = new Vector(20, 30);
@@ -65,8 +63,7 @@ public class BarrierGrid implements Serializable{
 
 	public void importBarrierGrid(String barrierString) {
 		this.barrierList = stringToBarrierList(barrierString);
-		this.factory = new BarrierFactory();
-
+		
 		position = new Vector(20, 40);
 
 		barrierArray = createBarrierArray(barrierList);
@@ -285,6 +282,20 @@ public class BarrierGrid implements Serializable{
 	public Barrier[][] getBarrierArray() {
 		// TODO Auto-generated method stub
 		return barrierArray;
+	}
+	
+	public void changeBarrier(Barrier oldBarrier, BarrierGrid bg) {
+		int gridX = oldBarrier.getGridPositionX();
+		int gridY = oldBarrier.getGridPositionY();
+		int ind = barrierList.indexOf(oldBarrier);
+		Barrier purpleBar = factory.createBarrier("purple", bg);
+		barrierList.remove(oldBarrier);
+		barrierList.add(ind, purpleBar);
+		//this.clearCell(gridX, gridY);
+		//barrierArray[gridX][gridY] = purpleBar;
+		
+		barrierArray = createBarrierArray(barrierList);
+		
 	}
 	
 }

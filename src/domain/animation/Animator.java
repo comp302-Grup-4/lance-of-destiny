@@ -1,15 +1,19 @@
 package domain.animation;
 
 import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.PurpleBarrier;
 import domain.animation.barriers.ReinforcedBarrier;
 import domain.animation.barriers.RewardingBarrier;
 import domain.animation.barriers.SimpleBarrier;
@@ -20,7 +24,7 @@ import domain.animation.spells.Spell;
 import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
 
-public class Animator implements Serializable{
+public class Animator implements Serializable, YmirObserver{
 	private static final long serialVersionUID = -3426545588581994135L;
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
@@ -88,7 +92,7 @@ public class Animator implements Serializable{
 		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				CollisionInfo ballSolidCollision, ballCollisionInfo, spellCollisionInfo;
+				CollisionInfo ballSolidCollision, ballCollisionInfo, ballFrozenCollision, spellCollisionInfo;
 				Vector forceDirection, velocityChange;
 				while (!paused) {
 					try {
@@ -96,7 +100,6 @@ public class Animator implements Serializable{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
 					
 					// ball collision
 
@@ -106,18 +109,24 @@ public class Animator implements Serializable{
 							.map(x -> (Collidable) x)
 							.toList());
 					
-					// collision with other objects than walls and staff
+					// collision with non frozen barriers 
 					ballCollisionInfo = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
-							.filter(x -> !x.equals(ball) && !(x instanceof Wall) && !(x instanceof MagicalStaff))
+							.filter(x -> x instanceof Barrier && !(((Barrier) x).isFrozen()))
+							.map(x -> (Collidable) x)
+							.toList());
+					
+					// collision with frozen barriers
+					ballFrozenCollision = collisionCalculator.checkCollision(ball, getAnimationObjects().stream()
+							.filter(x -> x instanceof Barrier && (((Barrier) x).isFrozen()))
 							.map(x -> (Collidable) x)
 							.toList());
 					
 					if (!ball.isOverwhelming()) {
 						
-						forceDirection = ballCollisionInfo.getNextDirection().add(ballSolidCollision.getNextDirection());
+						forceDirection = ballCollisionInfo.getNextDirection().add(ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection()));
 					} else {
 						
-						forceDirection = ballSolidCollision.getNextDirection();
+						forceDirection = ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection());
 					}
 					
 					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
@@ -127,48 +136,53 @@ public class Animator implements Serializable{
 					ball.move(dTime);
 					
 					HashSet<Barrier> brokenBarriers = new HashSet<>();
-					for (Collidable collidedObject : ballCollisionInfo.getCollidedObjects()) {
+					ArrayList<Collidable> ballBarrierCollision = ballCollisionInfo.getCollidedObjects();
+					ballBarrierCollision.addAll(ballFrozenCollision.getCollidedObjects());
+					
+					for (Collidable collidedObject : ballBarrierCollision) {
 						if (collidedObject instanceof Barrier) {
-							if (collidedObject instanceof SimpleBarrier) {
-								removeAnimationObject((AnimationObject) collidedObject);
-								brokenBarriers.add((Barrier) collidedObject);
-							} else if (collidedObject instanceof ReinforcedBarrier) {
-								int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
-								if (NumberOfHitsNeeded == 1) {
+							if (ball.isOverwhelming() || !ball.isOverwhelming() && !(((Barrier) collidedObject).isFrozen())) {
+								if (collidedObject instanceof SimpleBarrier || collidedObject instanceof PurpleBarrier ) {
 									removeAnimationObject((AnimationObject) collidedObject);
 									brokenBarriers.add((Barrier) collidedObject);
-								} else {
-									((ReinforcedBarrier) collidedObject).decreaseHitCount();
-									break;
-								}
+								} else if (collidedObject instanceof ReinforcedBarrier) {
+									int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
+									if (NumberOfHitsNeeded == 1) {
+										removeAnimationObject((AnimationObject) collidedObject);
+										brokenBarriers.add((Barrier) collidedObject);
+									} else {
+										((ReinforcedBarrier) collidedObject).decreaseHitCount();
+										break;
+									}
 
-							} else if (collidedObject instanceof ExplosiveBarrier) {
-								ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
-								removeAnimationObject(explosive);
-								brokenBarriers.add((Barrier) collidedObject);
-								
-								BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
-								Barrier[][] barrierArray = barrierGrid.getBarrierArray();
-								int gridX = explosive.getGridPositionX();
-								int gridY = explosive.getGridPositionY();
-								for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
-										barrierGrid.COL_NUMBER - 1); x++) {
-									for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
-											barrierGrid.ROW_NUMBER - 1); y++) {
-										if (x == gridX && y == gridY) {
-											continue; //skip it self already removed
-										}
-										Barrier neighbor = barrierArray[y][x];
-										if (neighbor != null) {
-											removeAnimationObject(neighbor);
-											brokenBarriers.add((Barrier) collidedObject);
+								} else if (collidedObject instanceof ExplosiveBarrier) {
+									ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
+									removeAnimationObject(explosive);
+									brokenBarriers.add((Barrier) collidedObject);
+									
+									BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
+									Barrier[][] barrierArray = barrierGrid.getBarrierArray();
+									int gridX = explosive.getGridPositionX();
+									int gridY = explosive.getGridPositionY();
+									for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
+											barrierGrid.COL_NUMBER - 1); x++) {
+										for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
+												barrierGrid.ROW_NUMBER - 1); y++) {
+											if (x == gridX && y == gridY) {
+												continue; //skip it self already removed
+											}
+											Barrier neighbor = barrierArray[y][x];
+											if (neighbor != null) {
+												removeAnimationObject(neighbor);
+												brokenBarriers.add((Barrier) collidedObject);
+											}
 										}
 									}
-								}
 
-							} else if (collidedObject instanceof RewardingBarrier) {
-								brokenBarriers.add((Barrier) collidedObject);
-								removeAnimationObject((AnimationObject) collidedObject);
+								} else if (collidedObject instanceof RewardingBarrier) {
+									brokenBarriers.add((Barrier) collidedObject);
+									removeAnimationObject((AnimationObject) collidedObject);
+								}
 							}
 
 						}
@@ -177,7 +191,9 @@ public class Animator implements Serializable{
 					// Spell creation and score increase
 					
 					for (Barrier barrier : brokenBarriers) {
-						increaseScoreAfterDestroyingBarrier();
+						if (! (barrier instanceof PurpleBarrier)) {
+							increaseScoreAfterDestroyingBarrier();
+						}
 						if (barrier instanceof RewardingBarrier) {
 							Spell newSpell = spellFactory.createRandomSpellForBarriers(barrier);
 							addAnimationObject(newSpell);
@@ -196,6 +212,8 @@ public class Animator implements Serializable{
 					// Magical staff - spell collision
 					
 					HashSet<Spell> spellsToBeRemoved = new HashSet<>();
+					
+					
 					for (Spell spell : spellDepot.getSpellMap().keySet()) {
 						spellCollisionInfo = collisionCalculator.checkCollision(spell, Set.of(staff));
 						
@@ -223,7 +241,30 @@ public class Animator implements Serializable{
 							case Spell.OVERWHELMING_FIREBALL:
 								ball.setOverwhelming(true);
 								break;
-
+								
+							case Spell.INFINITE_VOID:
+								LinkedList<Barrier> barriers = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
+								List<Barrier> barriersLeft = new ArrayList <> (barriers.stream()
+										.filter(x -> !x.isFrozen() && x.getType() != "purple")
+										.toList());
+								Collections.shuffle(barriersLeft);
+								for (int i = 0; i < Math.min(8, barriersLeft.size()); i++) {
+									barriersLeft.get(i).setFrozen(true);
+								}
+								break;
+								
+							case Spell.HOLLOW_PURPLE:
+								LinkedList<Barrier> barr = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
+								List<Barrier> barrLeft = new ArrayList <> (barr.stream()
+										.filter(x -> !x.isFrozen() && x.getType() != "purple")
+										.toList());
+								Collections.shuffle(barrLeft);
+								for (int i = 0; i < Math.min(8, barrLeft.size()); i++) {
+									barrierGrid.changeBarrier(barrLeft.get(i), barrierGrid);
+								}
+								initializeAnimationObjects();
+								break;
+								
 							default:
 								break;
 							}
@@ -398,5 +439,21 @@ public class Animator implements Serializable{
 
 	public void setStaff(MagicalStaff staff) {
 		this.staff = staff;
+	}
+
+	@Override
+	public void update(Spell s) {
+		switch(s.getType()) {
+		case Spell.DOUBLE_ACCEL:
+			Vector v = ball.getVelocity();
+			Vector newVelocity = new Vector(v.getX()/2,v.getY()/2);
+			ball.setVelocity(newVelocity);
+		case Spell.INFINITE_VOID:
+			
+		case Spell.HOLLOW_PURPLE:
+			
+			
+		}
+		
 	}
 }

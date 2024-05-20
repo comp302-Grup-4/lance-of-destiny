@@ -150,8 +150,14 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		updateBoundaryPoints(displacement, 0, expansionX, expansionY);
 	}
 
-	protected void updateBoundaryPoints(Vector displacement, float dRot, float expansionX, float expansionY) {
+	public void updateBoundaryPoints(Vector displacement, float dRot, float expansionX, float expansionY) {
 		/**
+		 * MODIFIES: boundaryPoints
+		 * REQUIRES: boundaryPoints are initialized, center are moved with the amount of displacement
+		 * EFFECTS: Updates boundary points in this order: (1) Moves center by the amount of displacement, 
+		 * (2) expands the positions of each element of boundaryPoints while center remains still, and 
+		 * (3) rotates by the amount of dRot.
+		 * 
 		 * displacement: the change in the position of the element. 
 		 * expansionX: ratio of getting larger in the direction of x
 		 * expansionY: ratio of getting larger in the direction of x
@@ -184,12 +190,27 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 
 	@Override
 	public boolean contains(Vector point) {
+		/*
+		 * Requires:
+		 * 1. boundaryPoints contains 4 points.
+		 * 2. points in boundaryPoints array is not null.
+		 * 3. points in boundaryPoints array is given in counterclockwise order.
+		 * 4. the shape of AnimationObject is not concave.
+		 * 
+		 * Effects:
+		 * Returns true if the given point inside of the AnimationObject, false otherwise.
+		 * 
+		 */
+		if (boundaryPoints == null || boundaryPoints.length != 4) {
+            throw new IllegalArgumentException("Invalid Shape: Boundary points array must contain at least 3 points.");
+        }
+		
 		for (int i = 0; i < boundaryPoints.length; i++) {
 			Vector collisionPoint = boundaryPoints[i];
 			Vector nextCollisionPoint = boundaryPoints[(i + 1) % boundaryPoints.length];
 
 			Vector boundaryLine = nextCollisionPoint.subtract(collisionPoint);
-			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX())
+			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX()) 
 					- boundaryLine.getX() * (point.getY() - collisionPoint.getY());
 
 			if (crossProdVal > 0)
@@ -197,6 +218,7 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		}
 		return true;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
