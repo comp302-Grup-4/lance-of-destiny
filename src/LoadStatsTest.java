@@ -11,6 +11,18 @@ import java.io.StringReader;
 
 @Nested
 public class LoadStatsTest extends Game {
+    /**
+     * Requires: A BufferedReader object that is not null and contains at least four lines of input.
+     *           The first three lines should be ints representing chances, score, and time elapsed.
+     *           The fourth line should be a long representing the version number of the game.
+     * Modifies: This method will modify the player's chances, score, and the animator's start time.
+     * Effects:  If the version number in the BufferedReader is greater than the current game version,
+     *           this method will print a message to the console and return 1.
+     *           If the version number is less than or equal to the current game version,
+     *           this method will set the player's chances and score and the animator's start time based on the input,
+     *           and return 0.
+     *           If the BufferedReader does not contain the expected input, this method will throw a NumberFormatException.
+     */
 
     private static final int gameVersion = 1;
     private static Player player;
