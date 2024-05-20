@@ -16,6 +16,10 @@ import exceptions.InvalidBarrierNumberException;
 import exceptions.InvalidBarrierPositionException;
 
 public class BarrierGrid implements Serializable{
+	/**
+	 * OVERVIEW: This class handles the addition, positioning 
+	 * and removal operations of barriers as an information expert.
+	 */
 	private static final long serialVersionUID = -1112008210834819434L;
 	protected final int COL_NUMBER = 37;
 	protected final int ROW_NUMBER = 20;
@@ -30,7 +34,6 @@ public class BarrierGrid implements Serializable{
 	private float MARGIN = (float) 0.15;
 	
 	int totalBarrierNumber;
-	private Animator animator;
 	private Barrier[][] barrierArray;
 	private LinkedList<Barrier> barrierList;
 	
@@ -40,6 +43,10 @@ public class BarrierGrid implements Serializable{
 	private BarrierFactory factory;
 
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
+		/**
+		 * REQUIRES: simple >= 75 && firm >= 10 && explosive >= 5 && gift >= 10
+		 * EFFECTS: Creates a new BarrierGrid instance
+		 */
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
 		
 		simpleBarrierNumber = simple;
@@ -54,8 +61,6 @@ public class BarrierGrid implements Serializable{
 		
 		barrierList = createRandomizedBarrierList(simple, firm, explosive, gift);
 		barrierArray = createBarrierArray(barrierList);
-
-//		barrierListToString(); //TODO REMOVE
 	}
 
 	public void importBarrierGrid(String barrierString) {
@@ -68,6 +73,9 @@ public class BarrierGrid implements Serializable{
 	}
 	
 	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
+		/**
+		 * EFFECTS: Creates a randomized barrier list based on the specified number of barriers.
+		 */
 		LinkedList<Barrier> barrierCollection = new LinkedList<>();
 		for (int i = 0; i < simple; i++)
 			barrierCollection.add(factory.createBarrier("simple", this));
