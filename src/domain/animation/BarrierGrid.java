@@ -70,9 +70,6 @@ public class BarrierGrid implements Serializable{
 	}
 	
 	private LinkedList<Barrier> createRandomizedBarrierList(int simple, int firm, int explosive, int gift) {
-		/**
-		 * EFFECTS: Creates a randomized barrier list based on the specified number of barriers.
-		 */
 		LinkedList<Barrier> barrierCollection = new LinkedList<>();
 		for (int i = 0; i < simple; i++)
 			barrierCollection.add(factory.createBarrier("simple", this));
