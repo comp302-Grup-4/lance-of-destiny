@@ -12,9 +12,9 @@ import domain.animation.BarrierGrid;
 import exceptions.InvalidBarrierNumberException;
 
 public class BarrierTypeTest {
-	 //test getsetCell
+	 //test getBarrierType
 	 @Test
-	    public void testGetSetBarrierType_Simple() throws InvalidBarrierNumberException {
+	    public void testGetBarrierType_Simple() throws InvalidBarrierNumberException {
 	        BarrierGrid barrier = new BarrierGrid(75,10,5,10);
 	        barrier.setBarrierType(0, 0, "simple");//Set to simple
 	        String type = barrier.getBarrierType(0, 0);
@@ -22,7 +22,7 @@ public class BarrierTypeTest {
 	    }
 
 	    @Test
-	    public void testGetSetBarrierType_NoBarrier() throws InvalidBarrierNumberException {
+	    public void testGetBarrierType_NoBarrier() throws InvalidBarrierNumberException {
 	        BarrierGrid barrier = new BarrierGrid(75,10,5,10);
 	        barrier.setBarrierType(0, 0, null);//no barrier is placed in (0,0)
 	        String type = barrier.getBarrierType(0, 0);
@@ -30,7 +30,7 @@ public class BarrierTypeTest {
 	    }
 
 	    @Test
-	    public void testGetSetBarrierType_Explosive() throws InvalidBarrierNumberException {
+	    public void testGetBarrierType_Explosive() throws InvalidBarrierNumberException {
 	        BarrierGrid barrier = new BarrierGrid(75,10,5,10);
 	        barrier.setBarrierType(0, 0, "explosive");//set to explosive
 	        String type = barrier.getBarrierType(0, 0);
@@ -38,7 +38,7 @@ public class BarrierTypeTest {
 	    }
 
 	    @Test
-	    public void testGetSetBarrierType_Gift() throws InvalidBarrierNumberException {
+	    public void testGetBarrierType_Gift() throws InvalidBarrierNumberException {
 	        BarrierGrid barrier = new BarrierGrid(75,10,5,10);
 	        barrier.setBarrierType(0, 0, "gift");//set to gift
 	        String type = barrier.getBarrierType(0, 0);
