@@ -19,6 +19,18 @@ public class BarrierGrid implements Serializable{
 	/**
 	 * OVERVIEW: This class handles the addition, positioning 
 	 * and removal operations of barriers as an information expert.
+	 * 
+	 * 
+	 * The abstraction function is
+	 * 	AF = arr[n % COL_NUMBER][n % ROW_NUMBER]=barrier_n | 0 <= n <=barrierGrid.length
+	 * 
+	 * 
+	 * The representation invariant is 
+	 * 	total number of barriers should not exceed the size of the grid (barrierGrid.length <= ROW_NUMBER*COL_NUMBER) &&
+	 * 	all elements in arr are Barriers &&
+	 *  each barrier type should meet their minimum barrier number criteria &&
+	 *  each barrier should be positioned in a valid position within the range of grid &&
+	 *  
 	 */
 	private static final long serialVersionUID = -1112008210834819434L;
 	protected final int COL_NUMBER = 37;
