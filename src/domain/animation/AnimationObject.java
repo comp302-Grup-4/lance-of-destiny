@@ -91,6 +91,16 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 	
 	@Override
 	public void move(float dTimeMilisecond) {
+		//REQUİRES: dTimeMilisecond must be a non-negative float.
+		//velocity, position,angularVelocity properly initialized, not null.
+		//MODİFİES: the position and rotationAngle of the object.
+		//EFFECTS: calculates the displacement with respect to the velocity and time elapsed.
+		//calculates the change in roattion based on the angularvelocity and time elapsed.
+		//updates the object's position and rotation.
+		//If dTimeMilisecond is 0, the position and rotationAngle remain unchanged.
+		//BLACKBOX: for dTimeMilisecond = 100 position and rotation should be updated correctly same for dTimeMilisecond = 0(expect 0 disp&rotation) and dTimeMilisecond = 50,
+		//GALSSBOX: dTimeMilisecond = 1000, velocity = (0, 0), angularVelocity = 1(should only change the rotation position remains the same)
+		//dTimeMilisecond = 1000, velocity = (10, 10), angularVelocity = 0(only position changes rotation remains the same)
 		/**
 		 * Calculates the linear displacement by linear velocity,
 		 * the rotational change by rotational velocity.
