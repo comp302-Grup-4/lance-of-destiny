@@ -150,8 +150,14 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		updateBoundaryPoints(displacement, 0, expansionX, expansionY);
 	}
 
-	protected void updateBoundaryPoints(Vector displacement, float dRot, float expansionX, float expansionY) {
+	public void updateBoundaryPoints(Vector displacement, float dRot, float expansionX, float expansionY) {
 		/**
+		 * MODIFIES: boundaryPoints
+		 * REQUIRES: boundaryPoints are initialized, center are moved with the amount of displacement
+		 * EFFECTS: Updates boundary points in this order: (1) Moves center by the amount of displacement, 
+		 * (2) expands the positions of each element of boundaryPoints while center remains still, and 
+		 * (3) rotates by the amount of dRot.
+		 * 
 		 * displacement: the change in the position of the element. 
 		 * expansionX: ratio of getting larger in the direction of x
 		 * expansionY: ratio of getting larger in the direction of x
