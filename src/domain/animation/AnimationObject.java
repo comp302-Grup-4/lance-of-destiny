@@ -184,12 +184,27 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 
 	@Override
 	public boolean contains(Vector point) {
+		/*
+		 * Requires:
+		 * 1. boundaryPoints contains 4 points.
+		 * 2. points in boundaryPoints array is not null.
+		 * 3. points in boundaryPoints array is given in counterclockwise order.
+		 * 4. the shape of AnimationObject is not concave.
+		 * 
+		 * Effects:
+		 * Returns true if the given point inside of the AnimationObject, false otherwise.
+		 * 
+		 */
+		if (boundaryPoints == null || boundaryPoints.length != 4) {
+            throw new IllegalArgumentException("Invalid Shape: Boundary points array must contain at least 3 points.");
+        }
+		
 		for (int i = 0; i < boundaryPoints.length; i++) {
 			Vector collisionPoint = boundaryPoints[i];
 			Vector nextCollisionPoint = boundaryPoints[(i + 1) % boundaryPoints.length];
 
 			Vector boundaryLine = nextCollisionPoint.subtract(collisionPoint);
-			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX())
+			float crossProdVal = boundaryLine.getY() * (point.getX() - collisionPoint.getX()) 
 					- boundaryLine.getX() * (point.getY() - collisionPoint.getY());
 
 			if (crossProdVal > 0)
@@ -197,6 +212,7 @@ public abstract class AnimationObject implements Movable, Collidable, Serializab
 		}
 		return true;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
