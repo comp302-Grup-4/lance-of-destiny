@@ -19,7 +19,7 @@ import domain.animation.spells.*;
 import exceptions.InvalidBarrierNumberException;
 import ui.GameApp;
 
-public class Animator implements Serializable{
+public class Animator implements Serializable, YmirObserver{
 	private static final long serialVersionUID = -3426545588581994135L;
 	public static int RIGHT = 1;
 	public static int LEFT = -1;
@@ -127,7 +127,7 @@ public class Animator implements Serializable{
 						forceDirection = ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection());
 					}
 					
-					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
+					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection.unit()));
 
 					ball.setVelocity(ball.getVelocity().add(velocityChange));
 					
@@ -582,4 +582,20 @@ public class Animator implements Serializable{
 		this.game.writeHighScore(this.game.getPlayer().getScore());
 		
 	}; // TODO game over stuff
+  
+	@Override
+	public void update(Spell s) {
+		switch(s.getType()) {
+		case Spell.DOUBLE_ACCEL:
+			Vector v = ball.getVelocity();
+			Vector newVelocity = new Vector(v.getX()/2,v.getY()/2);
+			ball.setVelocity(newVelocity);
+		case Spell.INFINITE_VOID:
+			
+		case Spell.HOLLOW_PURPLE:
+			
+			
+		}
+		
+	}
 }
