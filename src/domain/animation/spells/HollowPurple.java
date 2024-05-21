@@ -13,4 +13,7 @@ public class HollowPurple extends Spell {
 	public int getType() {
 		return HOLLOW_PURPLE;
 	}
+
+	public void startSpell() {};
+	public void stopSpell() {};
 }

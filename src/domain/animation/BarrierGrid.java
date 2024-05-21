@@ -20,10 +20,10 @@ public class BarrierGrid implements Serializable{
 	protected final int COL_NUMBER = 37;
 	protected final int ROW_NUMBER = 20;
 	
-	public static int MIN_SIMPLE_BARRIERS = 75;
-	public static int MIN_FIRM_BARRIERS = 10;
-	public static int MIN_EXPLOSIVE_BARRIERS = 5;
-	public static int MIN_GIFT_BARRIERS = 10;
+	public static int MIN_SIMPLE_BARRIERS = 0;
+	public static int MIN_FIRM_BARRIERS = 0;
+	public static int MIN_EXPLOSIVE_BARRIERS = 1;
+	public static int MIN_GIFT_BARRIERS = 0;
 	
 	private int simpleBarrierNumber, firmBarriers, explosiveBarriers, giftBarriers;
 	
@@ -37,7 +37,7 @@ public class BarrierGrid implements Serializable{
 	private Vector position;
 	private float cellSize = 20 * (1 + 2 * MARGIN);
 	
-	private BarrierFactory factory;
+	private static final BarrierFactory factory = BarrierFactory.getInstance();
 
 	public BarrierGrid(int simple, int firm, int explosive, int gift) throws InvalidBarrierNumberException {
 		checkBarrierNumberValidity(simple, firm, explosive, gift);
@@ -46,8 +46,6 @@ public class BarrierGrid implements Serializable{
 		firmBarriers = firm;
 		explosiveBarriers = explosive;
 		giftBarriers = gift;
-		
-		this.factory = new BarrierFactory();
 		totalBarrierNumber = simple + firm + explosive + gift;
 		
 		position = new Vector(20, 30);
@@ -60,8 +58,7 @@ public class BarrierGrid implements Serializable{
 
 	public void importBarrierGrid(String barrierString) {
 		this.barrierList = stringToBarrierList(barrierString);
-		this.factory = new BarrierFactory();
-
+		
 		position = new Vector(20, 40);
 
 		barrierArray = createBarrierArray(barrierList);
@@ -142,7 +139,7 @@ public class BarrierGrid implements Serializable{
 
 	}
 	
-	private Vector getGridPositionAt(Vector position) {
+	public Vector getGridPositionAt(Vector position) {
 		/**
 		 * position: with respect to animator
 		 */
@@ -159,6 +156,30 @@ public class BarrierGrid implements Serializable{
 		/**
 		 * positions are with respect to animator
 		 */
+		
+		/**
+		 * REQUIRES: 
+		 * newPosition and initialPosition must be valid positions with respect to barrier grid.
+		 * newPosition should be null (free)
+		 * b must be in initialPosition 
+		 * 
+		 * MODIFIES:
+		 * Position of b in the barrier grid
+		 * barrierArray
+		 * 
+		 * EFFECTS: 
+		 * Replaces the position of b from initialPosition to newPosition if newPosition is available.
+		 * Updates barrierArray accordingly so that b is positioned in newPosition and initialPosition is now empty (null).
+		 * Updates placement of b on the animator. 
+		 * It returns true if the change of position is successful; false otherwise.
+		 * It throws InvalidBarrierPositionException if either one of the newPosition and initialPosition is invalid. 
+		 * 
+		 */
+		
+		if (b==null) {
+			throw new NullPointerException("Barrier cannot be null");
+		}
+		
 		Vector newGridPos = getGridPositionAt(newPosition);
 		Vector initGridPos = getGridPositionAt(initialPosition);
 		
@@ -167,7 +188,11 @@ public class BarrierGrid implements Serializable{
         
         int row = (int) newGridPos.x;
         int col = (int) newGridPos.y;
-
+        
+        if (this.getBarrierAt(oldRow, oldCol) != b) {
+        	throw new InvalidBarrierPositionException(oldRow, oldCol, ROW_NUMBER , COL_NUMBER);
+        }
+      
 		if(this.getBarrierAt(row,col)==null) {
 				b.setGridPosition(col, row);
 				barrierArray[row][col] = b;
@@ -179,7 +204,8 @@ public class BarrierGrid implements Serializable{
 		
 		}
         
-		return false;
+		return false; 
+		
 	}
 
 	public int getWidth() {
@@ -277,6 +303,24 @@ public class BarrierGrid implements Serializable{
 	public Barrier[][] getBarrierArray() {
 		// TODO Auto-generated method stub
 		return barrierArray;
+	}
+	
+	public void changeBarrier(Barrier oldBarrier, BarrierGrid bg) {
+		int gridX = oldBarrier.getGridPositionX();
+		int gridY = oldBarrier.getGridPositionY();
+		int ind = barrierList.indexOf(oldBarrier);
+		Barrier purpleBar = factory.createBarrier("purple", bg);
+		barrierList.remove(oldBarrier);
+		barrierList.add(ind, purpleBar);
+		//this.clearCell(gridX, gridY);
+		//barrierArray[gridX][gridY] = purpleBar;
+		
+		barrierArray = createBarrierArray(barrierList);
+		
+	}
+
+	public int getTotalBarrierNumber() {
+		return totalBarrierNumber;
 	}
 	
 }

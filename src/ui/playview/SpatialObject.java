@@ -21,13 +21,11 @@ import domain.animation.Vector;
 import domain.animation.Wall;
 import domain.animation.barriers.Barrier;
 import domain.animation.barriers.ExplosiveBarrier;
+import domain.animation.barriers.PurpleBarrier;
 import domain.animation.barriers.ReinforcedBarrier;
 import domain.animation.barriers.RewardingBarrier;
 import domain.animation.barriers.SimpleBarrier;
-import domain.animation.spells.FelixFelicis;
-import domain.animation.spells.Hex;
-import domain.animation.spells.MagicalStaffExpansion;
-import domain.animation.spells.OverwhelmingFireball;
+import domain.animation.spells.*;
 
 public class SpatialObject extends JLabel{
 	
@@ -76,7 +74,13 @@ public class SpatialObject extends JLabel{
 	public static ImageIcon hexSpell = new ImageIcon("./res/drawable/hexSpell.png");
 	public static ImageIcon felixFelicisSpell = new ImageIcon("./res/drawable/felixFelicisSpell.png");
 	public static ImageIcon staffExpansionSpell = new ImageIcon("./res/drawable/magicalStaffExpansionSpell.png");
-	
+	public static ImageIcon infiniteVoidSpell = new ImageIcon("./res/drawable/infiniteVoidSpell.png");
+	public static ImageIcon smallFrozenGem = new ImageIcon("./res/drawable/smallFrozenGem.png");
+	public static ImageIcon doubleAccelSpell = new ImageIcon("./res/drawable/doubleAccelSpell.png");
+	public static ImageIcon hollowPurpleSpell = new ImageIcon("./res/drawable/hollowPurpleSpell.png");
+	public static ImageIcon smallPurpleGem = new ImageIcon("./res/drawable/smallPurpleGem.png");
+	public static ImageIcon hexFireBallImage = new ImageIcon("./res/drawable/smallPurpleGem.png");
+
 	private static HashMap<ScaleInfo, ImageIcon> cacheScaledImages = new HashMap<>();
 	
 	int ID;
@@ -121,8 +125,12 @@ public class SpatialObject extends JLabel{
 			image = rewardingBarrierImage;
 		} else if (object instanceof ExplosiveBarrier) {
 			image = explosiveBarrierImage;
+		} else if (object instanceof PurpleBarrier) {
+			image = smallPurpleGem;
 		} else if (object instanceof MagicalStaff) {
 			image = magicalStaffImage;
+		} else if (object instanceof HexFireBall) {
+			image = hexFireBallImage;
 		} else if (object instanceof FireBall) {
 			if (((FireBall) object).isOverwhelming())
 				image = overwhelmingFireball;
@@ -142,9 +150,21 @@ public class SpatialObject extends JLabel{
 			image = staffExpansionSpell;
 		} else if (object instanceof OverwhelmingFireball) {
 			image = overwhelmingFireballSpell;
+		} else if (object instanceof InfiniteVoid) {
+			image = infiniteVoidSpell; 
+		} else if (object instanceof DoubleAccel) {
+			image = doubleAccelSpell; 
+		} else if (object instanceof HollowPurple) {
+			image = hollowPurpleSpell;
 		}
 		else {
 			throw new Exception("Resource not found.");
+		}
+		
+		if (object instanceof Barrier) {
+			if (((Barrier) object).isFrozen()) {
+				image = smallFrozenGem; 
+			}
 		}
 		
 		image = getScaledImage();

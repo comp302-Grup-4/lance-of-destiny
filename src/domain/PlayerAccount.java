@@ -3,7 +3,7 @@ package domain;
 import java.util.List;
 
 public class PlayerAccount {
-	private String userName;
+	private String userName = "NULL";
 	private String userPassword;
 	private List <Integer> highScores;
 	public boolean isReady = false;

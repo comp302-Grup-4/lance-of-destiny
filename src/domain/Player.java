@@ -43,7 +43,11 @@ public class Player implements Serializable{
 	public void setChances(int chances) {
 		this.chances = chances;
 	}
-	
+  
+	public PlayerAccount getPlayerAccount() { // TODO delete this or the one below
+		return account;
+  }
+  
 	public PlayerAccount getAccount() {
 		return account;
 	}

@@ -3,6 +3,9 @@ package domain.animation.spells;
 import domain.animation.AnimationObject;
 import domain.animation.Vector;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 public abstract class Spell extends AnimationObject {
 	private static final long serialVersionUID = 2882205343222279632L;
 	
@@ -13,8 +16,8 @@ public abstract class Spell extends AnimationObject {
 	public static final int INFINITE_VOID = 4;
 	public static final int DOUBLE_ACCEL = 5;
 	public static final int HOLLOW_PURPLE = 6;
-	
-	protected String spellType;
+
+	protected int spellType;
 
 	public Spell(Vector position) {
 		this.position = position;
@@ -28,7 +31,7 @@ public abstract class Spell extends AnimationObject {
 	}
 	
 	public abstract int getType();
-	
+
 	@Override
 	public float getRotation() {
 		return 0;
@@ -52,5 +55,12 @@ public abstract class Spell extends AnimationObject {
 	@Override
 	public void initializeCenterPoint() {
 		center = new Vector(position.getX() + sizeX / 2, position.getY() + sizeY / 2);
+	}
+
+    public abstract void startSpell();
+    public abstract void stopSpell();
+
+	public void setType(int type) {
+		this.spellType = type;
 	}
 }
