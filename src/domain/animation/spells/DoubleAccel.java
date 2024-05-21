@@ -1,5 +1,8 @@
 package domain.animation.spells;
 
+import java.util.Timer;
+
+import domain.Game;
 import domain.animation.FireBall;
 import domain.animation.Vector;
 
@@ -16,13 +19,21 @@ public class DoubleAccel extends Spell {
 	}
 
 	@Override
-	public void startSpell() {
-		FireBall ball = new FireBall();
-		ball.setVelocity(ball.getVelocity().scale((float) 10)); 
-		
-	}
+	public void activate(Game game) {
+		setActivated(true);
+		FireBall ball = game.getAnimator().getFireball();
+		ball.setVelocity(ball.getVelocity().scale(.5f));
+		ball.setSpedUp(true);
 
-	@Override
-	public void stopSpell() {
+		new Timer().schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				if (ball.isSpedUp()) {
+					ball.setVelocity(ball.getVelocity().scale(2f));
+					ball.setSpedUp(false);
+				}
+				setActivated(false);
+			}
+		}, spellDurationShort);
 	}
 }

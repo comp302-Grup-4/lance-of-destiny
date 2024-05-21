@@ -1,5 +1,9 @@
 package domain.animation.spells;
 
+import java.util.Timer;
+
+import domain.Game;
+import domain.animation.FireBall;
 import domain.animation.Vector;
 
 public class OverwhelmingFireball extends Spell {
@@ -14,7 +18,22 @@ public class OverwhelmingFireball extends Spell {
 		return OVERWHELMING_FIREBALL;
 	}
 
-	public void startSpell() {};
-	public void stopSpell() {};
+	@Override
+	public void activate(Game game) {
+		setActivated(true);
+		FireBall ball = game.getAnimator().getFireball();
+		ball.setOverwhelming(true);
+
+		new Timer().schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				if (ball.isOverwhelming()) {
+					ball.setOverwhelming(false);
+				}
+				setActivated(false);
+			}
+		}, spellDurationLong);
+
+	}
 }
 

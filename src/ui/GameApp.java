@@ -170,10 +170,16 @@ public class GameApp extends JFrame implements MultiplayerObserver {
 
 	@Override
 	public void update(Message messageType, Object value) {
-		if (messageType == Message.CONNECTION_ERROR) {
+		switch (messageType) {
+		case CONNECTION_ERROR:
 			setActiveGame(null);
 			setActiveServer(null);
 			openMainMenuScreen();
+			break;
+		case GAME_OVER:
+			openMainMenuScreen();
+		default:
+			break;
 		}
 	}
 }

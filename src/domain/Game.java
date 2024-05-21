@@ -8,9 +8,11 @@ import java.nio.file.StandardOpenOption;
 
 import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
+import network.Message;
+import network.MultiplayerObserver;
 import ui.GameApp;
 
-public class Game implements Serializable {
+public class Game implements Serializable  {
 	private static final long serialVersionUID = 7679992000960473271L;
 	private static final long gameVersion = 1;
 	private Player player;
@@ -223,5 +225,9 @@ public class Game implements Serializable {
 	
 	public void setPlayerScore(int newScore) {
 		player.setScore(newScore);
+	}
+	
+	public void endGame() {
+		GameApp.getInstance().openMainMenuScreen();
 	}
 }
