@@ -129,7 +129,7 @@ public class Animator implements Serializable, YmirObserver{
 						forceDirection = ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection());
 					}
 					
-					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
+					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection.unit()));
 
 					ball.setVelocity(ball.getVelocity().add(velocityChange));
 					
