@@ -44,13 +44,9 @@ public class Player implements Serializable{
 		this.chances = chances;
 	}
   
-	public PlayerAccount getPlayerAccount() { // TODO delete this or the one below
+	public PlayerAccount getPlayerAccount() {
 		return account;
-  }
-  
-	public PlayerAccount getAccount() {
-		return account;
-	}
+    }
 	
 	public String getUserName() {
 		return this.account.getUserName();

@@ -10,12 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import domain.Game;
-import domain.animation.Vector;
-import domain.animation.spells.OverwhelmingFireball;
 import domain.PlayerAccount;
+import network.Message;
+import network.MultiplayerObserver;
 import network.Server;
 
-public class GameApp extends JFrame {
+public class GameApp extends JFrame implements MultiplayerObserver {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -165,6 +165,15 @@ public class GameApp extends JFrame {
 		int result = JOptionPane.showConfirmDialog(this, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
 		if (result == JOptionPane.YES_OPTION) {
 			System.exit(1);
+		}
+	}
+
+	@Override
+	public void update(Message messageType, Object value) {
+		if (messageType == Message.CONNECTION_ERROR) {
+			setActiveGame(null);
+			setActiveServer(null);
+			openMainMenuScreen();
 		}
 	}
 }

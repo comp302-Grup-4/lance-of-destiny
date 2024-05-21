@@ -92,6 +92,7 @@ public class ConnectionScreen extends JPanel {
 						
 						GameApp.getInstance().setActiveGame(multiplayerGame);
 						client.registerObserver(multiplayerGame);
+						client.registerObserver(GameApp.getInstance());
 						
 						GameApp.getInstance().setActiveServer(client);
 						GameApp.getInstance().openClientWaitingScreen();

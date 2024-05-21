@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JOptionPane;
 
+import domain.Game;
 import ui.GameApp;
 
 public class MultiplayerClient extends Server {
@@ -52,6 +53,8 @@ public class MultiplayerClient extends Server {
 								"Connection with the server is lost.", 
 								"Error", 
 								JOptionPane.ERROR_MESSAGE);
+						
+						notifyObserver(Message.CONNECTION_ERROR, 1);
 				};
 			}
 

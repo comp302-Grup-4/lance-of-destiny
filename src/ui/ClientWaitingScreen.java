@@ -44,7 +44,7 @@ public class ClientWaitingScreen extends JPanel implements MultiplayerObserver {
 		
 		thisPlayer = new Player(GameApp.getInstance().getActivePlayerAccount());
 		otherPlayer = new Player();
-		otherPlayer.getAccount().setUserName("Waiting for connection...");
+		otherPlayer.getPlayerAccount().setUserName("Waiting for connection...");
 		game.setOtherPlayer(otherPlayer);
 		
 		JPanel innerPanel = new JPanel();

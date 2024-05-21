@@ -13,11 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import domain.Game;
 import domain.MultiplayerGame;
 import domain.Player;
-import domain.PlayerAccount;
-import domain.animation.spells.Spell;
 import network.Message;
 import network.MultiplayerObserver;
 import network.MultiplayerServer;
@@ -51,7 +48,7 @@ public class HostWaitingScreen extends JPanel implements MultiplayerObserver {
 		
 		thisPlayer = new Player(GameApp.getInstance().getActivePlayerAccount());
 		otherPlayer = new Player();
-		otherPlayer.getAccount().setUserName("Waiting for connection...");
+		otherPlayer.getPlayerAccount().setUserName("Waiting for connection...");
 		game.setOtherPlayer(otherPlayer);
 		
 		thisPlayerLabel = new JLabel(thisPlayer.getUserName());

@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashSet;
 
-import domain.Game;
+import domain.MultiplayerGame;
 import domain.Player;
 import ui.GameApp;
 
@@ -20,13 +20,15 @@ public abstract class Server implements MultiplayerSubject, MultiplayerObserver 
 	
 	HashSet<MultiplayerObserver> observers = new HashSet<>();
 
-	Game game;
+	MultiplayerGame game;
 
 	String serverMessage;
 	
 	public Server() throws IOException {
 		thisPlayer = new Player(GameApp.getInstance().getActivePlayerAccount());
 		otherPlayer = new Player();
+		
+		game = (MultiplayerGame) GameApp.getInstance().getActiveGame();
 	}
 	
 	protected String getServerMessage() throws IOException {
@@ -55,11 +57,12 @@ public abstract class Server implements MultiplayerSubject, MultiplayerObserver 
 						break;
 					case USERNAME:
 						value = valueString;
-						otherPlayer.setUsername(valueString);
 						break;
 					case GAME_STATE:
 						value = String.valueOf(valueString);
 						break;
+					case BARRIER_GRID:
+						value = String.valueOf(valueString);
 					default:
 						break;
 					}
