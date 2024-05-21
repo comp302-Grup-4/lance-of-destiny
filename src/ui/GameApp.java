@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import domain.Game;
+import domain.PlayerAccount;
+import network.Server;
+import network.Server;
 
 public class GameApp extends JFrame {
 
@@ -20,8 +23,15 @@ public class GameApp extends JFrame {
 	private JPanel loginScreen;
 	private JPanel mainMenuScreen;
 	private JPanel buildingScreen;
+	private JPanel connectionScreen;
+	private JPanel hostWaitingScreen;
+	private JPanel clientWaitingScreen;
 	
+	private Game activeGame;
+	private PlayerAccount activePlayerAccount = new PlayerAccount("Jane", "Doe", null);
 	private static GameApp instance = null;
+	
+	private Server activeServer;
 	
 	/**
 	 * Launch the application.
@@ -103,11 +113,51 @@ public class GameApp extends JFrame {
 	}
 	
 	public void openConnectionScreen() {
-		buildingScreen = new BuildingScreen();
-		setContentPane(buildingScreen);
+		connectionScreen = new ConnectionScreen();
+		setContentPane(connectionScreen);
 		
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public void openHostWaitingScreen() {
+		hostWaitingScreen = new HostWaitingScreen();
+		setContentPane(hostWaitingScreen);
+		
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void openClientWaitingScreen() {
+		clientWaitingScreen = new ClientWaitingScreen();
+		setContentPane(clientWaitingScreen);
+		
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public PlayerAccount getActivePlayerAccount() {
+		return activePlayerAccount;
+	}
+	
+	public void setActivePlayerAccount(String userName, String password) {
+		this.activePlayerAccount = new PlayerAccount(userName, password, null);
+	}
+	
+	public Game getActiveGame() {
+		return activeGame;
+	}
+	
+	public void setActiveGame(Game activeGame) {
+		this.activeGame = activeGame;
+	}
+	
+	public void setActiveServer(Server server) {
+		this.activeServer = server;
+	}
+	
+	public Server getActiveServer() {
+		return activeServer;
 	}
 
 	public void exitGame() {

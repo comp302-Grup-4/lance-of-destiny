@@ -6,6 +6,7 @@ public class PlayerAccount {
 	private String userName;
 	private String userPassword;
 	private List <Integer> highScores;
+	public boolean isReady = false;
 	
 	public PlayerAccount(String userName, String userPassword, List<Integer> highScores) {
 		super();

@@ -21,8 +21,10 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import domain.Game;
+import domain.MultiplayerGame;
 import domain.animation.BarrierGrid;
 import exceptions.InvalidBarrierNumberException;
+import exceptions.ResourceNotFoundException;
 import ui.playview.BuildView;
 
 public class BuildingScreen extends JPanel {
@@ -40,7 +42,11 @@ public class BuildingScreen extends JPanel {
 	GameApp g = GameApp.getInstance();
 	
 	public BuildingScreen() {
-		game = new Game();
+		if (GameApp.getInstance().getActiveGame() == null) {
+			System.err.println("No game instance created");
+		} else {
+			this.game = GameApp.getInstance().getActiveGame();
+		}
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = screenSize.height;
@@ -216,8 +222,12 @@ public class BuildingScreen extends JPanel {
 						game.getAnimator().setBarrierGrid(bg);
 					} catch (InvalidBarrierNumberException e1) {
 						e1.printStackTrace();
-					}	
-					g.openRunningScreen(game);
+					}
+					if (game instanceof MultiplayerGame) {
+						g.openHostWaitingScreen();
+					} else {
+						g.openRunningScreen(game);
+					}
 				} else {
                     JOptionPane.showMessageDialog(BuildingScreen.this, "Game is not built yet.", "Error", JOptionPane.INFORMATION_MESSAGE);
 				}

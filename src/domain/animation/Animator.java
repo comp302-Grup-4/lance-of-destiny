@@ -19,6 +19,8 @@ import domain.animation.collision.PointBasedCollision;
 import domain.animation.spells.Spell;
 import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
+import network.Message;
+import ui.GameApp;
 
 public class Animator implements Serializable{
 	private static final long serialVersionUID = -3426545588581994135L;
@@ -341,7 +343,7 @@ public class Animator implements Serializable{
 	private void increaseScoreAfterDestroyingBarrier() {
 		int oldScore = game.getPlayer().getScore();
 		int newScore = (int) (oldScore + 300 / getPassedTime());
-		game.getPlayer().setScore(newScore);
+		game.setPlayerScore(newScore);
 	}
 
 	public void moveMagicalStaff(int direction) {

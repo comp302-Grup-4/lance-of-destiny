@@ -5,22 +5,17 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 import javax.swing.*;
 
 import domain.Game;
+import domain.MultiplayerGame;
 import domain.animation.Animator;
-import domain.animation.BarrierGrid;
-import exceptions.InvalidBarrierNumberException;
-import ui.BuildingScreen;
 
 public class PlayView extends JPanel {
 	
@@ -32,7 +27,7 @@ public class PlayView extends JPanel {
 	private HashMap<Integer, JComponent> drawnObjects;
 	ChancesPanel chancesPanel;
 	Game game;
-	JLabel scoreText;
+	JLabel scoreText, otherPlayerScoreText;
 	/**
 	 * Create the panel.
 	 */
@@ -51,32 +46,70 @@ public class PlayView extends JPanel {
 		this.setLayout(null);
 		this.setVisible(true);
 		this.setFocusable(true);
-		
+
 		JPanel rightInfoPanel = new JPanel();
-		rightInfoPanel.setLayout(new GridLayout(2, 1));
 
 		chancesPanel = new ChancesPanel();
-		chancesPanel.setChances(game.getPlayerChances());
-		chancesPanel.setSize( 
-				chancesPanel.getWidth(), 
-				chancesPanel.getHeight());
-		chancesPanel.setVisible(true);
-		chancesPanel.setBounds(0,0,500,500);
-		rightInfoPanel.add(chancesPanel, 0, 0);
-		
 		scoreText = new JLabel();
-		scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
-		scoreText.setBackground(new Color(0,0,0,0));
-		scoreText.setHorizontalAlignment(JLabel.RIGHT);
-		scoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
-		rightInfoPanel.add(scoreText, 1, 0);
+		otherPlayerScoreText = new JLabel();
 		
-		rightInfoPanel.setBackground(new Color(0,0,0,0));
-		rightInfoPanel.setVisible(true);
-		rightInfoPanel.setBounds((int) (windowWidth * 0.8), 
-								(int) (windowHeight * 0.83),
-								250,
-								100);
+		if (game instanceof MultiplayerGame) {
+			rightInfoPanel.setLayout(new GridLayout(3, 1));
+			
+			chancesPanel.setChances(game.getPlayerChances());
+			chancesPanel.setSize( 
+					chancesPanel.getWidth(), 
+					chancesPanel.getHeight());
+			chancesPanel.setVisible(true);
+			chancesPanel.setBounds(0,0,500,500);
+			rightInfoPanel.add(chancesPanel, 0, 0);
+			
+			scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+			scoreText.setBackground(new Color(0,0,0,0));
+			scoreText.setHorizontalAlignment(JLabel.RIGHT);
+			scoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+			rightInfoPanel.add(scoreText, 1, 0);
+		
+			otherPlayerScoreText.setText("Enemy Score: " + String.valueOf(game.getPlayer().getScore()));
+			otherPlayerScoreText.setForeground(new Color(153, 0, 153));
+			otherPlayerScoreText.setBackground(new Color(0,0,0,0));
+			otherPlayerScoreText.setHorizontalAlignment(JLabel.RIGHT);
+			otherPlayerScoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
+			
+			rightInfoPanel.add(otherPlayerScoreText, 2, 0);
+			
+			
+			rightInfoPanel.setBackground(new Color(0,0,0,0));
+			rightInfoPanel.setVisible(true);
+			rightInfoPanel.setBounds((int) (windowWidth * 0.76), 
+									(int) (windowHeight * 0.80),
+									300,
+									120);
+		} else {
+			rightInfoPanel.setLayout(new GridLayout(2, 1));
+
+			chancesPanel.setChances(game.getPlayerChances());
+			chancesPanel.setSize( 
+					chancesPanel.getWidth(), 
+					chancesPanel.getHeight());
+			chancesPanel.setVisible(true);
+			chancesPanel.setBounds(0,0,500,500);
+			rightInfoPanel.add(chancesPanel, 0, 0);
+			
+			scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+			scoreText.setBackground(new Color(0,0,0,0));
+			scoreText.setHorizontalAlignment(JLabel.RIGHT);
+			scoreText.setFont(new Font("Monospaced", Font.BOLD, 30));
+			rightInfoPanel.add(scoreText, 1, 0);
+			
+			rightInfoPanel.setBackground(new Color(0,0,0,0));
+			rightInfoPanel.setVisible(true);
+			rightInfoPanel.setBounds((int) (windowWidth * 0.8), 
+									(int) (windowHeight * 0.83),
+									250,
+									100);
+		}
 		
 		this.add(rightInfoPanel);
 		
@@ -118,6 +151,11 @@ public class PlayView extends JPanel {
 					rebuildDrawableObjects(converter.getObjectSpatialInfoList());
 					chancesPanel.setChances(game.getPlayerChances());
 					scoreText.setText("Score: " + String.valueOf(game.getPlayer().getScore()));
+					if (game instanceof MultiplayerGame) {
+						otherPlayerScoreText.setText("Enemy Score: " + String.valueOf(
+								((MultiplayerGame) game).getOtherPlayer()
+								                        .getScore()));
+					}
 					PlayView.this.repaint();
 					try {
 						Thread.sleep((long) (1 / FPS));
