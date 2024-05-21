@@ -14,5 +14,7 @@ public class OverwhelmingFireball extends Spell {
 		return OVERWHELMING_FIREBALL;
 	}
 
+	public void startSpell() {};
+	public void stopSpell() {};
 }
 

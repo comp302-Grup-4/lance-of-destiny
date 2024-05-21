@@ -20,10 +20,10 @@ public class BarrierGrid implements Serializable{
 	protected final int COL_NUMBER = 37;
 	protected final int ROW_NUMBER = 20;
 	
-	public static int MIN_SIMPLE_BARRIERS = 75;
-	public static int MIN_FIRM_BARRIERS = 10;
-	public static int MIN_EXPLOSIVE_BARRIERS = 5;
-	public static int MIN_GIFT_BARRIERS = 10;
+	public static int MIN_SIMPLE_BARRIERS = 0;
+	public static int MIN_FIRM_BARRIERS = 0;
+	public static int MIN_EXPLOSIVE_BARRIERS = 1;
+	public static int MIN_GIFT_BARRIERS = 0;
 	
 	private int simpleBarrierNumber, firmBarriers, explosiveBarriers, giftBarriers;
 	
@@ -317,6 +317,10 @@ public class BarrierGrid implements Serializable{
 		
 		barrierArray = createBarrierArray(barrierList);
 		
+	}
+
+	public int getTotalBarrierNumber() {
+		return totalBarrierNumber;
 	}
 	
 }

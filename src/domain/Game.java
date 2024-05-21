@@ -4,12 +4,14 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
 
 public class Game implements Serializable {
 	private static final long serialVersionUID = 7679992000960473271L;
+	private static final long gameVersion = 1;
 	private Player player;
 	private Animator animator;
 	
@@ -48,15 +50,25 @@ public class Game implements Serializable {
 		writer.write(player.getScore() + "\n");
 		long timeElapsed = System.currentTimeMillis() - animator.getStartTimeMilli();
 		writer.write(timeElapsed + "\n");
+		writer.write(gameVersion + "\n"); // version number
 		writer.close();
 	}
 
-	public void loadStats(String name) throws IOException {
+	public int loadStats(String name) throws IOException {
 		BufferedReader reader = Files.newBufferedReader(Path.of(name + ".st"));
-		player.setChances(Integer.parseInt(reader.readLine()));
-		player.setScore(Integer.parseInt(reader.readLine()));
-		animator.setStartTimeMilli(System.currentTimeMillis() - Long.parseLong(reader.readLine()));
+		int chances = Integer.parseInt(reader.readLine());
+		int score = Integer.parseInt(reader.readLine());
+		int timeElapsed = Integer.parseInt(reader.readLine());
+		long versionNumber = Long.parseLong(reader.readLine());
+		if (versionNumber > gameVersion) {
+			System.out.println("Save version is higher than current version.");
+			return 1;
+		}
 		reader.close();
+		player.setChances(chances);
+		player.setScore(score);
+		animator.setStartTimeMilli(System.currentTimeMillis() - timeElapsed);
+		return 0;
 	}
 
 	public void saveBarrierGrid(String name) throws IOException {
@@ -119,6 +131,7 @@ public class Game implements Serializable {
 	    objectInputStream.close();
 	}
 
+	// TODO save and load Ymir
 	// TODO save and load spells
 
 	public void saveGameState(String name) throws IOException {
@@ -146,7 +159,10 @@ public class Game implements Serializable {
 		if (name != null) {
 			try {
 				String loadPath = "saved_games/" + name + "/";
-				loadStats(loadPath);
+				// cancel loading if version is higher than current version
+				if (loadStats(loadPath) == 1) {
+					return;
+				}
 				loadStaff(loadPath);
 				loadFireball(loadPath);
 				loadBarrierGrid(loadPath); // this should be last
@@ -159,6 +175,35 @@ public class Game implements Serializable {
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
+		}
+	}
+
+	public void writeHighScore(int score) {
+		// check if the file highscores exists, create if not
+		Path path = Paths.get("highscores");
+		if (!Files.exists(path)) {
+			try {
+				Files.createFile(path);
+			} catch (IOException e) {
+				System.out.println("An error occurred while creating the highscores file.");
+				e.printStackTrace();
+			}
+		}
+		//append score to new line
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND);
+			String username;
+			if (player.getPlayerAccount() != null) {
+				username = player.getPlayerAccount().getUserName();
+			} else {
+				username = "NULL";
+			}
+			writer.write(Integer.toString(score) + ":" + username);
+			writer.newLine();
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("An error occurred while writing the highscore.");
+			e.printStackTrace();
 		}
 	}
 

@@ -19,6 +19,8 @@ import javax.swing.*;
 import domain.Game;
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
+import domain.animation.Vector;
+import domain.animation.spells.DoubleAccel;
 import exceptions.InvalidBarrierNumberException;
 import ui.BuildingScreen;
 

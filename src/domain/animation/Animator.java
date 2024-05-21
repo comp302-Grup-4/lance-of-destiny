@@ -2,12 +2,7 @@ package domain.animation;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import domain.Game;
@@ -20,9 +15,9 @@ import domain.animation.barriers.SimpleBarrier;
 import domain.animation.collision.CollisionInfo;
 import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
-import domain.animation.spells.Spell;
-import domain.animation.spells.SpellFactory;
+import domain.animation.spells.*;
 import exceptions.InvalidBarrierNumberException;
+import ui.GameApp;
 
 public class Animator implements Serializable, YmirObserver{
 	private static final long serialVersionUID = -3426545588581994135L;
@@ -31,9 +26,9 @@ public class Animator implements Serializable, YmirObserver{
 	public static int RROTATE = 1;
 	public static int LROTATE = -1;
 
-	private final float FPS = 150;
+	private final float FPS = 60;
 	private final long dTime = (long) (1000 / FPS);
-
+	GameApp g = GameApp.getInstance();
 	private FireBall ball;
 	private MagicalStaff staff;
 	protected BarrierGrid barrierGrid;
@@ -48,6 +43,8 @@ public class Animator implements Serializable, YmirObserver{
 	private long startTimeMilli = 0;
 	private SpellDepot spellDepot = new SpellDepot();
 	private static final SpellFactory spellFactory = SpellFactory.getInstance();
+	private int totalBarriers;
+	private boolean hexActive = false;
 	
 	public Animator(Game game) {
 		this.game = game;
@@ -59,6 +56,7 @@ public class Animator implements Serializable, YmirObserver{
 		} catch (InvalidBarrierNumberException e) {
 			e.printStackTrace();
 		}
+		this.totalBarriers = barrierGrid.getTotalBarrierNumber();
 		rightWall = new Wall(Wall.VERTICAL, new Vector(985, 0));
 		leftWall = new Wall(Wall.VERTICAL, new Vector(-15, 0));
 		upperWall = new Wall(Wall.HORIZONTAL, new Vector(0, -15));
@@ -206,9 +204,35 @@ public class Animator implements Serializable, YmirObserver{
 						staff.reset();
 						game.getPlayer().decrementChances();
 						pause();
+						if (checkGameOver()) {gameOver();}
 						break;
 					}
-					
+
+					if (hexActive) {
+						for (AnimationObject obj : animationObjects) {
+							if (obj instanceof HexFireBall) {
+								HexFireBall fireBall = (HexFireBall) obj;
+								fireBall.move(dTime);
+
+								// Check for collision with barriers
+								CollisionInfo fireBallCollisionInfo = collisionCalculator.checkCollision(fireBall, getAnimationObjects().stream()
+										.filter(x -> x instanceof Barrier)
+										.map(x -> (Collidable) x)
+										.toList());
+
+								if (!fireBallCollisionInfo.getCollidedObjects().isEmpty()) {
+									// If a collision is detected, remove the HexFireBall and the Barrier
+									for (Collidable collidedObject : fireBallCollisionInfo.getCollidedObjects()) {
+										if (collidedObject instanceof Barrier) {
+											removeAnimationObject((AnimationObject) collidedObject);
+										}
+									}
+									removeAnimationObject(fireBall);
+								}
+							}
+						}
+					}
+
 					// Magical staff - spell collision
 					
 					HashSet<Spell> spellsToBeRemoved = new HashSet<>();
@@ -220,29 +244,103 @@ public class Animator implements Serializable, YmirObserver{
 						if (spellCollisionInfo.getCollidedObjects().size() != 0) {
 							removeAnimationObject(spell);
 							spellsToBeRemoved.add(spell);
-							
-							switch (spell.getType()) {
-							case Spell.HEX:
+
+							final int spellDurationShort = 15000;
+							final int spellDurationLong = 30000;
+
+							int a = 1;
+							switch (a) {
+//							switch (spell.getType()) {
+							case Spell.HEX: // lasts for 30 seconds
+								// HEX info:
+								// 2 fireballs are thrown from the staff every second
+								// they also decrease performance A LOT on 150 fps
+								// thus, I reduced the fps to 60, which is playable
+								// also, since there are no hex images provided(?)
+								// they use smallPurpleBarrier images, which can be changed
+								// in the SpatialObject class
+								// also picking up another hex spell doesnt do anything at the moment
+								// also hexfireball spawn points are not exact when the staff is rotated
+								// TODO? performance improvements
+								// TODO? change HexFireBall images
+								// TODO reuse spell while active
+								if (hexActive) {
+									break;
+								}
+								hexActive = true;
+								int timeBetweenShots = 1000; // fires a fireball every 1000 ms
+								int max = spellDurationLong / timeBetweenShots;
+								new Timer().scheduleAtFixedRate(new TimerTask() {
+									int count = 0;
+									@Override
+									public void run() {
+										if (count < max) {
+											// Calculate the spawn points based on the rotation of the staff
+											HexFireBall fireBall1 = new HexFireBall((int) staff.getPosition().x, (int) staff.getPosition().y);
+											HexFireBall fireBall2 = new HexFireBall((int) ((int) staff.getPosition().x + staff.getLength()), (int) staff.getPosition().y);
+											fireBall1.setVelocity(Vector.fromDegrees(90 - staff.getRotation()).scale(400));
+											fireBall2.setVelocity(Vector.fromDegrees(90 - staff.getRotation()).scale(400));
+											fireBall1.move(dTime);
+											fireBall2.move(dTime);
+											addAnimationObject(fireBall1);
+											addAnimationObject(fireBall2);
+											count++;
+										} else {
+											for (AnimationObject obj : animationObjects) {
+												if (obj instanceof HexFireBall) {
+													removeAnimationObject(obj);
+												}
+											}
+											this.cancel();
+											hexActive = false;
+										}
+									}
+								}, 0, timeBetweenShots);
 								break;
-								
+
 							case Spell.FELIX_FELICIS:
 								game.getPlayer().incrementChances();
 								break;
 								
-							case Spell.MAGICAL_STAFF_EXPANSION:
+							case Spell.MAGICAL_STAFF_EXPANSION: // lasts for 30 seconds
+								// start spell
 								staff.setLength(staff.getLength() * 2);
 								if (staff.getNextPosition(dTime).x <= 15) {
 									staff.setPlacement(Vector.of(15, MagicalStaff.MS_HORIZON), staff.getRotation());
 								} else if (staff.getPosition().x >= 985 - staff.getLength()) {
 									staff.setPlacement(Vector.of(985 - staff.getLength(), MagicalStaff.MS_HORIZON), staff.getRotation());
 								}
+								// stop spell
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										staff.setLength(staff.getLength() / 2);
+										if (staff.getNextPosition(dTime).x <= 15) {
+											staff.setPlacement(Vector.of(15, MagicalStaff.MS_HORIZON), staff.getRotation());
+										} else if (staff.getPosition().x >= 985 - staff.getLength()) {
+											staff.setPlacement(Vector.of(985 - staff.getLength(), MagicalStaff.MS_HORIZON), staff.getRotation());
+										}
+									}
+								}, spellDurationLong);
 								break;
 								
-							case Spell.OVERWHELMING_FIREBALL:
+							case Spell.OVERWHELMING_FIREBALL: // lasts for 30 seconds
 								ball.setOverwhelming(true);
+
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										if (ball.isOverwhelming()) {
+											ball.setOverwhelming(false);
+										}
+									}
+								}, spellDurationLong);
+
 								break;
 								
-							case Spell.INFINITE_VOID:
+							case Spell.INFINITE_VOID: // lasts for 15 seconds
+
+								// start spell
 								LinkedList<Barrier> barriers = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
 								List<Barrier> barriersLeft = new ArrayList <> (barriers.stream()
 										.filter(x -> !x.isFrozen() && x.getType() != "purple")
@@ -251,9 +349,20 @@ public class Animator implements Serializable, YmirObserver{
 								for (int i = 0; i < Math.min(8, barriersLeft.size()); i++) {
 									barriersLeft.get(i).setFrozen(true);
 								}
+								// stop spell
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										for (int i = 0; i < Math.min(8, barriersLeft.size()); i++) {
+											barriersLeft.get(i).setFrozen(false);
+										}
+									}
+								}, spellDurationShort);
+
 								break;
 								
 							case Spell.HOLLOW_PURPLE:
+
 								LinkedList<Barrier> barr = (LinkedList<Barrier>) barrierGrid.getBarrierList().clone();
 								List<Barrier> barrLeft = new ArrayList <> (barr.stream()
 										.filter(x -> !x.isFrozen() && x.getType() != "purple")
@@ -263,8 +372,25 @@ public class Animator implements Serializable, YmirObserver{
 									barrierGrid.changeBarrier(barrLeft.get(i), barrierGrid);
 								}
 								initializeAnimationObjects();
+
+
 								break;
-								
+							case Spell.DOUBLE_ACCEL: // lasts for 15 seconds
+
+								ball.setVelocity(ball.getVelocity().scale((float) 2));
+								ball.setSpedUp(true);
+
+								new Timer().schedule(new java.util.TimerTask() {
+									@Override
+									public void run() {
+										if (ball.isSpedUp()) {
+											ball.setVelocity(ball.getVelocity().scale((float) 0.5));
+											ball.setSpedUp(false);
+										}
+									}
+								}, spellDurationShort);
+
+								break;
 							default:
 								break;
 							}
@@ -364,8 +490,10 @@ public class Animator implements Serializable, YmirObserver{
 
 	private void removeAnimationObject(AnimationObject movable) {
 		if (movable instanceof Barrier) {
+			totalBarriers--;
 			Barrier barrier = (Barrier) movable;
 			barrier.setType("destroyed");
+			if (checkGameOver()) {gameOver();}
 		}
 		animationObjects.remove(movable);
 	}
@@ -373,7 +501,7 @@ public class Animator implements Serializable, YmirObserver{
 	public CopyOnWriteArraySet<AnimationObject> getAnimationObjects() {
 		return animationObjects;
 	}
-	
+
 	private float getPassedTime() {
 		long currTime = System.currentTimeMillis();
 		return (float) (currTime - startTimeMilli) / 1000;
@@ -441,6 +569,20 @@ public class Animator implements Serializable, YmirObserver{
 		this.staff = staff;
 	}
 
+	public boolean checkGameOver() {
+		if (getBarrierGrid().totalBarrierNumber == 0 || this.game.getPlayer().getChances() == 0) {//totalBarriers
+			g.openMainMenuScreen();	
+			return true;
+		}
+		return false;
+	}
+
+	public void gameOver() {
+		System.out.println("Game over"); // TODO REMOVe
+		this.game.writeHighScore(this.game.getPlayer().getScore());
+		
+	}; // TODO game over stuff
+  
 	@Override
 	public void update(Spell s) {
 		switch(s.getType()) {
