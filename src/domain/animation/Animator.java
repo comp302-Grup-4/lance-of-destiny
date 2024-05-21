@@ -17,6 +17,7 @@ import domain.animation.collision.CollisionStrategy;
 import domain.animation.collision.PointBasedCollision;
 import domain.animation.spells.*;
 import exceptions.InvalidBarrierNumberException;
+import network.Message;
 import ui.GameApp;
 
 public class Animator implements Serializable, YmirObserver{
@@ -510,7 +511,7 @@ public class Animator implements Serializable, YmirObserver{
 	private void increaseScoreAfterDestroyingBarrier() {
 		int oldScore = game.getPlayer().getScore();
 		int newScore = (int) (oldScore + 300 / getPassedTime());
-		game.getPlayer().setScore(newScore);
+		game.setPlayerScore(newScore);
 	}
 
 	public void moveMagicalStaff(int direction) {

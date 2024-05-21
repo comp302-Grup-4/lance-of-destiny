@@ -111,6 +111,7 @@ public class LoginScreen extends JPanel  {
 			if (usernameExists(usernameField.getText())) {
 				boolean validated = validateCredentials(usernameField.getText(), (new String (passwordField.getPassword())));
 				if (validated) {
+					g.setActivePlayerAccount(usernameField.getText(), new String (passwordField.getPassword()));;
 					g.openMainMenuScreen();
 				} else {
 					JOptionPane.showMessageDialog(this, "No user found.");

@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import javax.swing.*;
 
+import domain.Game;
+
 public class MainMenuScreen extends JPanel {
 	private static final long serialVersionUID = -6398901547224782581L;
 	
@@ -42,6 +44,8 @@ public class MainMenuScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
+				Game single_player = new Game();
+				GameApp.getInstance().setActiveGame(single_player);
 				GameApp.getInstance().openBuildingScreen();
 			}
 		});

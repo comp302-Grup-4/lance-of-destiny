@@ -4,13 +4,20 @@ import java.io.Serializable;
 
 public class Player implements Serializable{
 	private static final long serialVersionUID = 322548287069839758L;
-	private int chances;
-	private int score;
-	private PlayerAccount pa; // TODO idk do stuff
+	protected int chances;
+	protected int score;
+	
+	protected PlayerAccount account;
 	
 	public Player() {
 		chances = 3;
 		score = 0;
+		this.account = new PlayerAccount("Unknown", "", null);
+	}
+	
+	public Player(PlayerAccount account) {
+		this();
+		this.account = account;
 	}
 	
 	public int getChances() {
@@ -36,8 +43,28 @@ public class Player implements Serializable{
 	public void setChances(int chances) {
 		this.chances = chances;
 	}
-
-	public PlayerAccount getPlayerAccount() {
-		return pa;
+  
+	public PlayerAccount getPlayerAccount() { // TODO delete this or the one below
+		return account;
+  }
+  
+	public PlayerAccount getAccount() {
+		return account;
+	}
+	
+	public String getUserName() {
+		return this.account.getUserName();
+	}
+	
+	public void setUsername(String username) {
+		this.account.setUserName(username);
+	}
+	
+	public boolean isReady() {
+		return account.isReady;
+	}
+	
+	public void setReady(boolean isReady) {
+		account.isReady = isReady;
 	}
 }
