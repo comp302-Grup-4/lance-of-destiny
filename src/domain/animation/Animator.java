@@ -7,10 +7,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import domain.Game;
+import domain.MultiplayerGame;
 import domain.animation.barriers.*;
 import domain.animation.collision.*;
 import domain.animation.spells.*;
 import exceptions.InvalidBarrierNumberException;
+import network.Message;
+import ui.GameApp;
 
 public class Animator implements Serializable, YmirObserver{
 	private static final long serialVersionUID = -3426545588581994135L;
@@ -246,7 +249,15 @@ public class Animator implements Serializable, YmirObserver{
 							spellsToBeRemoved.add(spell);
 
 							if (!spell.isActivated()) {
-								spell.activate(game);
+								if (spell instanceof InfiniteVoid ||
+										spell instanceof HollowPurple ||
+										spell instanceof DoubleAccel) {
+									if (game instanceof MultiplayerGame) {
+										GameApp.getInstance().getActiveServer().update(Message.SPELL, spell.getType());// TODO REFACTOR
+									}
+								} else {
+									spell.activate(game);
+								}
 							}
 						}
 						

@@ -6,6 +6,9 @@ import java.io.ObjectInputStream;
 import java.util.Base64;
 
 import domain.animation.BarrierGrid;
+import domain.animation.spells.InfiniteVoid;
+import domain.animation.spells.Spell;
+import domain.animation.spells.SpellFactory;
 import exceptions.InvalidBarrierNumberException;
 import network.Message;
 import network.MultiplayerObserver;
@@ -55,7 +58,8 @@ public class MultiplayerGame extends Game implements MultiplayerObserver {
 			}
 			break;
 		case SPELL:
-						
+			Spell s = SpellFactory.getInstance().createSpell((Integer) value);
+			s.activate(this);
 			break;
 		
 		default:
