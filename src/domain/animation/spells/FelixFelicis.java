@@ -1,5 +1,7 @@
 package domain.animation.spells;
 
+import domain.Game;
+import domain.animation.Animator;
 import domain.animation.Vector;
 
 public class FelixFelicis extends Spell {
@@ -14,10 +16,9 @@ public class FelixFelicis extends Spell {
 		return FELIX_FELICIS;
 	}
 
-	public void startSpell() {
-	}
-
-	public void stopSpell() {
+	@Override
+	public void activate(Game game) {
+		game.getPlayer().incrementChances();
 	}
 }
 

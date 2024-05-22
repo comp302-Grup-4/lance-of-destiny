@@ -1,10 +1,11 @@
 package domain.animation.spells;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
+import domain.Game;
 import domain.animation.AnimationObject;
 import domain.animation.Vector;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Spell extends AnimationObject {
 	private static final long serialVersionUID = 2882205343222279632L;
@@ -16,9 +17,14 @@ public abstract class Spell extends AnimationObject {
 	public static final int INFINITE_VOID = 4;
 	public static final int DOUBLE_ACCEL = 5;
 	public static final int HOLLOW_PURPLE = 6;
+	
+	protected static final int spellDurationShort = 15000;
+	protected static final int spellDurationLong = 30000;
 
 	protected int spellType;
-
+	
+	static HashSet<String> activatedSpellsSet = new HashSet<>();
+	
 	public Spell(Vector position) {
 		this.position = position;
 		this.sizeX = 15;
@@ -30,7 +36,25 @@ public abstract class Spell extends AnimationObject {
 		initializeBoundaryPoints();
 	}
 	
+	public abstract void activate(Game game);
+	
 	public abstract int getType();
+	
+	protected void setActivated(boolean isActivated) {
+		if (isActivated) {
+			activatedSpellsSet.add(this.getClass().getName());
+		} else {
+			activatedSpellsSet.remove(this.getClass().getName());
+		}
+	}
+	
+	public boolean isActivated() {
+		if (activatedSpellsSet.contains(this.getClass().getName())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	@Override
 	public float getRotation() {
@@ -56,9 +80,6 @@ public abstract class Spell extends AnimationObject {
 	public void initializeCenterPoint() {
 		center = new Vector(position.getX() + sizeX / 2, position.getY() + sizeY / 2);
 	}
-
-    public abstract void startSpell();
-    public abstract void stopSpell();
 
 	public void setType(int type) {
 		this.spellType = type;
