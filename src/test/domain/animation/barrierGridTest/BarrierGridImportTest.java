@@ -18,7 +18,12 @@ public class BarrierGridImportTest {
             BarrierGrid.MIN_GIFT_BARRIERS
         );
     }
-
+    //Black Box Tests : 1- checking the input: "simple firm explosive gift" and expecting output barrierList size 4 and 
+    //barrierArray contains 4 non-null barriers.
+    //2- Checking the input: "" empty and expecting output  barrierList size is 0 and barrierArray contains 0 non-null barriers.
+    //Glass Box Test: 1- checking the barriers are parsed correctly by inspecting the barrierList.
+    //2-checking the barrierArray contains barriers at the expected grid positions.                                                                      
+    //3-checking the string with invalid barrier types and verifying that an empty string or a null string does not cause any exceptions.
     @Test
     public void testValidBarrierString() {
     	

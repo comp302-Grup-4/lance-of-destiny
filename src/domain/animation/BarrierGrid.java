@@ -74,6 +74,11 @@ public class BarrierGrid implements Serializable{
 	}
 
 	public void importBarrierGrid(String barrierString) {
+		//Requires: the string input  valid barrier types  should be separated with spaces ("simple firm explosive gift").
+		//size of the barrierList should be equal to the number of barriers specified in the string.
+		//barrier grid should contain the correct number of non-null barriers corresponding to the barriers specified in the string.
+		//Modifies :Barrier List Updates the barrierList in the BarrierGrid instance the barriers specified in the string.
+		//Updates the barrierArray in the BarrierGrid position the specified barriers in the grid.
 		this.barrierList = stringToBarrierList(barrierString);
 		
 		position = new Vector(20, 40);
