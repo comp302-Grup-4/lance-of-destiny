@@ -28,7 +28,7 @@ public class CollisionInfo {
 	}
 	
 	public Vector getNextDirection() {
-		return nextDirection.unit();
+		return nextDirection;
 	}
 	
 	public ArrayList<Collidable> getCollidedObjects() {

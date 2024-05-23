@@ -115,14 +115,16 @@ public class Animator implements Serializable, YmirObserver{
 					
 					if (!ball.isOverwhelming()) {
 						
-						forceDirection = ballCollisionInfo.getNextDirection().add(ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection()));
+						forceDirection = ballCollisionInfo.getNextDirection()
+										.add(ballSolidCollision.getNextDirection()
+										.add(ballFrozenCollision.getNextDirection())).unit();
 					} else {
 						
-						forceDirection = ballSolidCollision.getNextDirection().add(ballFrozenCollision.getNextDirection());
+						forceDirection = ballSolidCollision.getNextDirection()
+								.add(ballFrozenCollision.getNextDirection()).unit();
 					}
 					
-					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection.unit()));
-
+					velocityChange = forceDirection.scale(-2 * ball.getVelocity().dot(forceDirection));
 					ball.setVelocity(ball.getVelocity().add(velocityChange));
 					
 					ball.move(dTime);
