@@ -90,8 +90,12 @@ public class RegisterScreen extends JPanel {
 			}
 		});
 	}
-
-	private void register(JTextField usernameField, JPasswordField passwordField) {
+	//Requires:1-Username should be unique and not null
+    //2- password should be valid in terms of length and content
+    //Effects:Checks the username and password inputs and if they are valid shows a success 
+    //dialog and register occur, if not gives error dialog and player may try again
+   
+	public void register(JTextField usernameField, JPasswordField passwordField) {
 		if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
 			JOptionPane.showMessageDialog(this, "Please fill in all fields.");
 			return;
