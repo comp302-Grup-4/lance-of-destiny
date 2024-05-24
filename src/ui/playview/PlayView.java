@@ -21,6 +21,7 @@ import domain.animation.Vector;
 import domain.animation.spells.DoubleAccel;
 import exceptions.InvalidBarrierNumberException;
 import ui.BuildingScreen;
+import ui.GameApp;
 
 public class PlayView extends JPanel {
 	
@@ -307,7 +308,7 @@ public class PlayView extends JPanel {
 		JButton resumeButton = new JButton("Resume");
 		JButton saveButton = new JButton("Save");
 		JButton loadButton = new JButton("Load");
-		JButton exitButton = new JButton("Exit");
+		JButton quitButton = new JButton("Quit");
 
 		// Add action listeners to each button
 		resumeButton.addActionListener(new ActionListener() {
@@ -358,10 +359,11 @@ public class PlayView extends JPanel {
 			}
 		});
 
-		exitButton.addActionListener(new ActionListener() {
+		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				pauseMenu.dispose();
+				GameApp.getInstance().openMainMenuScreen();
 			}
 		});
 
@@ -369,7 +371,7 @@ public class PlayView extends JPanel {
 		pauseMenu.add(resumeButton);
 		pauseMenu.add(saveButton);
 		pauseMenu.add(loadButton);
-		pauseMenu.add(exitButton);
+		pauseMenu.add(quitButton);
 
 		// Set the size of the pause menu and make it visible
 		pauseMenu.setSize(200, 200);

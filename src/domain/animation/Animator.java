@@ -133,76 +133,9 @@ public class Animator implements Serializable, YmirObserver{
 					ArrayList<Collidable> ballBarrierCollision = ballCollisionInfo.getCollidedObjects();
 					ballBarrierCollision.addAll(ballFrozenCollision.getCollidedObjects());
 					
-					for (Collidable collidedObject : ballBarrierCollision) {
-						if (collidedObject instanceof Barrier) {
-							if (ball.isOverwhelming() || !ball.isOverwhelming() && !(((Barrier) collidedObject).isFrozen())) {
-								if (collidedObject instanceof SimpleBarrier || collidedObject instanceof PurpleBarrier ) {
-									removeAnimationObject((AnimationObject) collidedObject);
-									brokenBarriers.add((Barrier) collidedObject);
-								} else if (collidedObject instanceof ReinforcedBarrier) {
-									int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
-									if (NumberOfHitsNeeded == 1) {
-										removeAnimationObject((AnimationObject) collidedObject);
-										brokenBarriers.add((Barrier) collidedObject);
-									} else {
-										((ReinforcedBarrier) collidedObject).decreaseHitCount();
-										break;
-									}
-
-								} else if (collidedObject instanceof ExplosiveBarrier) {
-									ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
-									removeAnimationObject(explosive);
-									brokenBarriers.add((Barrier) collidedObject);
-									
-									BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
-									Barrier[][] barrierArray = barrierGrid.getBarrierArray();
-									int gridX = explosive.getGridPositionX();
-									int gridY = explosive.getGridPositionY();
-									for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
-											barrierGrid.COL_NUMBER - 1); x++) {
-										for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
-												barrierGrid.ROW_NUMBER - 1); y++) {
-											if (x == gridX && y == gridY) {
-												continue; //skip it self already removed
-											}
-											Barrier neighbor = barrierArray[y][x];
-											if (neighbor != null) {
-												removeAnimationObject(neighbor);
-												brokenBarriers.add((Barrier) collidedObject);
-											}
-										}
-									}
-
-								} else if (collidedObject instanceof RewardingBarrier) {
-									brokenBarriers.add((Barrier) collidedObject);
-									removeAnimationObject((AnimationObject) collidedObject);
-								}
-							}
-
-						}
-					}
 					
-					// Spell creation and score increase
-					
-					for (Barrier barrier : brokenBarriers) {
-						if (! (barrier instanceof PurpleBarrier)) {
-							increaseScoreAfterDestroyingBarrier();
-						}
-						if (barrier instanceof RewardingBarrier) {
-							Spell newSpell = spellFactory.createRandomSpellForBarriers(barrier);
-							addAnimationObject(newSpell);
-							spellDepot.addSpell(newSpell);
-						}
-					}
-					
-					if (ballSolidCollision.getCollidedObjects().contains(lowerWall)) {
-						ball.reset();
-						staff.reset();
-						game.getPlayer().decrementChances();
-						pause();
-						if (checkGameOver()) {gameOver();}
-						break;
-					}
+					barrierBehavior(ballBarrierCollision, brokenBarriers);
+							
 					
 					// HEX BALLS
 
@@ -229,15 +162,37 @@ public class Animator implements Serializable, YmirObserver{
 							// If a collision is detected, remove the HexFireBall and the Barrier
 							for (Collidable collidedObject : fireBallCollisionInfo.getCollidedObjects()) {
 								if (collidedObject instanceof Barrier) {
-									removeAnimationObject((AnimationObject) collidedObject);
+									ballBarrierCollision.add(collidedObject);
 								}
 							}
+							barrierBehavior(ballBarrierCollision, brokenBarriers);
 							removeAnimationObject(fireBall);
 						}
 						
 					}
 					
-
+					// Spell creation and score increase
+					
+					for (Barrier barrier : brokenBarriers) {
+						if (! (barrier instanceof PurpleBarrier)) {
+							increaseScoreAfterDestroyingBarrier();
+						}
+						if (barrier instanceof RewardingBarrier) {
+							Spell newSpell = spellFactory.createRandomSpellForBarriers(barrier);
+							addAnimationObject(newSpell);
+							spellDepot.addSpell(newSpell);
+						}
+					}
+					
+					if (ballSolidCollision.getCollidedObjects().contains(lowerWall)) {
+						ball.reset();
+						staff.reset();
+						game.getPlayer().decrementChances();
+						pause();
+						if (checkGameOver()) {gameOver();}
+						break;
+					}
+					
 					// Magical staff - spell collision
 					
 					HashSet<Spell> spellsToBeRemoved = new HashSet<>();
@@ -433,6 +388,57 @@ public class Animator implements Serializable, YmirObserver{
 
 	public void setStaff(MagicalStaff staff) {
 		this.staff = staff;
+	}
+	
+	public void barrierBehavior(ArrayList<Collidable> ballBarrierCollision,HashSet<Barrier> brokenBarriers) {
+		for (Collidable collidedObject : ballBarrierCollision) {
+			if (collidedObject instanceof Barrier) {
+				if (ball.isOverwhelming() || !ball.isOverwhelming() && !(((Barrier) collidedObject).isFrozen())) {
+					if (collidedObject instanceof SimpleBarrier || collidedObject instanceof PurpleBarrier ) {
+						removeAnimationObject((AnimationObject) collidedObject);
+						brokenBarriers.add((Barrier) collidedObject);
+					} else if (collidedObject instanceof ReinforcedBarrier) {
+						int NumberOfHitsNeeded = ((ReinforcedBarrier) collidedObject).getHitCount();
+						if (NumberOfHitsNeeded == 1) {
+							removeAnimationObject((AnimationObject) collidedObject);
+							brokenBarriers.add((Barrier) collidedObject);
+						} else {
+							((ReinforcedBarrier) collidedObject).decreaseHitCount();
+							break;
+						}
+			
+					} else if (collidedObject instanceof ExplosiveBarrier) {
+						ExplosiveBarrier explosive = (ExplosiveBarrier) collidedObject;
+						removeAnimationObject(explosive);
+						brokenBarriers.add((Barrier) collidedObject);
+						
+						BarrierGrid barrierGrid = ((Barrier) collidedObject).getParentGrid();
+						Barrier[][] barrierArray = barrierGrid.getBarrierArray();
+						int gridX = explosive.getGridPositionX();
+						int gridY = explosive.getGridPositionY();
+						for (int x = Math.max(0, gridX - 1); x <= Math.min(gridX + 1,
+								barrierGrid.COL_NUMBER - 1); x++) {
+							for (int y = Math.max(0, gridY - 1); y <= Math.min(gridY + 1,
+									barrierGrid.ROW_NUMBER - 1); y++) {
+								if (x == gridX && y == gridY) {
+									continue; //skip it self already removed
+								}
+								Barrier neighbor = barrierArray[y][x];
+								if (neighbor != null) {
+									brokenBarriers.add((Barrier) collidedObject);
+									removeAnimationObject(neighbor);										
+								}
+							}
+						}
+			
+					} else if (collidedObject instanceof RewardingBarrier) {
+						brokenBarriers.add((Barrier) collidedObject);
+						removeAnimationObject((AnimationObject) collidedObject);
+					}
+				}
+			}
+		}
+		
 	}
 
 	public boolean checkGameOver() {
