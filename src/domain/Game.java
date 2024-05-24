@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 import domain.animation.*;
 import exceptions.InvalidBarrierNumberException;
 import network.Message;
@@ -227,7 +230,16 @@ public class Game implements Serializable  {
 		player.setScore(newScore);
 	}
 	
-	public void endGame() {
+	public void endGame(String message, ImageIcon icon) {
+		String[] option = {"Return to Main Menu"};
+		JOptionPane.showOptionDialog(null, 
+				message, 
+				"Game Over!", 
+				JOptionPane.OK_OPTION,
+				JOptionPane.PLAIN_MESSAGE, 
+				icon, 
+				option,
+				0);
 		GameApp.getInstance().openMainMenuScreen();
 	}
 }

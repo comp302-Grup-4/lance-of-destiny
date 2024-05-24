@@ -6,6 +6,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.ImageIcon;
+
 import domain.Game;
 import domain.MultiplayerGame;
 import domain.animation.barriers.*;
@@ -426,7 +428,12 @@ public class Animator implements Serializable, YmirObserver{
 								Barrier neighbor = barrierArray[y][x];
 								if (neighbor != null) {
 									brokenBarriers.add((Barrier) collidedObject);
-									removeAnimationObject(neighbor);										
+									removeAnimationObject(neighbor);
+									if (neighbor instanceof RewardingBarrier) {
+										Spell newSpell = spellFactory.createRandomSpellForBarriers(neighbor);
+										addAnimationObject(newSpell);
+										spellDepot.addSpell(newSpell);
+									}
 								}
 							}
 						}
@@ -442,8 +449,14 @@ public class Animator implements Serializable, YmirObserver{
 	}
 
 	public boolean checkGameOver() {
-		if (getBarrierGrid().totalBarrierNumber == 0 || this.game.getPlayer().getChances() == 0) {//totalBarriers
-			game.endGame();
+		ImageIcon loserIcon = new ImageIcon("./res/drawable/loser.png");
+		ImageIcon winnerIcon = new ImageIcon("./res/drawable/winner.png");
+		if (this.game.getPlayer().getChances() == 0) {
+			game.endGame("You lost the game :p", loserIcon);
+			return true;
+		}
+		else if (getBarrierGrid().totalBarrierNumber == 0 ) {
+			game.endGame("Congrats! You win!", winnerIcon);
 			return true;
 		}
 		return false;
