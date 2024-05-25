@@ -15,8 +15,7 @@ public class FireBall extends AnimationObject implements Serializable {
 	public FireBall(int posX, int posY) {
 		super();
 		position = new Vector(posX, posY);
-		velocity = Vector.fromDegrees(90).scale(400);
-		Vector.fromDegrees(90).scale(400);
+		velocity = Vector.fromDegrees(90).scale(300);
 		sizeX = 2 * RADIUS;
 		sizeY = 2 * RADIUS;
 		
@@ -67,7 +66,7 @@ public class FireBall extends AnimationObject implements Serializable {
 	
 	public void reset() {
 		this.setPlacement(Vector.of(492, 600), 0);
-		this.setVelocity(Vector.fromDegrees(90).scale(400));
+		this.setVelocity(Vector.fromDegrees(90).scale(300));
 	}
 	
 	public boolean isOverwhelming() {
