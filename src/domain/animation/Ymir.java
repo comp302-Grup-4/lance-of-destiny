@@ -18,7 +18,7 @@ public class Ymir extends Thread implements YmirSubject {
 		SecureRandom rand = new SecureRandom();
 		while (true) {
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(30000);
 				if(rand.nextFloat() < 0.5) {
 					int spellType[] = {Spell.INFINITE_VOID, Spell.DOUBLE_ACCEL, Spell.HOLLOW_PURPLE};
 					int rand_int = rand.nextInt(spellType.length);
