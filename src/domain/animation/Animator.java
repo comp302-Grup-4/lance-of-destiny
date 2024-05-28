@@ -41,11 +41,16 @@ public class Animator implements Serializable, YmirObserver{
 	private SpellDepot spellDepot = new SpellDepot();
 	private static final SpellFactory spellFactory = SpellFactory.getInstance();
 	public boolean hexActive = false;
+	private Ymir ymir;
+	private Thread ymirThread;
 	
 	public Animator(Game game) {
 		this.game = game;
 		ball = new FireBall();
 		staff = new MagicalStaff();
+		ymir = new Ymir();
+		ymir.registerObserver(this);
+	    ymirThread = new Thread(ymir);
 		try {
 			barrierGrid = new BarrierGrid(BarrierGrid.MIN_SIMPLE_BARRIERS, BarrierGrid.MIN_FIRM_BARRIERS,
 					BarrierGrid.MIN_EXPLOSIVE_BARRIERS, BarrierGrid.MIN_GIFT_BARRIERS);
@@ -71,24 +76,27 @@ public class Animator implements Serializable, YmirObserver{
 		switch (animationThread.getState()) {
 		case NEW:
 			animationThread.start();
+			ymirThread.start();
 			break;
 
 		case TERMINATED:
 			initAnimationThread();
 			animationThread.start();
-
+		
 		default:
 			break;
 		}
 	}
 
 	private void initAnimationThread() {
+		
 		animationThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				CollisionInfo ballSolidCollision, ballCollisionInfo, ballFrozenCollision, spellCollisionInfo;
 				Vector forceDirection, velocityChange;
 				while (!paused) {
+					
 					try {
 						Thread.sleep(dTime);
 					} catch (InterruptedException e) {
@@ -475,17 +483,6 @@ public class Animator implements Serializable, YmirObserver{
   
 	@Override
 	public void update(Spell s) {
-		switch(s.getType()) {
-		case Spell.DOUBLE_ACCEL:
-			Vector v = ball.getVelocity();
-			Vector newVelocity = new Vector(v.getX()/2,v.getY()/2);
-			ball.setVelocity(newVelocity);
-		case Spell.INFINITE_VOID:
-			
-		case Spell.HOLLOW_PURPLE:
-			
-			
-		}
-		
+		s.activate(game);		
 	}
 }
