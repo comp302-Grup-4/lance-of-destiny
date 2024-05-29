@@ -8,6 +8,7 @@ import domain.animation.spells.SpellFactory;
 public class Ymir extends Thread implements YmirSubject {
 	
 	private YmirObserver observer;
+	private int lastTwoSpells[] = {0,0};
 	 
 	public Ymir() {
 		
@@ -22,10 +23,22 @@ public class Ymir extends Thread implements YmirSubject {
 				if(rand.nextFloat() < 0.5) {
 					int spellType[] = {Spell.INFINITE_VOID, Spell.DOUBLE_ACCEL, Spell.HOLLOW_PURPLE};
 					int rand_int = rand.nextInt(spellType.length);
+					
+					while(spellType[rand_int] == lastTwoSpells[1]) {
+						if(spellType[rand_int] == lastTwoSpells[0]) {
+							rand_int = rand.nextInt(spellType.length);
+						}
+						else {
+							break;
+						}
+					}
+					lastTwoSpells[0] = lastTwoSpells[1];
+					lastTwoSpells[1] = spellType[rand_int];
+
 					Spell s = SpellFactory.getInstance().createSpell(spellType[rand_int]);
 					notifyObserver(observer,s);
-					
 				}
+
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
