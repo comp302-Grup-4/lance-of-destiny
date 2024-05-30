@@ -473,6 +473,7 @@ public class Animator implements Serializable, YmirObserver{
 		
 	}
 
+	private long lastExecutionTime = 0;
 	public boolean checkGameOver() {
 		ImageIcon loserIcon = new ImageIcon("./res/drawable/loser.png");
 		ImageIcon winnerIcon = new ImageIcon("./res/drawable/winner.png");
@@ -480,9 +481,13 @@ public class Animator implements Serializable, YmirObserver{
 			game.endGame("You lost the game :p", loserIcon);
 			return true;
 		}
-		else if (getBarrierGrid().totalBarrierNumber == 0 ) {
-			game.endGame("Congrats! You win!", winnerIcon);
-			return true;
+		else if (getBarrierGrid().checkAllBarriersDestroyed() ) {
+			long currentTime = System.currentTimeMillis();
+			if (currentTime - lastExecutionTime >= 5000) { // 5 000 milliseconds = 5 seconds
+				lastExecutionTime = currentTime;
+				game.endGame("Congrats! You win!", winnerIcon);
+				return true;
+			}
 		}
 		return false;
 	}
