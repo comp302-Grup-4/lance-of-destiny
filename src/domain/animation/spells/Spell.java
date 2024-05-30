@@ -17,6 +17,7 @@ public abstract class Spell extends AnimationObject {
 	public static final int INFINITE_VOID = 4;
 	public static final int DOUBLE_ACCEL = 5;
 	public static final int HOLLOW_PURPLE = 6;
+	public static final int REMAINS = 7;
 	
 	protected static final int spellDurationShort = 15000;
 	protected static final int spellDurationLong = 30000;

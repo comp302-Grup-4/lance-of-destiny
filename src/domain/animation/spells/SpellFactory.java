@@ -35,6 +35,9 @@ public class SpellFactory {
 		case Spell.HOLLOW_PURPLE:
 			newSpell = new HollowPurple(position);
 			break;
+		case Spell.REMAINS:
+			newSpell = new Remains(position);
+			break;
 		default:
 			System.err.println("Spell type could not be found.");
 			newSpell = new FelixFelicis(position);

@@ -197,6 +197,18 @@ public class Animator implements Serializable, YmirObserver{
 							addAnimationObject(newSpell);
 							spellDepot.addSpell(newSpell);
 						}
+						
+						if(barrier instanceof ExplosiveBarrier) {
+							Spell remains1 = spellFactory.createSpell(Spell.REMAINS, barrier.getCenterPoint());
+							Spell remains2 = spellFactory.createSpell(Spell.REMAINS, barrier.getBoundaryPoints()[0]);
+							Spell remains3 = spellFactory.createSpell(Spell.REMAINS, barrier.getBoundaryPoints()[1]);
+							addAnimationObject(remains1);
+							spellDepot.addSpell(remains1);
+							addAnimationObject(remains2);
+							spellDepot.addSpell(remains2);
+							addAnimationObject(remains3);
+							spellDepot.addSpell(remains3);
+						}
 					}
 					
 					if (ballSolidCollision.getCollidedObjects().contains(lowerWall)) {

@@ -80,6 +80,7 @@ public class SpatialObject extends JLabel{
 	public static ImageIcon hollowPurpleSpell = new ImageIcon("./res/drawable/hollowPurpleSpell.png");
 	public static ImageIcon smallPurpleGem = new ImageIcon("./res/drawable/smallPurpleGem.png");
 	public static ImageIcon hexFireBallImage = new ImageIcon("./res/drawable/smallPurpleGem.png");
+	public static ImageIcon remainsImage = new ImageIcon("./res/drawable/remains.png");
 
 	private static HashMap<ScaleInfo, ImageIcon> cacheScaledImages = new HashMap<>();
 	
@@ -156,6 +157,9 @@ public class SpatialObject extends JLabel{
 			image = doubleAccelSpell; 
 		} else if (object instanceof HollowPurple) {
 			image = hollowPurpleSpell;
+		}
+		else if (object instanceof Remains) {
+			image = remainsImage;
 		}
 		else {
 			throw new Exception("Resource not found.");
