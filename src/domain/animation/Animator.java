@@ -502,4 +502,8 @@ public class Animator implements Serializable, YmirObserver{
 	public void update(Spell s) {
 		s.activate(game);		
 	}
+
+	public Ymir getYmir() {
+		return ymir;
+	}
 }
