@@ -76,7 +76,9 @@ public class Animator implements Serializable, YmirObserver{
 		switch (animationThread.getState()) {
 		case NEW:
 			animationThread.start();
-			ymirThread.start();
+			if (!(game instanceof MultiplayerGame)) {
+				ymirThread.start();
+			}
 			break;
 
 		case TERMINATED:

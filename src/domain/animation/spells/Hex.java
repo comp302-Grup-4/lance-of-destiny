@@ -37,6 +37,7 @@ public class Hex extends Spell {
 	@Override
 	public void activate(Game game) {
 		if (isActivated()) {
+			setActivated(false);
 			return;
 		}
 		setActivated(true);

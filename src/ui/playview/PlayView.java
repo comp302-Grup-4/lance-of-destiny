@@ -41,9 +41,6 @@ public class PlayView extends JPanel {
 	JLabel hexAvailabilityText;
 	JLabel mseAvailabilityText;
 
-	JLabel timerLabel;
-	Timer timer;
-
 	/**
 	 * Create the panel.
 	 */
@@ -114,35 +111,6 @@ public class PlayView extends JPanel {
 				}
 			}
 		});
-
-		// add ymir timer if not multiplyar
-		if (!(game instanceof MultiplayerGame)) {
-			timerLabel = new JLabel();
-			timerLabel.setBounds((int) (windowWidth * 0.80),
-					(int) (windowHeight * 0.95),
-					300,
-					50);
-			timerLabel.setFont(new Font("Monospaced", Font.BOLD, 13));
-			timerLabel.setForeground(Color.black);
-			timerLabel.setVisible(true);
-			this.add(timerLabel);
-
-			int delay = 1000; // Delay for 1 second
-			timer = new Timer(delay, new ActionListener() {
-				int timeLeft = 30; // Time left in seconds
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (timeLeft > 0) {
-						timeLeft--;
-						timerLabel.setText("Next Ymir spell attempt in " + timeLeft + " seconds");
-					} else {
-						timeLeft = 30; // Reset the timer
-					}
-				}
-			});
-			timer.start();
-		}
 
 		if (game instanceof MultiplayerGame) {
 			rightInfoPanel.setLayout(new GridLayout(3, 1));

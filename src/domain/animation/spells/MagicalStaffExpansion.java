@@ -22,6 +22,7 @@ public class MagicalStaffExpansion extends Spell {
 	@Override
 	public void activate(Game game) {
 		if (isActivated()) {
+			setActivated(false);
 			return;
 		}
 		setActivated(true);
