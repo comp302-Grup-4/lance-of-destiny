@@ -64,4 +64,11 @@ public class Ymir extends Thread implements YmirSubject {
 		observer.update(s);
 	}
 
+	public int[] getLastTwoSpells() {
+		return lastTwoSpells;
+	}
+
+	public void setLastTwoSpells(int[] lastTwoSpells) {
+		this.lastTwoSpells = lastTwoSpells;
+	}
 }

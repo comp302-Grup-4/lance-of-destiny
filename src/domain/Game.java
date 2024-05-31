@@ -54,6 +54,10 @@ public class Game implements Serializable  {
 		long timeElapsed = System.currentTimeMillis() - animator.getStartTimeMilli();
 		writer.write(timeElapsed + "\n");
 		writer.write(gameVersion + "\n"); // version number
+		// Save Ymir's last two spells
+		Ymir ymir = animator.getYmir();
+		writer.write(ymir.getLastTwoSpells()[0] + "\n");
+		writer.write(ymir.getLastTwoSpells()[1] + "\n");
 		writer.close();
 	}
 
@@ -67,6 +71,12 @@ public class Game implements Serializable  {
 			System.out.println("Save version is higher than current version.");
 			return 1;
 		}
+		// Load Ymir's last two spells
+		Ymir ymir = animator.getYmir();
+		int[] lastTwoSpells = new int[2];
+		lastTwoSpells[0] = Integer.parseInt(reader.readLine());
+		lastTwoSpells[1] = Integer.parseInt(reader.readLine());
+		ymir.setLastTwoSpells(lastTwoSpells);
 		reader.close();
 		player.setChances(chances);
 		player.setScore(score);
@@ -134,7 +144,6 @@ public class Game implements Serializable  {
 	    objectInputStream.close();
 	}
 
-	// TODO save and load Ymir
 	// TODO save and load spells
 
 	public void saveGameState(String name) throws IOException {

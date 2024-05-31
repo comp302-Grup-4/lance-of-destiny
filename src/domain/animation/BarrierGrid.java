@@ -322,5 +322,17 @@ public class BarrierGrid implements Serializable{
 	public int getTotalBarrierNumber() {
 		return totalBarrierNumber;
 	}
-	
+
+	public boolean checkAllBarriersDestroyed() {
+		for (Barrier b : barrierList) {
+			System.out.println(b.getType()
+			);
+			if (!b.getType().equals("destroyed")) {
+				return false;
+			}
+		}
+		System.out.println("true");
+		return true;
+	}
+
 }
