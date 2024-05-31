@@ -15,7 +15,8 @@ public class LoginScreen extends JPanel  {
 	final int H = screenSize.height / 2;
 	final int W = screenSize.width / 4;
 
-	public LoginScreen() {
+	public LoginScreen(GameApp gameApp) {
+		this.g = gameApp;
 		if (!Files.exists(Paths.get("users.txt"))) {
 		try {
 			Files.createFile(Paths.get("users.txt"));
