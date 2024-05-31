@@ -8,6 +8,8 @@ import domain.animation.spells.Spell;
 public class SpellDepot implements Serializable {
 	private static final long serialVersionUID = -112337982175135601L;
 	private HashMap<Spell, Integer> spellMap;
+	private boolean HexExists;
+	private boolean MSEExists;
 	
 	public SpellDepot() {
 		this.spellMap = new HashMap<Spell,Integer>();
@@ -26,6 +28,13 @@ public class SpellDepot implements Serializable {
 	}
 	
 	public void addSpell(Spell s) {
+		// set hexexists and mseexists to true if the spell is hex or mse
+		if (s.getType() == 1) {
+			HexExists = true;
+		}
+		else if (s.getType() == 2) {
+			MSEExists = true;
+		}
 		if(!spellMap.containsKey(s)) {
 			spellMap.put(s, 1);
 		}
@@ -45,5 +54,21 @@ public class SpellDepot implements Serializable {
 	
 	public boolean checkSpellExists(Spell s) {
 		return spellMap.containsKey(s);
+	}
+
+	public boolean checkHexExists() {
+		return HexExists;
+	}
+
+	public void setHexExists(boolean hexExists) {
+		HexExists = hexExists;
+	}
+
+	public boolean checkMSEExists() {
+		return MSEExists;
+	}
+
+	public void setMSEExists(boolean mseExists) {
+		MSEExists = mseExists;
 	}
 }

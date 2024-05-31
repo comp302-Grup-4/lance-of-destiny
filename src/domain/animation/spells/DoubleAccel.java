@@ -20,6 +20,9 @@ public class DoubleAccel extends Spell {
 
 	@Override
 	public void activate(Game game) {
+		if (isActivated()) {
+			return;
+		}
 		setActivated(true);
 		FireBall ball = game.getAnimator().getFireball();
 		ball.setVelocity(ball.getVelocity().scale(.5f));

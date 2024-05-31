@@ -21,6 +21,9 @@ public class MagicalStaffExpansion extends Spell {
 
 	@Override
 	public void activate(Game game) {
+		if (isActivated()) {
+			return;
+		}
 		setActivated(true);
 		MagicalStaff staff = game.getAnimator().getStaff();
 		// start spell

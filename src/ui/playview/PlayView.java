@@ -17,8 +17,12 @@ import domain.Game;
 import domain.MultiplayerGame;
 import domain.animation.Animator;
 import domain.animation.BarrierGrid;
+import domain.animation.SpellDepot;
 import domain.animation.Vector;
 import domain.animation.spells.DoubleAccel;
+import domain.animation.spells.Hex;
+import domain.animation.spells.MagicalStaffExpansion;
+import domain.animation.spells.Spell;
 import exceptions.InvalidBarrierNumberException;
 import ui.BuildingScreen;
 import ui.GameApp;
@@ -34,6 +38,12 @@ public class PlayView extends JPanel {
 	ChancesPanel chancesPanel;
 	Game game;
 	JLabel scoreText, otherPlayerScoreText;
+	JLabel hexAvailabilityText;
+	JLabel mseAvailabilityText;
+
+	JLabel timerLabel;
+	Timer timer;
+
 	/**
 	 * Create the panel.
 	 */
@@ -58,7 +68,82 @@ public class PlayView extends JPanel {
 		chancesPanel = new ChancesPanel();
 		scoreText = new JLabel();
 		otherPlayerScoreText = new JLabel();
-		
+		hexAvailabilityText = new JLabel();
+		hexAvailabilityText.setBounds((int) (windowWidth * 0.05),
+				(int) (windowHeight * 0.90),
+				150,
+				50);
+		hexAvailabilityText.setFont(new Font("Monospaced", Font.BOLD, 13));
+		hexAvailabilityText.setForeground(Color.black);
+		hexAvailabilityText.setVisible(true);
+		this.add(hexAvailabilityText);
+
+		mseAvailabilityText = new JLabel();
+		mseAvailabilityText.setBounds((int) (windowWidth * 0.05),
+				(int) (windowHeight * 0.95),
+				150,
+				50);
+		mseAvailabilityText.setFont(new Font("Monospaced", Font.BOLD, 13));
+		mseAvailabilityText.setForeground(Color.black);
+		mseAvailabilityText.setVisible(true);
+		this.add(mseAvailabilityText);
+
+
+		hexAvailabilityText.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				SpellDepot sd = animator.getSpellDepot();
+				if (sd.checkHexExists()) {
+					Hex hex = new Hex(new Vector(0,0));
+					hex.activate(game);
+					sd.setHexExists(false);
+				}
+			}
+		});
+
+		mseAvailabilityText.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				SpellDepot sd = animator.getSpellDepot();
+				if (sd.checkMSEExists()) {
+					MagicalStaffExpansion mse = new MagicalStaffExpansion(new Vector(0,0));
+					mse.activate(game);
+					sd.setMSEExists(false);
+				}
+			}
+		});
+
+		// add ymir timer if not multiplyar
+		if (!(game instanceof MultiplayerGame)) {
+			timerLabel = new JLabel();
+			timerLabel.setBounds((int) (windowWidth * 0.80),
+					(int) (windowHeight * 0.95),
+					300,
+					50);
+			timerLabel.setFont(new Font("Monospaced", Font.BOLD, 13));
+			timerLabel.setForeground(Color.black);
+			timerLabel.setVisible(true);
+			this.add(timerLabel);
+
+			int delay = 1000; // Delay for 1 second
+			timer = new Timer(delay, new ActionListener() {
+				int timeLeft = 30; // Time left in seconds
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (timeLeft > 0) {
+						timeLeft--;
+						timerLabel.setText("Next Ymir spell attempt in " + timeLeft + " seconds");
+					} else {
+						timeLeft = 30; // Reset the timer
+					}
+				}
+			});
+			timer.start();
+		}
+
 		if (game instanceof MultiplayerGame) {
 			rightInfoPanel.setLayout(new GridLayout(3, 1));
 			
@@ -162,6 +247,14 @@ public class PlayView extends JPanel {
 								((MultiplayerGame) game).getOtherPlayer()
 								                        .getScore()));
 					}
+
+					// Update spell availability text
+					SpellDepot sd = animator.getSpellDepot();
+					String hexAvailability = sd.checkHexExists() ? "Available" : "Not Available";
+					String mseAvailability = sd.checkMSEExists() ? "Available" : "Not Available";
+					hexAvailabilityText.setText("Hex: " + hexAvailability);
+					mseAvailabilityText.setText("MSE: " + mseAvailability);
+
 					PlayView.this.repaint();
 					try {
 						Thread.sleep((long) (1 / FPS));
@@ -197,6 +290,24 @@ public class PlayView extends JPanel {
 				}
 				 else if (e.getKeyCode() == KeyEvent.VK_W) {
 					startPlay();
+				} else if (e.getKeyCode() == KeyEvent.VK_T) {
+					 //check if mse exists in spell depot
+					SpellDepot sd = animator.getSpellDepot();
+					System.out.println("MSE exists: " + sd.checkMSEExists());
+					if (sd.checkMSEExists()) {
+						// cast MSE
+						MagicalStaffExpansion mse = new MagicalStaffExpansion(new Vector(0,0));
+						mse.activate(game);
+						sd.setMSEExists(false);
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_H) {
+					 SpellDepot sd = animator.getSpellDepot();
+					System.out.println("Hex exists: " + sd.checkHexExists());
+					 if (sd.checkHexExists()) {
+						 Hex hex = new Hex(new Vector(0,0));
+						 hex.activate(game);
+						 sd.setHexExists(false);
+					 }
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					if (animator.isPaused()) {
 						try {

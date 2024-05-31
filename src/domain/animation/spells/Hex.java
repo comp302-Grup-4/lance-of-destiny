@@ -36,6 +36,9 @@ public class Hex extends Spell {
 	
 	@Override
 	public void activate(Game game) {
+		if (isActivated()) {
+			return;
+		}
 		setActivated(true);
 		Animator animator = game.getAnimator();
 		MagicalStaff staff = animator.getStaff();

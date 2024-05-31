@@ -240,7 +240,15 @@ public class Animator implements Serializable, YmirObserver{
 										GameApp.getInstance().getActiveServer().update(Message.SPELL, spell.getType());// TODO REFACTOR
 									}
 								} else {
-									spell.activate(game);
+									if (spell instanceof Hex) {
+										System.out.println("Hex exists");
+										spellDepot.setHexExists(true);
+									} else if (spell instanceof MagicalStaffExpansion) {
+										System.out.println("MSE exists");
+										spellDepot.setMSEExists(true);
+									} else {
+										spell.activate(game);
+									}
 								}
 							}
 						}
@@ -505,13 +513,16 @@ public class Animator implements Serializable, YmirObserver{
 		this.game.writeHighScore(this.game.getPlayer().getScore());
 		
 	}; // TODO game over stuff
-  
+
 	@Override
 	public void update(Spell s) {
-		s.activate(game);		
+		s.activate(game);
 	}
-
 	public Ymir getYmir() {
 		return ymir;
+	}
+
+	public SpellDepot getSpellDepot() {
+		return spellDepot;
 	}
 }
