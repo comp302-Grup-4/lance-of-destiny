@@ -216,7 +216,7 @@ public class Animator implements Serializable, YmirObserver{
 						staff.reset();
 						game.getPlayer().decrementChances();
 						pause();
-						if (checkGameOver()) {gameOver();}
+						checkGameOver();
 						break;
 					}
 					
@@ -341,7 +341,7 @@ public class Animator implements Serializable, YmirObserver{
 		if (movable instanceof Barrier) {
 			Barrier barrier = (Barrier) movable;
 			barrier.setType("destroyed");
-			if (checkGameOver()) {gameOver();}
+			checkGameOver();
 		}
 		animationObjects.remove(movable);
 	}
@@ -477,13 +477,20 @@ public class Animator implements Serializable, YmirObserver{
 	public boolean checkGameOver() {
 		ImageIcon loserIcon = new ImageIcon("./res/drawable/loser.png");
 		ImageIcon winnerIcon = new ImageIcon("./res/drawable/winner.png");
+		long currentTime = 0;
 		if (this.game.getPlayer().getChances() == 0) {
-			game.endGame("You lost the game :p", loserIcon);
-			return true;
+			currentTime = System.currentTimeMillis();
+			if (currentTime - lastExecutionTime >= 5000) { // once every 5 max to prevent multiple pop ups from spawning
+				gameOver();
+				lastExecutionTime = currentTime;
+				game.endGame("You lost the game :p", loserIcon);
+				return true;
+			}
 		}
 		else if (getBarrierGrid().checkAllBarriersDestroyed() ) {
-			long currentTime = System.currentTimeMillis();
-			if (currentTime - lastExecutionTime >= 5000) { // 5 000 milliseconds = 5 seconds
+			currentTime = System.currentTimeMillis();
+			if (currentTime - lastExecutionTime >= 5000) {
+				gameOver();
 				lastExecutionTime = currentTime;
 				game.endGame("Congrats! You win!", winnerIcon);
 				return true;
@@ -493,7 +500,8 @@ public class Animator implements Serializable, YmirObserver{
 	}
 
 	public void gameOver() {
-		System.out.println("Game over"); // TODO REMOVe
+		System.out.println("Game over");
+		System.out.println("Score: " + this.game.getPlayer().getScore());
 		this.game.writeHighScore(this.game.getPlayer().getScore());
 		
 	}; // TODO game over stuff

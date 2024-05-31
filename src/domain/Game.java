@@ -5,11 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.security.SecureRandom;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import domain.animation.*;
+import domain.animation.spells.Spell;
 import exceptions.InvalidBarrierNumberException;
 import network.Message;
 import network.MultiplayerObserver;
@@ -17,7 +19,7 @@ import ui.GameApp;
 
 public class Game implements Serializable  {
 	private static final long serialVersionUID = 7679992000960473271L;
-	private static final long gameVersion = 1;
+	private static final long gameVersion = 2; // version 2 for phase II
 	private Player player;
 	private Animator animator;
 	
@@ -74,8 +76,18 @@ public class Game implements Serializable  {
 		// Load Ymir's last two spells
 		Ymir ymir = animator.getYmir();
 		int[] lastTwoSpells = new int[2];
-		lastTwoSpells[0] = Integer.parseInt(reader.readLine());
-		lastTwoSpells[1] = Integer.parseInt(reader.readLine());
+		String line1 = reader.readLine();
+		String line2 = reader.readLine();
+		if (line1 == null || line2 == null) {
+			// Generate random spells if there are no more lines
+			SecureRandom rand = new SecureRandom();
+			int spellType[] = {Spell.INFINITE_VOID, Spell.DOUBLE_ACCEL, Spell.HOLLOW_PURPLE};
+			lastTwoSpells[0] = spellType[rand.nextInt(spellType.length)];
+			lastTwoSpells[1] = spellType[rand.nextInt(spellType.length)];
+		} else {
+			lastTwoSpells[0] = Integer.parseInt(line1);
+			lastTwoSpells[1] = Integer.parseInt(line2);
+		}
 		ymir.setLastTwoSpells(lastTwoSpells);
 		reader.close();
 		player.setChances(chances);

@@ -20,5 +20,6 @@ public class Remains extends Spell {
 	@Override
 	public void activate(Game game) {
 		game.getPlayer().decrementChances();
+		game.getAnimator().checkGameOver();
 	}
 }
