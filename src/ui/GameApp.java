@@ -69,6 +69,7 @@ public class GameApp extends JFrame implements MultiplayerObserver {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
+		openLoginScreen();
 	}
 	
 	public static GameApp getInstance() {
@@ -91,7 +92,7 @@ public class GameApp extends JFrame implements MultiplayerObserver {
 	}
 
 	public void openLoginScreen() {
-		loginScreen = new LoginScreen();
+		loginScreen = new LoginScreen(this);
 		setContentPane(loginScreen);
 		this.revalidate();
 		this.repaint();

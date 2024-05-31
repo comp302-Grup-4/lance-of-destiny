@@ -70,35 +70,25 @@ public class MainMenuScreen extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				String message = "hello";
 				Path path = Paths.get("highscores");
-				PriorityQueue<Integer> scores = new PriorityQueue<>(Comparator.reverseOrder());
-                BufferedReader reader = null;
-                try {
-                    reader = Files.newBufferedReader(path);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-				// read the file at path line by line and split it into two by ":" and add the first part to scores
-				try {
+				PriorityQueue<String> scores = new PriorityQueue<>(Comparator.comparingInt(s -> -Integer.parseInt(s.split(":")[0])));
+				try (BufferedReader reader = Files.newBufferedReader(path)) {
 					String line;
 					while ((line = reader.readLine()) != null) {
-						String[] parts = line.split(":");
-						scores.add(Integer.parseInt(parts[0]));
+						scores.add(line);
 					}
 				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
 				// display the first 5 high scores
-
-				message = "";
+				StringBuilder message = new StringBuilder();
 				for (int i = 0; i < 5; i++) {
 					if (scores.isEmpty()) {
 						break;
 					}
-					message += scores.poll() + "\n";
+					message.append(scores.poll()).append("\n");
 				}
-				JOptionPane.showMessageDialog(null, message, "Popup Title", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, message.toString(), "High Scores", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 
