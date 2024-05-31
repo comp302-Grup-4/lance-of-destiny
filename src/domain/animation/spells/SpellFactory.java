@@ -49,9 +49,19 @@ public class SpellFactory {
 	public Spell createSpell(int spellType) {
 		return createSpell(spellType, Vector.of(0, 0));
 	}
-	
+
 	public Spell createRandomSpellForBarriers(Barrier barrier) {
 		int spellType = rand.nextInt(0, 7);
+		return createSpell(spellType, barrier.getCenterPoint());
+	}
+
+	public Spell createRandomSpellForBarriers(Barrier barrier, boolean isMultiplayer) {
+		int spellType;
+		if (isMultiplayer) {
+			spellType = rand.nextInt(0, 7);
+		} else {
+			spellType = rand.nextInt(0, 4);
+		}
 		return createSpell(spellType, barrier.getCenterPoint());
 	}
 	

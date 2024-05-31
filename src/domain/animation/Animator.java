@@ -195,7 +195,8 @@ public class Animator implements Serializable, YmirObserver{
 							increaseScoreAfterDestroyingBarrier();
 						}
 						if (barrier instanceof RewardingBarrier) {
-							Spell newSpell = spellFactory.createRandomSpellForBarriers(barrier);
+							boolean isMultiplayer = game instanceof MultiplayerGame;
+							Spell newSpell = spellFactory.createRandomSpellForBarriers(barrier, isMultiplayer);
 							addAnimationObject(newSpell);
 							spellDepot.addSpell(newSpell);
 						}
@@ -465,7 +466,8 @@ public class Animator implements Serializable, YmirObserver{
 									brokenBarriers.add((Barrier) collidedObject);
 									removeAnimationObject(neighbor);
 									if (neighbor instanceof RewardingBarrier) {
-										Spell newSpell = spellFactory.createRandomSpellForBarriers(neighbor);
+										boolean isMultiplayer = game instanceof MultiplayerGame;
+										Spell newSpell = spellFactory.createRandomSpellForBarriers(neighbor, isMultiplayer);
 										addAnimationObject(newSpell);
 										spellDepot.addSpell(newSpell);
 									}
