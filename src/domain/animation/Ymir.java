@@ -61,6 +61,7 @@ public class Ymir extends Thread implements YmirSubject {
 	@Override
 	public void notifyObserver(YmirObserver observer, Spell s) {
 		// TODO Auto-generated method stub
+		System.out.println("Ymir: Notifying observer");
 		observer.update(s);
 	}
 

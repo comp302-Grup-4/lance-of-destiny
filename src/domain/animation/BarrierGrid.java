@@ -20,9 +20,9 @@ public class BarrierGrid implements Serializable{
 	protected final int COL_NUMBER = 37;
 	protected final int ROW_NUMBER = 20;
 	
-	public static int MIN_SIMPLE_BARRIERS = 0;
+	public static int MIN_SIMPLE_BARRIERS = 1;
 	public static int MIN_FIRM_BARRIERS = 0;
-	public static int MIN_EXPLOSIVE_BARRIERS = 1;
+	public static int MIN_EXPLOSIVE_BARRIERS = 0;
 	public static int MIN_GIFT_BARRIERS = 0;
 	
 	private int simpleBarrierNumber, firmBarriers, explosiveBarriers, giftBarriers;
@@ -325,13 +325,10 @@ public class BarrierGrid implements Serializable{
 
 	public boolean checkAllBarriersDestroyed() {
 		for (Barrier b : barrierList) {
-			System.out.println(b.getType()
-			);
 			if (!b.getType().equals("destroyed")) {
 				return false;
 			}
 		}
-		System.out.println("true");
 		return true;
 	}
 
